@@ -1,12 +1,15 @@
 syntax = "proto2";
 
+// protoc --java_out=../../../../ http_m.proto
+// Then, use Netbeans to refactor into http_m.java file. 
+
 package com.mackenziehigh.socius.web;
 option java_package = "com.mackenziehigh.socius.web";
 
 /**
  * HTTP Request.
  */
-message Request
+message HttpRequest
 {
     /**
      * Use this field to attach debugging information.
@@ -51,7 +54,7 @@ message Request
     /**
      * Request Protocol.
      */
-    optional Protocol protocol = 8;
+    optional HttpProtocol protocol = 8;
 
     /**
      * HTTP Verb of the request (GET/POST/etc).
@@ -81,12 +84,12 @@ message Request
     /**
      * Query Parameters.
      */
-    map<string, QueryParameter> parameters = 14;
+    map<string, HttpQueryParameter> parameters = 14;
 
     /**
      * Raw HTTP Headers.
      */
-    map<string, Header> headers = 15;
+    map<string, HttpHeader> headers = 15;
 
     /**
      * Client Host.
@@ -96,7 +99,7 @@ message Request
     /**
      * HTTP cookies from the client.
      */
-    repeated Cookie cookies = 17;
+    repeated HttpCookie cookies = 17;
 
     /**
      * MIME Type of the body.
@@ -117,7 +120,7 @@ message Request
 /**
  * HTTP Response.
  */
-message Response
+message HttpResponse
 {
     /**
      * Use this field to attach debugging information.
@@ -127,7 +130,7 @@ message Response
     /**
      * (optional) is the HTTP request that precipitated this response.
      */
-    optional Request request = 2;
+    optional HttpRequest request = 2;
 
     /**
      * Universally-Unique-Identifier both the request and the response.
@@ -147,12 +150,12 @@ message Response
     /**
      * Raw HTTP Headers.
      */
-    map<string, Header> headers = 6;
+    map<string, HttpHeader> headers = 6;
 
     /**
      * HTTP cookies from the server.
      */
-    repeated Cookie cookies = 7;
+    repeated HttpCookie cookies = 7;
 
     /**
      * MIME type of the body.
@@ -172,7 +175,7 @@ message Response
  * See Also: https://netty.io/4.0/api/io/netty/handler/codec/http/HttpVersion.html
  * </p>
  */
-message Protocol
+message HttpProtocol
 {
     optional string text = 1;
 
@@ -187,7 +190,7 @@ message Protocol
 /**
  * HTTP Query Parameter.
  */
-message QueryParameter
+message HttpQueryParameter
 {
     /**
      * Parameter Name.
@@ -203,7 +206,7 @@ message QueryParameter
 /**
  * HTTP Header.
  */
-message Header
+message HttpHeader
 {
     optional string key = 1;
 
@@ -217,7 +220,7 @@ message Header
  * See Also: https://netty.io/4.1/api/io/netty/handler/codec/http/cookie/Cookie.html
  * </p>
  */
-message Cookie
+message HttpCookie
 {
     optional string domain = 1;
 

@@ -3,15 +3,16 @@ package com.mackenziehigh.socius.web;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
 import com.google.common.collect.Maps;
+import com.google.common.net.MediaType;
 import com.google.protobuf.ByteString;
 import com.mackenziehigh.cascade.Cascade;
 import com.mackenziehigh.cascade.Cascade.Stage;
 import com.mackenziehigh.cascade.Cascade.Stage.Actor;
 import com.mackenziehigh.cascade.Cascade.Stage.Actor.Input;
 import com.mackenziehigh.cascade.Cascade.Stage.Actor.Output;
-import com.mackenziehigh.socius.web.http_m.Header;
-import com.mackenziehigh.socius.web.http_m.Protocol;
-import com.mackenziehigh.socius.web.http_m.QueryParameter;
+import com.mackenziehigh.socius.web.http_m.HttpHeader;
+import com.mackenziehigh.socius.web.http_m.HttpProtocol;
+import com.mackenziehigh.socius.web.http_m.HttpQueryParameter;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -64,7 +65,7 @@ public final class WebServer
     /**
      * This counter is used to assign sequence-numbers to requests.
      */
-    private static final AtomicLong seqnum = new AtomicLong();
+    private final AtomicLong seqnum = new AtomicLong();
 
     /**
      * This is the human-readable name of this server to embed in requests.
@@ -146,13 +147,13 @@ public final class WebServer
      * This processor will be used to send HTTP requests out of the server,
      * so that external handler actors can process the requests.
      */
-    private final Actor<http_m.Request, http_m.Request> requestsOut;
+    private final Actor<http_m.HttpRequest, http_m.HttpRequest> requestsOut;
 
     /**
      * This processor will receive the HTTP responses from the external actors
      * and then will route those responses to the originating connection.
      */
-    private final Actor<http_m.Response, http_m.Response> responsesIn;
+    private final Actor<http_m.HttpResponse, http_m.HttpResponse> responsesIn;
 
     /**
      * Sole Constructor.
@@ -172,11 +173,102 @@ public final class WebServer
     }
 
     /**
+     * Get the current state of the sequence-number generator.
+     *
+     * @return the current sequence-number.
+     */
+    public long getSeqnum ()
+    {
+        return seqnum.get();
+    }
+
+    /**
+     * Get the human-readable name of this server.
+     *
+     * @return the server name.
+     */
+    public String getServerName ()
+    {
+        return serverName;
+    }
+
+    /**
+     * Get the universally-unique-identifier of this server instance.
+     *
+     * @return the server identifier.
+     */
+    public String getServerId ()
+    {
+        return serverId;
+    }
+
+    /**
+     * Get the (Reply-To) property embedded in each outgoing request.
+     *
+     * @return the reply-to address.
+     */
+    public String getReplyTo ()
+    {
+        return replyTo;
+    }
+
+    /**
+     * Get the name of the host that the server is listening on.
+     *
+     * @return the server host.
+     */
+    public String getHost ()
+    {
+        return host;
+    }
+
+    /**
+     * Get the port that the server is listening on.
+     *
+     * @return the server port.
+     */
+    public int getPort ()
+    {
+        return port;
+    }
+
+    /**
+     * Get the maximum amount of time the server will wait for a response,
+     * before the connection is closed without sending a response.
+     *
+     * @return the connection timeout.
+     */
+    public Duration getResponseTimeout ()
+    {
+        return responseTimeout;
+    }
+
+    /**
+     * Get the size of the buffer used to join chunked messages into one.
+     *
+     * @return the approximate maximum size of a request.
+     */
+    public int getAggregationCapacity ()
+    {
+        return aggregationCapacity;
+    }
+
+    /**
+     * Get the number of open connections at this time.
+     *
+     * @return the number of pending requests.
+     */
+    public int getConnectionCount ()
+    {
+        return connections.size();
+    }
+
+    /**
      * Use this connection to receive HTTP Requests from this HTTP server.
      *
      * @return the connection.
      */
-    public Output<http_m.Request> requestsOut ()
+    public Output<http_m.HttpRequest> requestsOut ()
     {
         return requestsOut.output();
     }
@@ -196,7 +288,7 @@ public final class WebServer
      *
      * @return the connection.
      */
-    public Input<http_m.Response> responsesIn ()
+    public Input<http_m.HttpResponse> responsesIn ()
     {
         return responsesIn.input();
     }
@@ -293,12 +385,12 @@ public final class WebServer
         }
     }
 
-    private http_m.Request onRequest (final http_m.Request request)
+    private http_m.HttpRequest onRequest (final http_m.HttpRequest request)
     {
         return request;
     }
 
-    private void onResponse (final http_m.Response response)
+    private void onResponse (final http_m.HttpResponse response)
     {
         routeResponse(response);
     }
@@ -309,7 +401,7 @@ public final class WebServer
      *
      * @param response needs to be send to a client.
      */
-    private void routeResponse (final http_m.Response response)
+    private void routeResponse (final http_m.HttpResponse response)
     {
         /**
          * Get the Correlation-ID that allows us to map responses to requests.
@@ -418,7 +510,7 @@ public final class WebServer
         {
             if (msg instanceof FullHttpRequest)
             {
-                final http_m.Request encodedRequest = encode((FullHttpRequest) msg);
+                final http_m.HttpRequest encodedRequest = encode((FullHttpRequest) msg);
                 final String correlationId = encodedRequest.getCorrelationId();
 
                 /**
@@ -464,12 +556,12 @@ public final class WebServer
             ctx.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
         }
 
-        private http_m.Request encode (final FullHttpRequest request)
+        private http_m.HttpRequest encode (final FullHttpRequest request)
                 throws URISyntaxException
         {
             final String correlationId = UUID.randomUUID().toString();
 
-            final http_m.Request.Builder builder = http_m.Request.newBuilder();
+            final http_m.HttpRequest.Builder builder = http_m.HttpRequest.newBuilder();
 
             builder.setServerName(serverName);
             builder.setServerId(serverId);
@@ -477,7 +569,7 @@ public final class WebServer
             builder.setTimestamp(System.currentTimeMillis());
             builder.setCorrelationId(correlationId);
             builder.setReplyTo(replyTo);
-            builder.setProtocol(Protocol.newBuilder()
+            builder.setProtocol(HttpProtocol.newBuilder()
                     .setText(request.protocolVersion().text())
                     .setName(request.protocolVersion().protocolName())
                     .setMajorVersion(request.protocolVersion().majorVersion())
@@ -498,7 +590,7 @@ public final class WebServer
              */
             for (Entry<String, List<String>> params : qsDecoder.parameters().entrySet())
             {
-                final QueryParameter.Builder param = QueryParameter.newBuilder();
+                final HttpQueryParameter.Builder param = HttpQueryParameter.newBuilder();
                 param.setKey(params.getKey());
                 param.addAllValues(params.getValue());
 
@@ -527,7 +619,7 @@ public final class WebServer
             for (String name : request.headers().names())
             {
                 builder.putHeaders(name,
-                                   Header.newBuilder()
+                                   HttpHeader.newBuilder()
                                            .setKey(name)
                                            .addAllValues(request.headers().getAll(name))
                                            .build());
@@ -540,7 +632,7 @@ public final class WebServer
             {
                 for (Cookie cookie : ServerCookieDecoder.STRICT.decode(header))
                 {
-                    final http_m.Cookie.Builder cookieBuilder = http_m.Cookie.newBuilder();
+                    final http_m.HttpCookie.Builder cookieBuilder = http_m.HttpCookie.newBuilder();
 
                     cookieBuilder.setDomain(cookie.domain());
                     cookieBuilder.setHttpOnly(cookie.isHttpOnly());
@@ -607,7 +699,7 @@ public final class WebServer
             return timeout.compareTo(other.timeout);
         }
 
-        public void send (final http_m.Response encodedResponse)
+        public void send (final http_m.HttpResponse encodedResponse)
         {
             /**
              * Sending a response is a one-shot operation.
@@ -638,10 +730,27 @@ public final class WebServer
             /**
              * Decode the headers.
              */
-            for (Entry<String, Header> header : encodedResponse.getHeadersMap().entrySet())
+            for (Entry<String, HttpHeader> header : encodedResponse.getHeadersMap().entrySet())
             {
                 response.headers().add(header.getKey(), header.getValue().getValuesList());
             }
+
+            /**
+             * Decode the content-type.
+             */
+            if (encodedResponse.hasContentType())
+            {
+                response.headers().add(Names.CONTENT_TYPE, encodedResponse.getContentType());
+            }
+            else
+            {
+                response.headers().add(Names.CONTENT_TYPE, MediaType.OCTET_STREAM.toString());
+            }
+
+            /**
+             * Decode the content-length.
+             */
+            response.headers().add(Names.CONTENT_LENGTH, encodedResponse.getBody().size());
 
             /**
              * Send the response to the client.
