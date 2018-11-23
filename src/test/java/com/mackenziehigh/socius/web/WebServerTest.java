@@ -26,7 +26,7 @@ public final class WebServerTest
             .newWebServer()
             .withResponseTimeout(Duration.ofSeconds(1))
             .withHost("127.0.0.1")
-            .withPort(8080)
+            .withPort(8089)
             .withReplyTo("Mars")
             .withServerName("Alien")
             .withAggregationCapacity(1 * 1024 * 1024)
