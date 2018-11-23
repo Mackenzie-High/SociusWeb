@@ -84,7 +84,7 @@ public final class WebServerTest
          * Send an HTTP POST request.
          */
         final String body = "InvadeAt1300";
-        final URL url = new URL(String.format("http://127.0.0.1:8080/sum?x=10&y=20"));
+        final URL url = new URL(String.format("http://127.0.0.1:8089/sum?x=10&y=20"));
         URLConnection con = url.openConnection();
         HttpURLConnection http = (HttpURLConnection) con;
         http.setRequestMethod("POST");
