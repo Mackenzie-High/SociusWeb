@@ -42,7 +42,7 @@ public final class WebServerTest
 
         server.start();
 
-        Thread.sleep(1000);
+        Thread.sleep(2000);
     }
 
     @After
