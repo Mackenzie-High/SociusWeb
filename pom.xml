@@ -2,8 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.mackenziehigh</groupId>
-    <artifactId>SociusWeb</artifactId>
-    <version>dev</version>
+    <artifactId>socius-web</artifactId>
+    <version>0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <build>
@@ -60,6 +60,19 @@
         </plugins>
     </build>
 
+    <repositories>
+        <repository>
+            <id>mackenziehigh</id>
+            <url>http://www.mackenziehigh.com/content/maven/repo/</url>
+            <snapshots>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+            <releases>
+                <updatePolicy>always</updatePolicy>
+            </releases>
+        </repository>
+    </repositories>
+
     <dependencies>
 
         <dependency>
@@ -70,7 +83,7 @@
         <dependency>
             <groupId>com.mackenziehigh</groupId>
             <artifactId>cascade</artifactId>
-            <version>[0.0,)</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>javax.websocket</groupId>
