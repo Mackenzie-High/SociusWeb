@@ -37,7 +37,7 @@ public final class WebServerTest
     public void setup ()
             throws InterruptedException
     {
-        final Actor<http_m.HttpRequest, http_m.HttpResponse> website = stage.newActor().withScript(this::onRequest).create();
+        final Actor<web_m.HttpRequest, web_m.HttpResponse> website = stage.newActor().withScript(this::onRequest).create();
         server.requestsOut().connect(website.input());
         server.responsesIn().connect(website.output());
 
@@ -54,13 +54,13 @@ public final class WebServerTest
         stage.close();
     }
 
-    private http_m.HttpResponse onRequest (final http_m.HttpRequest request)
+    private web_m.HttpResponse onRequest (final web_m.HttpRequest request)
     {
         assertEquals(1, server.getConnectionCount());
 
         final byte[] bytes = request.toByteArray();
 
-        final http_m.HttpResponse response = http_m.HttpResponse
+        final web_m.HttpResponse response = web_m.HttpResponse
                 .newBuilder()
                 .setRequest(request)
                 .setContentType("text/martian")
@@ -112,7 +112,7 @@ public final class WebServerTest
              * Go ahead an parse the returned bytes to obtain the request that we sent.
              */
             final byte[] replyBytes = ByteStreams.toByteArray(http.getInputStream());
-            final http_m.HttpRequest response = http_m.HttpRequest.parseFrom(replyBytes);
+            final web_m.HttpRequest response = web_m.HttpRequest.parseFrom(replyBytes);
             assertTrue(server.getConnectionCount() <= 1);
             assertEquals(200, http.getResponseCode());
             assertEquals(replyBytes.length, http.getContentLength());

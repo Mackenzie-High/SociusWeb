@@ -16,47 +16,46 @@
 package com.mackenziehigh.socius.web;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Verify;
 import com.google.common.collect.Maps;
-import com.google.common.net.MediaType;
+import com.google.protobuf.ByteString;
 import com.mackenziehigh.cascade.Cascade;
-import com.mackenziehigh.cascade.Cascade.Stage;
 import com.mackenziehigh.cascade.Cascade.Stage.Actor;
 import com.mackenziehigh.cascade.Cascade.Stage.Actor.Input;
 import com.mackenziehigh.cascade.Cascade.Stage.Actor.Output;
-import com.mackenziehigh.socius.web.web_m.HttpHeader;
 import com.mackenziehigh.socius.web.web_m.HttpRequest;
+import com.mackenziehigh.socius.web.web_m.WebSocketRequest;
+import com.mackenziehigh.socius.web.web_m.WebSocketResponse;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.handler.codec.http.HttpHeaders.Names;
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
-import io.netty.handler.codec.http.HttpResponseStatus;
-import static io.netty.handler.codec.http.HttpResponseStatus.INTERNAL_SERVER_ERROR;
-import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
+import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.PingWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.PongWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
+import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import java.time.Duration;
-import java.time.Instant;
+import java.net.URISyntaxException;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.PriorityQueue;
-import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
@@ -66,9 +65,9 @@ import org.apache.logging.log4j.Logger;
 /**
  * A experimental non-blocking HTTP server based on the Netty framework.
  */
-public final class WebServer
+public final class SocketServer
 {
-    private static final Logger logger = LogManager.getLogger(WebServer.class);
+    private static final Logger logger = LogManager.getLogger(SocketServer.class);
 
     /**
      * This counter is used to assign sequence-numbers to requests.
@@ -101,11 +100,6 @@ public final class WebServer
     private final int port;
 
     /**
-     * Connections will be closed, if a response is not received within this timeout.
-     */
-    private final Duration responseTimeout;
-
-    /**
      * HTTP Chunk Aggregation Limit.
      */
     private final int aggregationCapacity;
@@ -133,7 +127,7 @@ public final class WebServer
      * and needs to have low latency, the server will have its own dedicated stage.
      * </p>
      */
-    private final Stage stage = Cascade.newStage();
+    private final Cascade.Stage stage = Cascade.newStage();
 
     /**
      * This map maps correlation UUIDs of requests to consumer functions
@@ -147,35 +141,29 @@ public final class WebServer
     private final Map<String, Connection> connections = Maps.newConcurrentMap();
 
     /**
-     * This queue is used to remove connections from the map of connections.
-     */
-    private final Queue<Connection> responseTimeoutQueue = new PriorityQueue<>();
-
-    /**
      * This processor will be used to send HTTP requests out of the server,
      * so that external handler actors can process the requests.
      */
-    private final Actor<web_m.HttpRequest, web_m.HttpRequest> requestsOut;
+    private final Actor<WebSocketRequest, WebSocketRequest> requestsOut;
 
     /**
      * This processor will receive the HTTP responses from the external actors
      * and then will route those responses to the originating connection.
      */
-    private final Actor<web_m.HttpResponse, web_m.HttpResponse> responsesIn;
+    private final Actor<WebSocketResponse, WebSocketResponse> responsesIn;
 
     /**
      * Sole Constructor.
      *
      * @param builder contains the initial server settings.
      */
-    private WebServer (final Builder builder)
+    private SocketServer (final Builder builder)
     {
         this.host = builder.host;
         this.port = builder.port;
         this.aggregationCapacity = builder.aggregationCapacity;
         this.serverName = builder.serverName;
         this.replyTo = builder.replyTo;
-        this.responseTimeout = builder.responseTimeout;
         this.requestsOut = stage.newActor().withScript(this::onRequest).create();
         this.responsesIn = stage.newActor().withScript(this::onResponse).create();
     }
@@ -241,17 +229,6 @@ public final class WebServer
     }
 
     /**
-     * Get the maximum amount of time the server will wait for a response,
-     * before the connection is closed without sending a response.
-     *
-     * @return the connection timeout.
-     */
-    public Duration getResponseTimeout ()
-    {
-        return responseTimeout;
-    }
-
-    /**
      * Get the size of the buffer used to join chunked messages into one.
      *
      * @return the approximate maximum size of a request.
@@ -276,7 +253,7 @@ public final class WebServer
      *
      * @return the connection.
      */
-    public Output<web_m.HttpRequest> requestsOut ()
+    public Output<WebSocketRequest> requestsOut ()
     {
         return requestsOut.output();
     }
@@ -296,7 +273,7 @@ public final class WebServer
      *
      * @return the connection.
      */
-    public Input<web_m.HttpResponse> responsesIn ()
+    public Input<WebSocketResponse> responsesIn ()
     {
         return responsesIn.input();
     }
@@ -310,7 +287,7 @@ public final class WebServer
      *
      * @return this.
      */
-    public WebServer start ()
+    public SocketServer start ()
     {
         if (started.compareAndSet(false, true))
         {
@@ -331,7 +308,7 @@ public final class WebServer
      * @return this.
      * @throws java.lang.InterruptedException
      */
-    public WebServer stop ()
+    public SocketServer stop ()
             throws InterruptedException
     {
         if (stopped.compareAndSet(false, true))
@@ -346,33 +323,27 @@ public final class WebServer
         return this;
     }
 
-    /**
-     * Server Main.
-     */
     private void run ()
     {
+        // Configure the server.
         final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         final EventLoopGroup workerGroup = new NioEventLoopGroup();
         try
         {
-            Runtime.getRuntime().addShutdownHook(new Thread(this::onShutdown));
-
-            final Thread thread = new Thread(this::prunePendingResponses);
-            thread.setDaemon(true);
-            thread.start();
-
-            final ServerBootstrap b = new ServerBootstrap();
+            ServerBootstrap b = new ServerBootstrap();
+            b.option(ChannelOption.SO_BACKLOG, 1024);
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
-                    .childHandler(new Initializer());
+                    .childHandler(new HTTPInitializer());
 
-            shutdownHook = b.bind(host, port).sync();
-            shutdownHook.channel().closeFuture().sync();
+            Channel ch = b.bind(host, port).sync().channel();
+
+            ch.closeFuture().sync();
         }
-        catch (InterruptedException ex)
+        catch (InterruptedException e)
         {
-            logger.catching(ex);
+            e.printStackTrace();
         }
         finally
         {
@@ -381,66 +352,22 @@ public final class WebServer
         }
     }
 
-    private void onShutdown ()
+    private WebSocketRequest onRequest (final WebSocketRequest message)
     {
-        try
-        {
-            stop();
-        }
-        catch (InterruptedException ex)
-        {
-            logger.error(ex);
-        }
+        return message;
     }
 
-    private web_m.HttpRequest onRequest (final web_m.HttpRequest request)
-    {
-        return request;
-    }
-
-    private void onResponse (final web_m.HttpResponse response)
-    {
-        routeResponse(response);
-    }
-
-    /**
-     * This actor receives the HTTP Responses from the external handlers connected to this server,
-     * routes them to the appropriate client-server connection, and then transmits them via Netty.
-     *
-     * @param response needs to be send to a client.
-     */
-    private void routeResponse (final web_m.HttpResponse response)
+    private void onResponse (final WebSocketResponse message)
     {
         /**
-         * Get the Correlation-ID that allows us to map responses to requests.
-         * Whoever created the response should have included the Correlation-ID.
-         * If they did not, they may have implicitly included it, by including the request itself.
+         * The message is supposed to contain the Correlation-ID of the connection.
+         * Use the Correlation-ID in order to lookup the corresponding collection.
+         * If no Correlation-ID is present, then simply ignore the message,
+         * because there is nothing that we can really do in this situation.
+         * If no connection is present with the given Correlation-ID,
+         * then ignore the message, because the connection has already closed.
          */
-        final String correlationId;
-
-        if (response.hasCorrelationId())
-        {
-            correlationId = response.getCorrelationId();
-        }
-        else if (response.hasRequest() && response.getRequest().hasCorrelationId())
-        {
-            correlationId = response.getRequest().getCorrelationId();
-        }
-        else
-        {
-            /**
-             * No Correlation-ID is present.
-             * Therefore, we will not be able to find the relevant client-server connection.
-             * Drop the response silently.
-             */
-            return;
-        }
-
-        /**
-         * This consumer will take the response and send it to the client.
-         * This consumer is a one-shot operation.
-         */
-        final Connection connection = connections.get(correlationId);
+        final Connection connection = message.hasCorrelationId() ? connections.get(message.getCorrelationId()) : null;
 
         if (connection == null)
         {
@@ -448,236 +375,234 @@ public final class WebServer
         }
 
         /**
-         * Send the HTTP Response to the client, if they are still connected.
+         * If the message contains binary data to send to the client,
+         * then send that data to the client immediately.
          */
-        connection.send(response);
-    }
-
-    private void prunePendingResponses ()
-    {
-        while (responseTimeoutQueue.isEmpty() == false)
+        if (message.hasData() && message.getData().hasBlob())
         {
-            final Connection conn = responseTimeoutQueue.peek();
+            connection.onBlobFromServer(message);
+        }
 
-            if (conn.timeout.isBefore(Instant.now().minus(responseTimeout)))
-            {
-                conn.close();
-            }
-            else
-            {
-                break;
-            }
+        /**
+         * If the message contains textual data to send to the client,
+         * then send that data to the client immediately.
+         */
+        if (message.hasData() && message.getData().hasText())
+        {
+            connection.onTextFromServer(message);
+        }
+
+        /**
+         * If the server-side wants the web-socket to be closed now,
+         * then go ahead and close the web-socket immediately.
+         */
+        if (message.hasClose())
+        {
+            connection.onCloseFromServer();
         }
     }
 
-    /**
-     * Logic to setup the Netty pipeline to handle a <b>single</b> connection.
-     *
-     * <p>
-     * The logic herein is executed whenever a new connection is established!
-     * </p>
-     */
-    private final class Initializer
+    private final class HTTPInitializer
             extends ChannelInitializer<SocketChannel>
     {
+
         @Override
         protected void initChannel (final SocketChannel channel)
-                throws Exception
         {
             channel.pipeline().addLast(new HttpResponseEncoder());
             channel.pipeline().addLast(new HttpRequestDecoder()); // TODO: Args?
             channel.pipeline().addLast(new HttpObjectAggregator(aggregationCapacity, true));
-            channel.pipeline().addLast(new HttpHandler());
+            channel.pipeline().addLast("httpHandler", new HttpServerHandler());
         }
-
     }
 
-    /**
-     * An instance of this class will be used to translate
-     * an incoming HTTP Request into a Protocol Buffer
-     * and then send the Protocol Buffer to external handlers.
-     *
-     * <p>
-     * A new instance of this class will be created per connection!
-     * </p>
-     */
-    private final class HttpHandler
-            extends SimpleChannelInboundHandler<Object>
+    private final class HttpServerHandler
+            extends ChannelInboundHandlerAdapter
     {
-        @Override
-        public void channelReadComplete (final ChannelHandlerContext ctx)
-                throws Exception
-        {
-            ctx.flush();
-        }
 
+//        WebSocketServerHandshaker handshaker;
         @Override
-        protected void channelRead0 (final ChannelHandlerContext ctx,
-                                     final Object msg)
-                throws Exception
+        public void channelRead (final ChannelHandlerContext ctx,
+                                 final Object msg)
+                throws URISyntaxException
         {
+
             if (msg instanceof FullHttpRequest)
             {
-                final FullHttpRequest fullMsg = (FullHttpRequest) msg;
-                final long sequenceNumber = seqnum.incrementAndGet();
-                final HttpRequest encodedRequest = HttpRequestEncoder.encode(fullMsg, serverName, serverId, replyTo, sequenceNumber);
-                final String correlationId = encodedRequest.getCorrelationId();
+                final FullHttpRequest httpRequest = (FullHttpRequest) msg;
 
-                /**
-                 * Create the response handler that will be used to route
-                 * the corresponding HTTP Response, if and when it occurs.
-                 */
-                Verify.verify(connections.containsKey(correlationId) == false);
-                final Connection connection = new Connection(correlationId, Instant.now(), ctx);
-                responseTimeoutQueue.add(connection);
-                connections.put(correlationId, connection);
+                final HttpHeaders headers = httpRequest.headers();
+                System.out.println("Connection : " + headers.get("Connection"));
+                System.out.println("Upgrade : " + headers.get("Upgrade"));
 
-                /**
-                 * Send the HTTP Request to the external actors,
-                 * so they can form an HTTP Response.
-                 */
-                requestsOut.input().send(encodedRequest);
-            }
-        }
-
-        @Override
-        public void exceptionCaught (final ChannelHandlerContext ctx,
-                                     final Throwable cause)
-                throws Exception
-        {
-            /**
-             * Log the exception.
-             */
-            logger.warn(cause);
-
-            /**
-             * Notify the client of the error, but do not tell them why (for security).
-             */
-            final FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, INTERNAL_SERVER_ERROR);
-
-            /**
-             * Send the response to the client.
-             */
-            ctx.writeAndFlush(response);
-
-            /**
-             * Close the connection.
-             */
-            ctx.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
-        }
-
-    }
-
-    /**
-     * Representation of client-server connection.
-     */
-    private final class Connection
-            implements Comparable<Connection>
-    {
-        public final Instant timeout;
-
-        public final ChannelHandlerContext ctx;
-
-        public final String correlationId;
-
-        private final AtomicBoolean sent = new AtomicBoolean();
-
-        private final AtomicBoolean closed = new AtomicBoolean();
-
-        public Connection (final String correlationId,
-                           final Instant timeout,
-                           final ChannelHandlerContext context)
-        {
-
-            this.correlationId = correlationId;
-            this.timeout = timeout;
-            this.ctx = context;
-        }
-
-        @Override
-        public int compareTo (final Connection other)
-        {
-            return timeout.compareTo(other.timeout);
-        }
-
-        public void send (final web_m.HttpResponse encodedResponse)
-        {
-            /**
-             * Sending a response is a one-shot operation.
-             * Do not allow duplicate responses.
-             */
-            if (sent.compareAndSet(false, true) == false)
-            {
-                return;
-            }
-
-            /**
-             * Decode the body.
-             */
-            final ByteBuf body = Unpooled.copiedBuffer(encodedResponse.getBody().asReadOnlyByteBuffer());
-
-            /**
-             * Decode the HTTP status code.
-             */
-            final HttpResponseStatus status = encodedResponse.hasStatus()
-                    ? HttpResponseStatus.valueOf(encodedResponse.getStatus())
-                    : HttpResponseStatus.OK;
-
-            /**
-             * Create the response.
-             */
-            final FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, status, body);
-
-            /**
-             * Decode the headers.
-             */
-            for (Entry<String, HttpHeader> header : encodedResponse.getHeadersMap().entrySet())
-            {
-                response.headers().add(header.getKey(), header.getValue().getValuesList());
-            }
-
-            /**
-             * Decode the content-type.
-             */
-            if (encodedResponse.hasContentType())
-            {
-                response.headers().add(Names.CONTENT_TYPE, encodedResponse.getContentType());
+                if ("Upgrade".equalsIgnoreCase(headers.get(HttpHeaderNames.CONNECTION))
+                    && "WebSocket".equalsIgnoreCase(headers.get(HttpHeaderNames.UPGRADE)))
+                {
+                    final Connection connection = new Connection(ctx, httpRequest);
+                    final WebSocketHandler handler = new WebSocketHandler(connection);
+                    ctx.pipeline().replace(this, "websocketHandler", handler);
+                    handleHandshake(ctx, httpRequest);
+                    connection.open();
+                }
             }
             else
             {
-                response.headers().add(Names.CONTENT_TYPE, MediaType.OCTET_STREAM.toString());
+                System.out.println("Incoming request is unknown");
             }
-
-            /**
-             * Decode the content-length.
-             */
-            response.headers().add(Names.CONTENT_LENGTH, encodedResponse.getBody().size());
-
-            /**
-             * Send the response to the client.
-             */
-            ctx.writeAndFlush(response);
-
-            /**
-             * Close the connection.
-             */
-            close();
         }
 
-        public void close ()
+        /* Do the handshaking for WebSocket request */
+        protected void handleHandshake (ChannelHandlerContext ctx,
+                                        FullHttpRequest req)
         {
-            /**
-             * Release this connection.
-             */
-            connections.remove(correlationId);
+            // TODO: Args
+            final WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(getWebSocketURL(req), null, true);
+            final WebSocketServerHandshaker handshaker = wsFactory.newHandshaker(req);
 
-            /**
-             * Formally close the connection.
-             */
-            if (closed.compareAndSet(false, true))
+            if (handshaker == null)
             {
-                ctx.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
+                WebSocketServerHandshakerFactory.sendUnsupportedVersionResponse(ctx.channel());
             }
+            else
+            {
+                handshaker.handshake(ctx.channel(), req);
+            }
+        }
+
+        protected String getWebSocketURL (FullHttpRequest req)
+        {
+            System.out.println("Req URI : " + req.getUri());
+            String url = "ws://" + req.headers().get("Host") + req.getUri();
+            System.out.println("Constructed URL : " + url);
+            return url;
+        }
+    }
+
+    private final class WebSocketHandler
+            extends ChannelInboundHandlerAdapter
+    {
+
+        private final Connection connection;
+
+        public WebSocketHandler (final Connection connection)
+        {
+            this.connection = connection;
+        }
+
+        @Override
+        public void channelRead (final ChannelHandlerContext ctx,
+                                 final Object msg)
+        {
+            if (msg instanceof BinaryWebSocketFrame)
+            {
+                connection.onBlobFromClient((BinaryWebSocketFrame) msg);
+            }
+            else if (msg instanceof TextWebSocketFrame)
+            {
+                connection.onTextFromClient((TextWebSocketFrame) msg);
+            }
+            else if (msg instanceof PingWebSocketFrame)
+            {
+                connection.onPing((PingWebSocketFrame) msg);
+            }
+            else if (msg instanceof PongWebSocketFrame)
+            {
+                connection.onPong((PongWebSocketFrame) msg);
+            }
+            else if (msg instanceof CloseWebSocketFrame)
+            {
+                connection.onCloseFromClient((CloseWebSocketFrame) msg);
+            }
+            else
+            {
+                System.out.println("Unsupported WebSocketFrame");
+            }
+        }
+    }
+
+    private final class Connection
+    {
+        public final UUID correlationId = UUID.randomUUID();
+
+        public final String correlationIdAsString = correlationId.toString();
+
+        private final ChannelHandlerContext context;
+
+        private final HttpRequest httpRequest;
+
+        public Connection (final ChannelHandlerContext context,
+                           final FullHttpRequest fullHttpRequest)
+                throws URISyntaxException
+        {
+            this.context = context;
+            final long sequenceNumber = seqnum.incrementAndGet();
+            this.httpRequest = HttpRequestEncoder.encode(fullHttpRequest, serverName, serverId, replyTo, sequenceNumber);
+        }
+
+        public void open ()
+        {
+            connections.put(correlationIdAsString, this);
+        }
+
+        public void onTextFromServer (final WebSocketResponse message)
+        {
+            final TextWebSocketFrame frame = new TextWebSocketFrame(message.getData().getText());
+            context.writeAndFlush(frame);
+        }
+
+        public void onBlobFromServer (final WebSocketResponse message)
+        {
+            final ByteBuf blob = Unpooled.copiedBuffer(message.getData().getBlob().toByteArray());
+            final BinaryWebSocketFrame frame = new BinaryWebSocketFrame(blob);
+            context.writeAndFlush(frame);
+        }
+
+        public void onTextFromClient (final TextWebSocketFrame message)
+        {
+            final WebSocketRequest.Builder builder = WebSocketRequest.newBuilder();
+            builder.setCorrelationId(correlationIdAsString);
+            builder.setSequenceNumber(seqnum.incrementAndGet());
+            builder.setServerId(serverId);
+            builder.setServerName(serverName);
+            builder.setReplyTo(replyTo);
+            builder.setTimestamp(System.currentTimeMillis());
+            builder.setRequest(httpRequest);
+            builder.setData(web_m.DataFrame.newBuilder().setText(message.text()));
+            requestsOut.accept(builder.build());
+        }
+
+        public void onBlobFromClient (final BinaryWebSocketFrame message)
+        {
+            final WebSocketRequest.Builder builder = WebSocketRequest.newBuilder();
+            builder.setCorrelationId(correlationIdAsString);
+            builder.setSequenceNumber(seqnum.incrementAndGet());
+            builder.setServerId(serverId);
+            builder.setServerName(serverName);
+            builder.setReplyTo(replyTo);
+            builder.setTimestamp(System.currentTimeMillis());
+            builder.setRequest(httpRequest);
+            final ByteString data = ByteString.copyFrom(message.content().nioBuffer());
+            builder.setData(web_m.DataFrame.newBuilder().setBlob(data));
+            requestsOut.accept(builder.build());
+        }
+
+        public void onPing (final PingWebSocketFrame message)
+        {
+        }
+
+        public void onPong (final PongWebSocketFrame message)
+        {
+        }
+
+        public void onCloseFromClient (final CloseWebSocketFrame message)
+        {
+            // reason and status code
+            connections.remove(correlationId);
+        }
+
+        public void onCloseFromServer ()
+        {
+            connections.remove(correlationId);
         }
     }
 
@@ -686,7 +611,7 @@ public final class WebServer
      *
      * @return a builder that can build a web-server.
      */
-    public static Builder newWebServer ()
+    public static Builder newSocketServer ()
     {
         return new Builder();
     }
@@ -705,8 +630,6 @@ public final class WebServer
         private int port = 8080;
 
         private int aggregationCapacity = 65536;
-
-        private Duration responseTimeout = Duration.ofSeconds(60);
 
         private Builder ()
         {
@@ -751,18 +674,6 @@ public final class WebServer
         }
 
         /**
-         * Connections will be closed automatically, if a response exceeds this timeout.
-         *
-         * @param timeout is the maximum amount of time allowed for a response.
-         * @return this.
-         */
-        public Builder withResponseTimeout (final Duration timeout)
-        {
-            responseTimeout = Objects.requireNonNull(timeout, "timeout");
-            return this;
-        }
-
-        /**
          * Specify the host that the server will listen on.
          *
          * @param host is a host-name or IP address.
@@ -791,10 +702,29 @@ public final class WebServer
          *
          * @return the new web-server.
          */
-        public WebServer build ()
+        public SocketServer build ()
         {
-            final WebServer server = new WebServer(this);
+            final SocketServer server = new SocketServer(this);
             return server;
         }
+    }
+
+    public static void main (String[] args)
+    {
+        final SocketServer server = SocketServer.newSocketServer().withPort(9000).build().start();
+
+        final Actor<WebSocketRequest, WebSocketResponse> actor = server.stage.newActor().withScript(SocketServer::actor).create();
+
+        server.requestsOut().connect(actor.input());
+        server.responsesIn().connect(actor.output());
+    }
+
+    private static WebSocketResponse actor (final WebSocketRequest msg)
+    {
+        final WebSocketResponse.Builder resp = WebSocketResponse.newBuilder();
+        resp.setCorrelationId(msg.getCorrelationId());
+        resp.setData(web_m.DataFrame.newBuilder().setText(msg.toString()));
+        resp.setClose(false);
+        return resp.build();
     }
 }
