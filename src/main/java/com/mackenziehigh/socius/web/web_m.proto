@@ -100,7 +100,7 @@ message HttpRequest
     map<string, HttpQueryParameter> parameters = 14;
 
     /**
-     * Raw HTTP Headers.
+     * HTTP Headers.
      */
     map<string, HttpHeader> headers = 15;
 

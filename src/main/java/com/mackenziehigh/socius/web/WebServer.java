@@ -16,50 +16,28 @@
 package com.mackenziehigh.socius.web;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Verify;
-import com.google.common.collect.Maps;
-import com.google.common.net.MediaType;
+import com.google.protobuf.ByteString;
 import com.mackenziehigh.cascade.Cascade;
-import com.mackenziehigh.cascade.Cascade.Stage;
-import com.mackenziehigh.cascade.Cascade.Stage.Actor;
 import com.mackenziehigh.cascade.Cascade.Stage.Actor.Input;
 import com.mackenziehigh.cascade.Cascade.Stage.Actor.Output;
-import com.mackenziehigh.socius.web.web_m.HttpHeader;
 import com.mackenziehigh.socius.web.web_m.HttpRequest;
+import com.mackenziehigh.socius.web.web_m.HttpResponse;
+import com.mackenziehigh.socius.web.web_m.WebSocketRequest;
+import com.mackenziehigh.socius.web.web_m.WebSocketResponse;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.http.DefaultFullHttpResponse;
-import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.handler.codec.http.HttpHeaders.Names;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
-import io.netty.handler.codec.http.HttpResponseStatus;
-import static io.netty.handler.codec.http.HttpResponseStatus.INTERNAL_SERVER_ERROR;
-import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
-import io.netty.handler.logging.LogLevel;
-import io.netty.handler.logging.LoggingHandler;
 import java.time.Duration;
-import java.time.Instant;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.UUID;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -70,45 +48,7 @@ public final class WebServer
 {
     private static final Logger logger = LogManager.getLogger(WebServer.class);
 
-    /**
-     * This counter is used to assign sequence-numbers to requests.
-     */
-    private final AtomicLong seqnum = new AtomicLong();
-
-    /**
-     * This is the human-readable name of this server to embed in requests.
-     */
-    private final String serverName;
-
-    /**
-     * This is the UUID of this server lifetime to embed in requests.
-     */
-    private final String serverId = UUID.randomUUID().toString();
-
-    /**
-     * This user-defined value will be embedded in requests.
-     */
-    private final String replyTo;
-
-    /**
-     * This is the host that the server will listen on.
-     */
-    private final String host;
-
-    /**
-     * This is the port that the server will listen on.
-     */
-    private final int port;
-
-    /**
-     * Connections will be closed, if a response is not received within this timeout.
-     */
-    private final Duration responseTimeout;
-
-    /**
-     * HTTP Chunk Aggregation Limit.
-     */
-    private final int aggregationCapacity;
+    private final SharedState shared;
 
     /**
      * This flag will be set to true, when start() is called.
@@ -126,58 +66,19 @@ public final class WebServer
     private volatile ChannelFuture shutdownHook;
 
     /**
-     * This stage is used to create private actors herein.
-     *
-     * <p>
-     * Since a server is an I/O end-point, is expected to have high throughput,
-     * and needs to have low latency, the server will have its own dedicated stage.
-     * </p>
-     */
-    private final Stage stage = Cascade.newStage();
-
-    /**
-     * This map maps correlation UUIDs of requests to consumer functions
-     * that will be used to process the corresponding responses.
-     *
-     * <p>
-     * Entries are added to this map whenever an HTTP request is processed.
-     * Entries are lazily removed from this map, if they have been there too long.
-     * </p>
-     */
-    private final Map<String, Connection> connections = Maps.newConcurrentMap();
-
-    /**
-     * This queue is used to remove connections from the map of connections.
-     */
-    private final Queue<Connection> responseTimeoutQueue = new PriorityQueue<>();
-
-    /**
-     * This processor will be used to send HTTP requests out of the server,
-     * so that external handler actors can process the requests.
-     */
-    private final Actor<web_m.HttpRequest, web_m.HttpRequest> requestsOut;
-
-    /**
-     * This processor will receive the HTTP responses from the external actors
-     * and then will route those responses to the originating connection.
-     */
-    private final Actor<web_m.HttpResponse, web_m.HttpResponse> responsesIn;
-
-    /**
      * Sole Constructor.
      *
      * @param builder contains the initial server settings.
      */
     private WebServer (final Builder builder)
     {
-        this.host = builder.host;
-        this.port = builder.port;
-        this.aggregationCapacity = builder.aggregationCapacity;
-        this.serverName = builder.serverName;
-        this.replyTo = builder.replyTo;
-        this.responseTimeout = builder.responseTimeout;
-        this.requestsOut = stage.newActor().withScript(this::onRequest).create();
-        this.responsesIn = stage.newActor().withScript(this::onResponse).create();
+        this.shared = new SharedState(Executors.newScheduledThreadPool(1),
+                                      builder.serverName,
+                                      builder.replyTo,
+                                      builder.host,
+                                      builder.port,
+                                      builder.responseTimeout,
+                                      builder.aggregationCapacity);
     }
 
     /**
@@ -185,9 +86,9 @@ public final class WebServer
      *
      * @return the current sequence-number.
      */
-    public long getSeqnum ()
+    public long getSequenceCount ()
     {
-        return seqnum.get();
+        return shared.sequenceNumber.get();
     }
 
     /**
@@ -197,7 +98,7 @@ public final class WebServer
      */
     public String getServerName ()
     {
-        return serverName;
+        return shared.serverName;
     }
 
     /**
@@ -207,7 +108,7 @@ public final class WebServer
      */
     public String getServerId ()
     {
-        return serverId;
+        return shared.serverId;
     }
 
     /**
@@ -217,7 +118,7 @@ public final class WebServer
      */
     public String getReplyTo ()
     {
-        return replyTo;
+        return shared.replyTo;
     }
 
     /**
@@ -227,7 +128,7 @@ public final class WebServer
      */
     public String getHost ()
     {
-        return host;
+        return shared.host;
     }
 
     /**
@@ -237,7 +138,7 @@ public final class WebServer
      */
     public int getPort ()
     {
-        return port;
+        return shared.port;
     }
 
     /**
@@ -248,7 +149,7 @@ public final class WebServer
      */
     public Duration getResponseTimeout ()
     {
-        return responseTimeout;
+        return shared.responseTimeout;
     }
 
     /**
@@ -258,7 +159,7 @@ public final class WebServer
      */
     public int getAggregationCapacity ()
     {
-        return aggregationCapacity;
+        return shared.aggregationCapacity;
     }
 
     /**
@@ -268,7 +169,8 @@ public final class WebServer
      */
     public int getConnectionCount ()
     {
-        return connections.size();
+//        return connections.size();
+        return 0; // TODO
     }
 
     /**
@@ -276,9 +178,9 @@ public final class WebServer
      *
      * @return the connection.
      */
-    public Output<web_m.HttpRequest> requestsOut ()
+    public Output<HttpRequest> requestsOut ()
     {
-        return requestsOut.output();
+        return shared.http.requestsOut.output();
     }
 
     /**
@@ -296,9 +198,39 @@ public final class WebServer
      *
      * @return the connection.
      */
-    public Input<web_m.HttpResponse> responsesIn ()
+    public Input<HttpResponse> responsesIn ()
     {
-        return responsesIn.input();
+        return shared.http.responsesIn.input();
+    }
+
+    /*
+     * Use this connection to receive HTTP Requests from this HTTP server.
+     *
+     * @return the connection.
+     */
+    public Output<WebSocketRequest> socketsOut ()
+    {
+        return shared.socks.requestsOut.output();
+    }
+
+    /**
+     * Use this connection to send HTTP Responses to this HTTP server.
+     *
+     * <p>
+     * If the HTTP Response correlates to an existing live HTTP Request,
+     * then the response will be forwarded to the associated client.
+     * </p>
+     *
+     * <p>
+     * If the HTTP Response does not correlate to an existing live HTTP Request,
+     * then the response will be silently dropped.
+     * </p>
+     *
+     * @return the connection.
+     */
+    public Input<WebSocketResponse> socketsIn ()
+    {
+        return shared.socks.responsesIn.input();
     }
 
     /**
@@ -357,17 +289,12 @@ public final class WebServer
         {
             Runtime.getRuntime().addShutdownHook(new Thread(this::onShutdown));
 
-            final Thread thread = new Thread(this::prunePendingResponses);
-            thread.setDaemon(true);
-            thread.start();
-
             final ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
-                    .handler(new LoggingHandler(LogLevel.INFO))
                     .childHandler(new Initializer());
 
-            shutdownHook = b.bind(host, port).sync();
+            shutdownHook = b.bind(shared.host, shared.port).sync();
             shutdownHook.channel().closeFuture().sync();
         }
         catch (InterruptedException ex)
@@ -393,83 +320,6 @@ public final class WebServer
         }
     }
 
-    private web_m.HttpRequest onRequest (final web_m.HttpRequest request)
-    {
-        return request;
-    }
-
-    private void onResponse (final web_m.HttpResponse response)
-    {
-        routeResponse(response);
-    }
-
-    /**
-     * This actor receives the HTTP Responses from the external handlers connected to this server,
-     * routes them to the appropriate client-server connection, and then transmits them via Netty.
-     *
-     * @param response needs to be send to a client.
-     */
-    private void routeResponse (final web_m.HttpResponse response)
-    {
-        /**
-         * Get the Correlation-ID that allows us to map responses to requests.
-         * Whoever created the response should have included the Correlation-ID.
-         * If they did not, they may have implicitly included it, by including the request itself.
-         */
-        final String correlationId;
-
-        if (response.hasCorrelationId())
-        {
-            correlationId = response.getCorrelationId();
-        }
-        else if (response.hasRequest() && response.getRequest().hasCorrelationId())
-        {
-            correlationId = response.getRequest().getCorrelationId();
-        }
-        else
-        {
-            /**
-             * No Correlation-ID is present.
-             * Therefore, we will not be able to find the relevant client-server connection.
-             * Drop the response silently.
-             */
-            return;
-        }
-
-        /**
-         * This consumer will take the response and send it to the client.
-         * This consumer is a one-shot operation.
-         */
-        final Connection connection = connections.get(correlationId);
-
-        if (connection == null)
-        {
-            return;
-        }
-
-        /**
-         * Send the HTTP Response to the client, if they are still connected.
-         */
-        connection.send(response);
-    }
-
-    private void prunePendingResponses ()
-    {
-        while (responseTimeoutQueue.isEmpty() == false)
-        {
-            final Connection conn = responseTimeoutQueue.peek();
-
-            if (conn.timeout.isBefore(Instant.now().minus(responseTimeout)))
-            {
-                conn.close();
-            }
-            else
-            {
-                break;
-            }
-        }
-    }
-
     /**
      * Logic to setup the Netty pipeline to handle a <b>single</b> connection.
      *
@@ -482,202 +332,11 @@ public final class WebServer
     {
         @Override
         protected void initChannel (final SocketChannel channel)
-                throws Exception
         {
             channel.pipeline().addLast(new HttpResponseEncoder());
             channel.pipeline().addLast(new HttpRequestDecoder()); // TODO: Args?
-            channel.pipeline().addLast(new HttpObjectAggregator(aggregationCapacity, true));
-            channel.pipeline().addLast(new HttpHandler());
-        }
-
-    }
-
-    /**
-     * An instance of this class will be used to translate
-     * an incoming HTTP Request into a Protocol Buffer
-     * and then send the Protocol Buffer to external handlers.
-     *
-     * <p>
-     * A new instance of this class will be created per connection!
-     * </p>
-     */
-    private final class HttpHandler
-            extends SimpleChannelInboundHandler<Object>
-    {
-        @Override
-        public void channelReadComplete (final ChannelHandlerContext ctx)
-                throws Exception
-        {
-            ctx.flush();
-        }
-
-        @Override
-        protected void channelRead0 (final ChannelHandlerContext ctx,
-                                     final Object msg)
-                throws Exception
-        {
-            if (msg instanceof FullHttpRequest)
-            {
-                final FullHttpRequest fullMsg = (FullHttpRequest) msg;
-                final long sequenceNumber = seqnum.incrementAndGet();
-                final HttpRequest encodedRequest = HttpRequestEncoder.encode(fullMsg, serverName, serverId, replyTo, sequenceNumber);
-                final String correlationId = encodedRequest.getCorrelationId();
-
-                /**
-                 * Create the response handler that will be used to route
-                 * the corresponding HTTP Response, if and when it occurs.
-                 */
-                Verify.verify(connections.containsKey(correlationId) == false);
-                final Connection connection = new Connection(correlationId, Instant.now(), ctx);
-                responseTimeoutQueue.add(connection);
-                connections.put(correlationId, connection);
-
-                /**
-                 * Send the HTTP Request to the external actors,
-                 * so they can form an HTTP Response.
-                 */
-                requestsOut.input().send(encodedRequest);
-            }
-        }
-
-        @Override
-        public void exceptionCaught (final ChannelHandlerContext ctx,
-                                     final Throwable cause)
-                throws Exception
-        {
-            /**
-             * Log the exception.
-             */
-            logger.warn(cause);
-
-            /**
-             * Notify the client of the error, but do not tell them why (for security).
-             */
-            final FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, INTERNAL_SERVER_ERROR);
-
-            /**
-             * Send the response to the client.
-             */
-            ctx.writeAndFlush(response);
-
-            /**
-             * Close the connection.
-             */
-            ctx.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
-        }
-
-    }
-
-    /**
-     * Representation of client-server connection.
-     */
-    private final class Connection
-            implements Comparable<Connection>
-    {
-        public final Instant timeout;
-
-        public final ChannelHandlerContext ctx;
-
-        public final String correlationId;
-
-        private final AtomicBoolean sent = new AtomicBoolean();
-
-        private final AtomicBoolean closed = new AtomicBoolean();
-
-        public Connection (final String correlationId,
-                           final Instant timeout,
-                           final ChannelHandlerContext context)
-        {
-
-            this.correlationId = correlationId;
-            this.timeout = timeout;
-            this.ctx = context;
-        }
-
-        @Override
-        public int compareTo (final Connection other)
-        {
-            return timeout.compareTo(other.timeout);
-        }
-
-        public void send (final web_m.HttpResponse encodedResponse)
-        {
-            /**
-             * Sending a response is a one-shot operation.
-             * Do not allow duplicate responses.
-             */
-            if (sent.compareAndSet(false, true) == false)
-            {
-                return;
-            }
-
-            /**
-             * Decode the body.
-             */
-            final ByteBuf body = Unpooled.copiedBuffer(encodedResponse.getBody().asReadOnlyByteBuffer());
-
-            /**
-             * Decode the HTTP status code.
-             */
-            final HttpResponseStatus status = encodedResponse.hasStatus()
-                    ? HttpResponseStatus.valueOf(encodedResponse.getStatus())
-                    : HttpResponseStatus.OK;
-
-            /**
-             * Create the response.
-             */
-            final FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, status, body);
-
-            /**
-             * Decode the headers.
-             */
-            for (Entry<String, HttpHeader> header : encodedResponse.getHeadersMap().entrySet())
-            {
-                response.headers().add(header.getKey(), header.getValue().getValuesList());
-            }
-
-            /**
-             * Decode the content-type.
-             */
-            if (encodedResponse.hasContentType())
-            {
-                response.headers().add(Names.CONTENT_TYPE, encodedResponse.getContentType());
-            }
-            else
-            {
-                response.headers().add(Names.CONTENT_TYPE, MediaType.OCTET_STREAM.toString());
-            }
-
-            /**
-             * Decode the content-length.
-             */
-            response.headers().add(Names.CONTENT_LENGTH, encodedResponse.getBody().size());
-
-            /**
-             * Send the response to the client.
-             */
-            ctx.writeAndFlush(response);
-
-            /**
-             * Close the connection.
-             */
-            close();
-        }
-
-        public void close ()
-        {
-            /**
-             * Release this connection.
-             */
-            connections.remove(correlationId);
-
-            /**
-             * Formally close the connection.
-             */
-            if (closed.compareAndSet(false, true))
-            {
-                ctx.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
-            }
+            channel.pipeline().addLast(new HttpObjectAggregator(shared.aggregationCapacity, true));
+            channel.pipeline().addLast(new ServerHandler(shared));
         }
     }
 
@@ -796,5 +455,44 @@ public final class WebServer
             final WebServer server = new WebServer(this);
             return server;
         }
+    }
+
+    public static void main (String[] args)
+            throws InterruptedException
+    {
+        final Cascade.Stage stage = Cascade.newStage();
+
+        final WebServer server = WebServer
+                .newWebServer()
+                .withResponseTimeout(Duration.ofSeconds(1))
+                .withHost("127.0.0.1")
+                .withPort(8089)
+                .withReplyTo("Mars")
+                .withServerName("Alien")
+                .withAggregationCapacity(1 * 1024 * 1024)
+                .build();
+
+        final Cascade.Stage.Actor<web_m.HttpRequest, web_m.HttpResponse> website = stage.newActor().withScript(WebServer::onRequest).create();
+        server.requestsOut().connect(website.input());
+        server.responsesIn().connect(website.output());
+
+        server.start();
+
+        Thread.sleep(2000);
+    }
+
+    private static HttpResponse onRequest (final web_m.HttpRequest request)
+    {
+        final byte[] bytes = request.toString().getBytes();
+
+        final web_m.HttpResponse response = web_m.HttpResponse
+                .newBuilder()
+                .setRequest(request)
+                .setContentType("text/martian")
+                .setStatus(200)
+                .setBody(ByteString.copyFrom(bytes))
+                .build();
+
+        return response;
     }
 }

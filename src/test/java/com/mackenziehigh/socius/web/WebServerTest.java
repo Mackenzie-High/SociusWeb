@@ -90,7 +90,7 @@ public final class WebServerTest
         assertEquals("Mars", server.getReplyTo());
         assertEquals(36, server.getServerId().length());
         assertEquals(0, server.getConnectionCount());
-        assertEquals(0, server.getSeqnum());
+        assertEquals(0, server.getSequenceCount());
 
         for (int i = 0; i < 100; i++)
         {
