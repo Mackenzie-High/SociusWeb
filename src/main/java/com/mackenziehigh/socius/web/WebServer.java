@@ -38,6 +38,7 @@ import java.time.Duration;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Predicate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -283,8 +284,8 @@ public final class WebServer
      */
     private void run ()
     {
-        final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
-        final EventLoopGroup workerGroup = new NioEventLoopGroup();
+        final EventLoopGroup bossGroup = new NioEventLoopGroup(2);
+        final EventLoopGroup workerGroup = new NioEventLoopGroup(2);
         try
         {
             Runtime.getRuntime().addShutdownHook(new Thread(this::onShutdown));
@@ -334,7 +335,11 @@ public final class WebServer
         protected void initChannel (final SocketChannel channel)
         {
             channel.pipeline().addLast(new HttpResponseEncoder());
-            channel.pipeline().addLast(new HttpRequestDecoder()); // TODO: Args?
+            channel.pipeline().addLast(new HttpRequestDecoder(shared.maxInitialLineLength,
+                                                              shared.maxHeaderSize,
+                                                              shared.maxChunkSize,
+                                                              shared.validateHeaders));
+//            channel.pipeline().addLast(new HttpPrecheckHandler(shared));
             channel.pipeline().addLast(new HttpObjectAggregator(shared.aggregationCapacity, true));
             channel.pipeline().addLast(new ServerHandler(shared));
         }
@@ -397,15 +402,57 @@ public final class WebServer
         }
 
         /**
-         * Set the maximum capacity of HTTP Chunk Aggregation.
+         * Set the maximum allowed size of any HTTP message.
          *
-         * @param capacity will limit the size of incoming messages.
+         * <p>
+         * For chunked messages, this is the maximum allowed
+         * size of the overall combined message, rather than
+         * the individual chunks.
+         * </p>
+         *
+         * @param limit will limit the size of incoming messages.
          * @return this.
          */
-        public Builder withAggregationCapacity (final int capacity)
+        public Builder withMaxHttpMessageSize (final int limit)
         {
-            Preconditions.checkArgument(capacity >= 0, "capacity < 0");
-            this.aggregationCapacity = capacity;
+            Preconditions.checkArgument(limit >= 0, "limit < 0");
+            this.aggregationCapacity = limit;
+            return this;
+        }
+
+        public Builder withMaxWebSocketMessageSize (final int limit)
+        {
+            return this;
+        }
+
+        public Builder withMaxWebSocketMessageRate (final int limit)
+        {
+            return this;
+        }
+
+        public Builder withMaxConnectionCount (final int soft,
+                                               final int hard)
+        {
+            return this;
+        }
+
+        public Builder withMaxConnectionRate (final int hertz)
+        {
+            return this;
+        }
+
+        public Builder withPrecheckAllow (final Predicate<HttpRequest> condition)
+        {
+            return this;
+        }
+
+        public Builder withPrecheckDeny (final Predicate<HttpRequest> condition)
+        {
+            return this;
+        }
+
+        public Builder withHttpReadTimeout (final Duration timeout)
+        {
             return this;
         }
 
@@ -415,7 +462,7 @@ public final class WebServer
          * @param timeout is the maximum amount of time allowed for a response.
          * @return this.
          */
-        public Builder withResponseTimeout (final Duration timeout)
+        public Builder withHttpResponseTimeout (final Duration timeout)
         {
             responseTimeout = Objects.requireNonNull(timeout, "timeout");
             return this;
@@ -464,12 +511,12 @@ public final class WebServer
 
         final WebServer server = WebServer
                 .newWebServer()
-                .withResponseTimeout(Duration.ofSeconds(1))
+                .withHttpResponseTimeout(Duration.ofSeconds(1))
                 .withHost("127.0.0.1")
                 .withPort(8089)
                 .withReplyTo("Mars")
                 .withServerName("Alien")
-                .withAggregationCapacity(1 * 1024 * 1024)
+                .withMaxHttpMessageSize(1 * 1024 * 1024)
                 .build();
 
         final Cascade.Stage.Actor<web_m.HttpRequest, web_m.HttpResponse> website = stage.newActor().withScript(WebServer::onRequest).create();

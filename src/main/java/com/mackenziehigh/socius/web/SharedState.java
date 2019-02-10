@@ -53,6 +53,14 @@ final class SharedState
      */
     public final int aggregationCapacity;
 
+    public final int maxInitialLineLength = 4096;
+
+    public final int maxHeaderSize = 256 * 256;
+
+    public final int maxChunkSize = 256 * 256;
+
+    public final boolean validateHeaders = true;
+
     public final ConnectorHTTP http;
 
     public final ConnectorWS socks;
