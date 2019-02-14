@@ -1,21 +1,20 @@
-package com.mackenziehigh.socius.web;
+package com.mackenziehigh.socius.web.server;
 
 import com.google.common.base.Verify;
 import com.google.common.collect.Maps;
 import com.mackenziehigh.cascade.Cascade.Stage.Actor;
-import com.mackenziehigh.socius.web.web_m.HttpRequest;
-import com.mackenziehigh.socius.web.web_m.HttpResponse;
+import com.mackenziehigh.socius.web.messages.web_m.HttpRequest;
+import com.mackenziehigh.socius.web.messages.web_m.HttpResponse;
 import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
-final class ConnectorHTTP
+final class Router
 {
-    private final SharedState shared;
-
     /**
      * This map maps correlation UUIDs of requests to consumer functions
      * that will be used to process the corresponding responses.
@@ -44,15 +43,15 @@ final class ConnectorHTTP
      */
     public final Actor<HttpResponse, HttpResponse> responsesIn;
 
-    public ConnectorHTTP (final SharedState shared)
+    public Router (final SharedState shared)
     {
-        this.shared = shared;
+//        this.shared = shared;
         this.requestsOut = shared.stage.newActor().withScript(this::onRequest).create();
         this.responsesIn = shared.stage.newActor().withScript(this::onResponse).create();
     }
 
     public void open (final HttpRequest request,
-                      final OutputConnection<HttpResponse> output)
+                      final Consumer<HttpResponse> callback)
             throws URISyntaxException
     {
         final String correlationId = request.getCorrelationId();
@@ -62,7 +61,7 @@ final class ConnectorHTTP
          * the corresponding HTTP Response, if and when it occurs.
          */
         Verify.verify(connections.containsKey(correlationId) == false);
-        final Conversation connection = new Conversation(correlationId, output);
+        final Conversation connection = new Conversation(correlationId, callback);
         responseTimeoutQueue.add(connection);
         connections.put(correlationId, connection);
 
@@ -160,7 +159,7 @@ final class ConnectorHTTP
     {
         public final Instant timeout = Instant.now();
 
-        public final OutputConnection<HttpResponse> output;
+        public final Consumer<HttpResponse> output;
 
         public final String correlationId;
 
@@ -169,7 +168,7 @@ final class ConnectorHTTP
         private final AtomicBoolean closed = new AtomicBoolean();
 
         public Conversation (final String correlationId,
-                             final OutputConnection<HttpResponse> onResponse)
+                             final Consumer<HttpResponse> onResponse)
         {
 
             this.correlationId = correlationId;
@@ -196,8 +195,7 @@ final class ConnectorHTTP
             /**
              * Send the response to the client and close the connection.
              */
-            output.write(response);
-            output.close();
+            output.accept(response);
         }
     }
 }

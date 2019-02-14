@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mackenziehigh.socius.web;
+package com.mackenziehigh.socius.web.server;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.ByteString;
 import com.mackenziehigh.cascade.Cascade;
 import com.mackenziehigh.cascade.Cascade.Stage.Actor.Input;
 import com.mackenziehigh.cascade.Cascade.Stage.Actor.Output;
-import com.mackenziehigh.socius.web.web_m.HttpRequest;
-import com.mackenziehigh.socius.web.web_m.HttpResponse;
-import com.mackenziehigh.socius.web.web_m.WebSocketRequest;
-import com.mackenziehigh.socius.web.web_m.WebSocketResponse;
+import com.mackenziehigh.socius.web.messages.web_m;
+import com.mackenziehigh.socius.web.messages.web_m.HttpPrefix;
+import com.mackenziehigh.socius.web.messages.web_m.HttpRequest;
+import com.mackenziehigh.socius.web.messages.web_m.HttpResponse;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -35,6 +36,8 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
 import java.time.Duration;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -50,6 +53,15 @@ public final class WebServer
     private static final Logger logger = LogManager.getLogger(WebServer.class);
 
     private final SharedState shared;
+
+    private final ImmutableList<Precheck> prechecks;
+
+    /**
+     * TODO: Make the sequence-numbers increment.
+     */
+    private final Translator translator;
+
+    private final Router router;
 
     /**
      * This flag will be set to true, when start() is called.
@@ -80,6 +92,10 @@ public final class WebServer
                                       builder.port,
                                       builder.responseTimeout,
                                       builder.aggregationCapacity);
+        this.prechecks = ImmutableList.copyOf(builder.checks);
+
+        this.translator = new Translator(shared.serverName, shared.serverId, shared.replyTo);
+        this.router = new Router(shared);
     }
 
     /**
@@ -181,7 +197,7 @@ public final class WebServer
      */
     public Output<HttpRequest> requestsOut ()
     {
-        return shared.http.requestsOut.output();
+        return router.requestsOut.output();
     }
 
     /**
@@ -201,37 +217,7 @@ public final class WebServer
      */
     public Input<HttpResponse> responsesIn ()
     {
-        return shared.http.responsesIn.input();
-    }
-
-    /*
-     * Use this connection to receive HTTP Requests from this HTTP server.
-     *
-     * @return the connection.
-     */
-    public Output<WebSocketRequest> socketsOut ()
-    {
-        return shared.socks.requestsOut.output();
-    }
-
-    /**
-     * Use this connection to send HTTP Responses to this HTTP server.
-     *
-     * <p>
-     * If the HTTP Response correlates to an existing live HTTP Request,
-     * then the response will be forwarded to the associated client.
-     * </p>
-     *
-     * <p>
-     * If the HTTP Response does not correlate to an existing live HTTP Request,
-     * then the response will be silently dropped.
-     * </p>
-     *
-     * @return the connection.
-     */
-    public Input<WebSocketResponse> socketsIn ()
-    {
-        return shared.socks.responsesIn.input();
+        return router.responsesIn.input();
     }
 
     /**
@@ -334,14 +320,18 @@ public final class WebServer
         @Override
         protected void initChannel (final SocketChannel channel)
         {
+            HardTimeout.enforce(shared.service, channel, Duration.ofSeconds(5));
+
             channel.pipeline().addLast(new HttpResponseEncoder());
             channel.pipeline().addLast(new HttpRequestDecoder(shared.maxInitialLineLength,
                                                               shared.maxHeaderSize,
                                                               shared.maxChunkSize,
                                                               shared.validateHeaders));
-//            channel.pipeline().addLast(new HttpPrecheckHandler(shared));
+            channel.pipeline().addLast(new PrecheckHandler(translator, prechecks));
             channel.pipeline().addLast(new HttpObjectAggregator(shared.aggregationCapacity, true));
-            channel.pipeline().addLast(new ServerHandler(shared));
+            channel.pipeline().addLast(new TranslationEncoder(translator));
+            channel.pipeline().addLast(new TranslationDecoder(translator));
+            channel.pipeline().addLast(new RoutingHandler(router));
         }
     }
 
@@ -371,6 +361,8 @@ public final class WebServer
         private int aggregationCapacity = 65536;
 
         private Duration responseTimeout = Duration.ofSeconds(60);
+
+        private final List<Precheck> checks = new LinkedList<>();
 
         private Builder ()
         {
@@ -420,16 +412,6 @@ public final class WebServer
             return this;
         }
 
-        public Builder withMaxWebSocketMessageSize (final int limit)
-        {
-            return this;
-        }
-
-        public Builder withMaxWebSocketMessageRate (final int limit)
-        {
-            return this;
-        }
-
         public Builder withMaxConnectionCount (final int soft,
                                                final int hard)
         {
@@ -441,13 +423,37 @@ public final class WebServer
             return this;
         }
 
-        public Builder withPrecheckAllow (final Predicate<HttpRequest> condition)
+        public Builder withPrecheckAccept ()
         {
+            return withPrecheckAccept(x -> true);
+        }
+
+        public Builder withPrecheckAccept (final Predicate<HttpPrefix> condition)
+        {
+            final Precheck check = msg ->
+            {
+                return condition.test(msg) ? Precheck.Result.ACCEPT : Precheck.Result.FORWARD;
+            };
+
+            checks.add(check);
+
             return this;
         }
 
-        public Builder withPrecheckDeny (final Predicate<HttpRequest> condition)
+        public Builder withPrecheckDeny ()
         {
+            return withPrecheckDeny(x -> true);
+        }
+
+        public Builder withPrecheckDeny (final Predicate<HttpPrefix> condition)
+        {
+            final Precheck check = msg ->
+            {
+                return condition.test(msg) ? Precheck.Result.DENY : Precheck.Result.FORWARD;
+            };
+
+            checks.add(check);
+
             return this;
         }
 
@@ -517,6 +523,8 @@ public final class WebServer
                 .withReplyTo("Mars")
                 .withServerName("Alien")
                 .withMaxHttpMessageSize(1 * 1024 * 1024)
+                .withPrecheckDeny(x -> x.getMethod().equalsIgnoreCase("GET"))
+                .withPrecheckAccept()
                 .build();
 
         final Cascade.Stage.Actor<web_m.HttpRequest, web_m.HttpResponse> website = stage.newActor().withScript(WebServer::onRequest).create();
@@ -531,6 +539,18 @@ public final class WebServer
     private static HttpResponse onRequest (final web_m.HttpRequest request)
     {
         final byte[] bytes = request.toString().getBytes();
+
+        if (request.getPath().contains("/sleep"))
+        {
+            try
+            {
+                Thread.sleep(10_000);
+            }
+            catch (InterruptedException ex)
+            {
+                // Pass
+            }
+        }
 
         final web_m.HttpResponse response = web_m.HttpResponse
                 .newBuilder()

@@ -15,9 +15,75 @@
  */
 syntax = "proto2";
 
-package com.mackenziehigh.socius.web;
-option java_package = "com.mackenziehigh.socius.web";
+package com.mackenziehigh.socius.web.messages;
+option java_package = "com.mackenziehigh.socius.web.messages";
 option java_outer_classname = "web_m";
+
+/**
+ * HTTP Request Prefix.
+ */
+message HttpPrefix
+{
+    /**
+     * Request Protocol.
+     */
+    optional HttpProtocol protocol = 8;
+
+    /**
+     * HTTP Verb of the request (GET/POST/etc).
+     */
+    optional string method = 9;
+
+    /**
+     * Requested URI.
+     */
+    optional string uri = 10;
+
+    /**
+     * Requested Path of URI.
+     */
+    optional string path = 11;
+
+    /**
+     * Raw Requested Path of URI.
+     */
+    optional string rawPath = 12;
+
+    /**
+     * Raw Query String.
+     */
+    optional string rawQuery = 13;
+
+    /**
+     * Query Parameters.
+     */
+    map<string, HttpQueryParameter> parameters = 14;
+
+    /**
+     * HTTP Headers.
+     */
+    map<string, HttpHeader> headers = 15;
+
+    /**
+     * Client Host.
+     */
+    optional string host = 16;
+
+    /**
+     * HTTP cookies from the client.
+     */
+    repeated HttpCookie cookies = 17;
+
+    /**
+     * MIME Type of the body.
+     */
+    optional string contentType = 18;
+
+    /**
+     * Length of the body.
+     */
+    optional int32 contentLength = 19;
+}
 
 /**
  * HTTP Request.
@@ -249,104 +315,6 @@ message HttpCookie
 
     optional string wrap = 7;
 }
-
-message WebSocketRequest
-{
-   /**
-     * Use this field to attach debugging information.
-     */
-    repeated string debug = 1;
-
-    /**
-     * Human readable name of the server receiving the request.
-     */
-    optional string serverName = 2;
-
-    /**
-     * Universally-Unique-Identifier of the server receiving the request.
-     *
-     * <p>
-     * This value is unique to a server, per lifetime.
-     * If the server restarts, then it will use a different UUID.
-     * </p>
-     */
-    optional string serverId = 3;
-
-    /**
-     * Reserved For Application Use.
-     */
-    optional string replyTo = 4;
-
-    /**
-     * Universally-Unique-Identifier of a single request.
-     */
-    optional string correlationId = 5;
-
-    /**
-     * Sequence number of requests coming from this server.
-     */
-    optional int64 sequenceNumber = 6;
-
-    /**
-     * A Java-compatible timestamp indicating when the request was received.
-     */
-    optional uint64 timestamp = 7;
-
-    /**
-     * The HTTP request that established the web-socket.
-     */
-    optional HttpRequest request = 8;
-
-    oneof frame
-    {
-        OpenedFrame opened = 9;
-        ClosedFrame closed = 10;
-        DataFrame data = 11;
-    }
-}
-
-message WebSocketResponse
-{
-   /**
-     * Use this field to attach debugging information.
-     */
-    repeated string debug = 1;
-
-    /**
-     * Universally-Unique-Identifier both the request and the response.
-     */
-    optional string correlationId = 2;
-
-    /**
-     * When this response was created.
-     */
-    optional uint64 timestamp = 3;
-
-    optional DataFrame data = 4;
-
-    /**
-     * If this flag is true, then the web-socket will be closed.
-     */
-    optional bool close = 5;
-}
-
-message OpenedFrame
-{
-
-}
-
-message ClosedFrame
-{
-
-}
-
-message DataFrame
-{
-    optional string text = 1;
-
-    optional bytes blob = 2;
-}
-
 
 
 

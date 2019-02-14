@@ -1,5 +1,7 @@
-package com.mackenziehigh.socius.web;
+package com.mackenziehigh.socius.web.server;
 
+import com.mackenziehigh.socius.web.server.WebServer;
+import com.mackenziehigh.socius.web.messages.web_m;
 import com.google.common.io.ByteSource;
 import com.google.common.io.ByteStreams;
 import com.google.protobuf.ByteString;
@@ -25,12 +27,12 @@ public final class WebServerTest
 
     private final WebServer server = WebServer
             .newWebServer()
-            .withResponseTimeout(Duration.ofSeconds(1))
+            .withHttpResponseTimeout(Duration.ofSeconds(1))
             .withHost("127.0.0.1")
             .withPort(8089)
             .withReplyTo("Mars")
             .withServerName("Alien")
-            .withAggregationCapacity(1 * 1024 * 1024)
+            .withMaxHttpMessageSize(1 * 1024 * 1024)
             .build();
 
     @Before

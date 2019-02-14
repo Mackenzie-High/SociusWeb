@@ -1,9 +1,11 @@
-package com.mackenziehigh.socius.web;
+package com.mackenziehigh.socius.web.server;
 
 import com.google.common.net.MediaType;
 import com.google.protobuf.ByteString;
-import com.mackenziehigh.socius.web.web_m.HttpRequest;
-import com.mackenziehigh.socius.web.web_m.HttpResponse;
+import com.mackenziehigh.socius.web.messages.web_m;
+import com.mackenziehigh.socius.web.messages.web_m.HttpPrefix;
+import com.mackenziehigh.socius.web.messages.web_m.HttpRequest;
+import com.mackenziehigh.socius.web.messages.web_m.HttpResponse;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
@@ -18,34 +20,135 @@ import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Provides static utility methods for translating between Netty-related objects and GPBs.
  */
 final class Translator
 {
+    private final AtomicLong sequenceCount = new AtomicLong();
 
-    public static HttpRequest requestToGPB (final SharedState info,
-                                            final UUID connectionId,
-                                            final FullHttpRequest request)
+    private final String serverName;
+
+    private final String serverId;
+
+    private final String replyTo;
+
+    public Translator (final String serverName,
+                       final String serverId,
+                       final String replyTo)
     {
-        final long seqnum = info.sequenceNumber.incrementAndGet();
+        this.serverName = serverName;
+        this.serverId = serverId;
+        this.replyTo = replyTo;
+    }
+
+    public HttpPrefix prefixOf (io.netty.handler.codec.http.HttpRequest request)
+    {
+        final HttpPrefix.Builder builder = HttpPrefix.newBuilder();
+        final HttpRequest.Builder partial = encodePrefix(request);
+
+        if (partial.hasProtocol())
+        {
+            builder.setProtocol(builder.getProtocol());
+        }
+
+        if (partial.hasMethod())
+        {
+            builder.setMethod(partial.getMethod());
+        }
+
+        if (partial.hasUri())
+        {
+            builder.setUri(partial.getUri());
+        }
+
+        if (partial.hasPath())
+        {
+            builder.setPath(partial.getPath());
+        }
+
+        if (partial.hasRawPath())
+        {
+            builder.setRawPath(partial.getRawPath());
+        }
+
+        if (partial.hasRawQuery())
+        {
+            builder.setRawQuery(partial.getRawQuery());
+        }
+
+        builder.putAllParameters(partial.getParametersMap());
+
+        builder.putAllHeaders(partial.getHeadersMap());
+
+        if (partial.hasHost())
+        {
+            builder.setHost(partial.getHost());
+        }
+
+        builder.addAllCookies(partial.getCookiesList());
+
+        if (partial.hasContentType())
+        {
+            builder.setContentType(partial.getContentType());
+        }
+
+        if (partial.hasContentLength())
+        {
+            builder.setContentLength(partial.getContentLength());
+        }
+
+        return builder.build();
+    }
+
+    public HttpRequest requestToGPB (final FullHttpRequest request)
+    {
+        final long seqnum = sequenceCount.incrementAndGet();
 
         final String correlationId = UUID.randomUUID().toString();
 
-        final web_m.HttpRequest.Builder builder = web_m.HttpRequest.newBuilder();
+        final web_m.HttpRequest.Builder builder = encodePrefix(request);
 
-        builder.setServerName(info.serverName);
-        builder.setServerId(info.serverId);
+        builder.setServerName(serverName);
+        builder.setServerId(serverId);
         builder.setSequenceNumber(seqnum);
         builder.setTimestamp(System.currentTimeMillis());
         builder.setCorrelationId(correlationId);
-        builder.setReplyTo(info.replyTo);
+        builder.setReplyTo(replyTo);
+
+        /**
+         * Encode the body.
+         */
+        if (request.content().isReadable())
+        {
+            // TODO: Optimize? Use shared temp buffer?
+            final byte[] bytes = new byte[request.content().readableBytes()];
+            request.content().readBytes(bytes);
+            final ByteString byteString = ByteString.copyFrom(bytes);
+            builder.setContentLength(byteString.size());
+            builder.setBody(byteString);
+        }
+        else
+        {
+            builder.setContentLength(0);
+            builder.setBody(ByteString.EMPTY);
+        }
+
+        return builder.build();
+    }
+
+    private HttpRequest.Builder encodePrefix (final io.netty.handler.codec.http.HttpRequest request)
+    {
+        final web_m.HttpRequest.Builder builder = web_m.HttpRequest.newBuilder();
+
         builder.setProtocol(web_m.HttpProtocol.newBuilder()
                 .setText(request.protocolVersion().text())
                 .setName(request.protocolVersion().protocolName())
                 .setMajorVersion(request.protocolVersion().majorVersion())
                 .setMinorVersion(request.protocolVersion().minorVersion()));
+
         builder.setMethod(request.method().name());
 
         /**
@@ -116,28 +219,10 @@ final class Translator
             }
         }
 
-        /**
-         * Encode the body.
-         */
-        if (request.content().isReadable())
-        {
-            // TODO: Optimize? Use shared temp buffer?
-            final byte[] bytes = new byte[request.content().readableBytes()];
-            request.content().readBytes(bytes);
-            final ByteString byteString = ByteString.copyFrom(bytes);
-            builder.setContentLength(byteString.size());
-            builder.setBody(byteString);
-        }
-        else
-        {
-            builder.setContentLength(0);
-            builder.setBody(ByteString.EMPTY);
-        }
-
-        return builder.build();
+        return builder;
     }
 
-    public static FullHttpResponse responseFromGPB (final HttpResponse encodedResponse)
+    public FullHttpResponse responseFromGPB (final HttpResponse encodedResponse)
     {
         /**
          * Decode the body.
@@ -163,6 +248,11 @@ final class Translator
         {
             response.headers().add(header.getKey(), header.getValue().getValuesList());
         }
+
+        /**
+         * Always close the connection.
+         */
+        response.headers().add("connection", "close");
 
         /**
          * Decode the content-type.

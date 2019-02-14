@@ -1,4 +1,4 @@
-package com.mackenziehigh.socius.web;
+package com.mackenziehigh.socius.web.server;
 
 import com.mackenziehigh.cascade.Cascade;
 import com.mackenziehigh.cascade.Cascade.Stage;
@@ -61,10 +61,6 @@ final class SharedState
 
     public final boolean validateHeaders = true;
 
-    public final ConnectorHTTP http;
-
-    public final ConnectorWS socks;
-
     public SharedState (final ScheduledExecutorService service,
                         final String serverName,
                         final String replyTo,
@@ -81,8 +77,6 @@ final class SharedState
         this.port = port;
         this.responseTimeout = responseTimeout;
         this.aggregationCapacity = aggregationCapacity;
-        this.http = new ConnectorHTTP(this);
-        this.socks = new ConnectorWS(this);
     }
 
 }
