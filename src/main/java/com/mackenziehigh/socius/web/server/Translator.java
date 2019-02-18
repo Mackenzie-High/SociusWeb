@@ -1,29 +1,43 @@
+/*
+ * Copyright 2019 Michael Mackenzie High
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.mackenziehigh.socius.web.server;
 
 import com.google.common.net.MediaType;
 import com.google.protobuf.ByteString;
 import com.mackenziehigh.socius.web.messages.web_m;
-import com.mackenziehigh.socius.web.messages.web_m.HttpPrefix;
-import com.mackenziehigh.socius.web.messages.web_m.HttpRequest;
-import com.mackenziehigh.socius.web.messages.web_m.HttpResponse;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
+import static io.netty.handler.codec.http.HttpVersion.HTTP_1_0;
 import io.netty.handler.codec.http.QueryStringDecoder;
-import io.netty.handler.codec.http.cookie.Cookie;
-import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 /**
- * Provides static utility methods for translating between Netty-related objects and GPBs.
+ * Provides methods for translating between Netty-related objects and GPBs.
  */
 final class Translator
 {
@@ -39,91 +53,59 @@ final class Translator
                        final String serverId,
                        final String replyTo)
     {
-        this.serverName = serverName;
-        this.serverId = serverId;
-        this.replyTo = replyTo;
+        this.serverName = Objects.requireNonNull(serverName, "serverName");
+        this.serverId = Objects.requireNonNull(serverId, "serverId");
+        this.replyTo = Objects.requireNonNull(replyTo, "replyTo");
     }
 
-    public HttpPrefix prefixOf (io.netty.handler.codec.http.HttpRequest request)
+    /**
+     * Translate a Netty-based request to a GPB-based request,
+     * for use in the pre-check handlers, with certain parts
+     * of the request are omitted, such as the entity.
+     *
+     * @param request is a Netty-based request.
+     * @return the partial GPB-based request.
+     */
+    public web_m.HttpRequest prefixOf (final HttpRequest request)
     {
-        final HttpPrefix.Builder builder = HttpPrefix.newBuilder();
-        final HttpRequest.Builder partial = encodePrefix(request);
-
-        if (partial.hasProtocol())
-        {
-            builder.setProtocol(builder.getProtocol());
-        }
-
-        if (partial.hasMethod())
-        {
-            builder.setMethod(partial.getMethod());
-        }
-
-        if (partial.hasUri())
-        {
-            builder.setUri(partial.getUri());
-        }
-
-        if (partial.hasPath())
-        {
-            builder.setPath(partial.getPath());
-        }
-
-        if (partial.hasRawPath())
-        {
-            builder.setRawPath(partial.getRawPath());
-        }
-
-        if (partial.hasRawQuery())
-        {
-            builder.setRawQuery(partial.getRawQuery());
-        }
-
-        builder.putAllParameters(partial.getParametersMap());
-
-        builder.putAllHeaders(partial.getHeadersMap());
-
-        if (partial.hasHost())
-        {
-            builder.setHost(partial.getHost());
-        }
-
-        builder.addAllCookies(partial.getCookiesList());
-
-        if (partial.hasContentType())
-        {
-            builder.setContentType(partial.getContentType());
-        }
-
-        if (partial.hasContentLength())
-        {
-            builder.setContentLength(partial.getContentLength());
-        }
-
-        return builder.build();
+        Objects.requireNonNull(request, "request");
+        return commonPrefix(request).build();
     }
 
-    public HttpRequest requestToGPB (final FullHttpRequest request)
+    /**
+     * Translate a Netty-based request to a GPB-based request.
+     *
+     * @param request is a Netty-based request.
+     * @return the complete GPB-based request.
+     */
+    public web_m.HttpRequest requestToGPB (final FullHttpRequest request)
     {
+        Objects.requireNonNull(request, "request");
+
+        final web_m.HttpRequest.Builder builder = commonPrefix(request);
+
+        /**
+         * Sequence Number.
+         */
         final long seqnum = sequenceCount.incrementAndGet();
-
-        final String correlationId = UUID.randomUUID().toString();
-
-        final web_m.HttpRequest.Builder builder = encodePrefix(request);
-
-        builder.setServerName(serverName);
-        builder.setServerId(serverId);
         builder.setSequenceNumber(seqnum);
-        builder.setTimestamp(System.currentTimeMillis());
+
+        /**
+         * Correlation-ID.
+         */
+        final String correlationId = UUID.randomUUID().toString();
         builder.setCorrelationId(correlationId);
+
+        /**
+         * Reply-To.
+         */
         builder.setReplyTo(replyTo);
 
         /**
-         * Encode the body.
+         * Entity.
          */
         if (request.content().isReadable())
         {
-            // TODO: Optimize? Use shared temp buffer?
             final byte[] bytes = new byte[request.content().readableBytes()];
             request.content().readBytes(bytes);
             final ByteString byteString = ByteString.copyFrom(bytes);
@@ -136,23 +118,57 @@ final class Translator
             builder.setBody(ByteString.EMPTY);
         }
 
+        /**
+         * Trailing Headers.
+         */
+        final List<String> trailerNames = request.trailingHeaders().names().stream().map(x -> x.toLowerCase()).collect(Collectors.toList());
+        for (String name : trailerNames)
+        {
+            builder.putTrailers(name,
+                                web_m.HttpHeader.newBuilder()
+                                        .setKey(name)
+                                        .addAllValues(request.trailingHeaders().getAll(name))
+                                        .build());
+        }
+
         return builder.build();
     }
 
-    private HttpRequest.Builder encodePrefix (final io.netty.handler.codec.http.HttpRequest request)
+    private web_m.HttpRequest.Builder commonPrefix (final io.netty.handler.codec.http.HttpRequest request)
     {
         final web_m.HttpRequest.Builder builder = web_m.HttpRequest.newBuilder();
 
+        /**
+         * Server Name.
+         */
+        builder.setServerName(serverName);
+
+        /**
+         * Server-ID.
+         */
+        builder.setServerId(serverId);
+
+        /**
+         * Timestamp.
+         */
+        builder.setTimestamp(System.currentTimeMillis());
+
+        /**
+         * HTTP Protocol.
+         */
         builder.setProtocol(web_m.HttpProtocol.newBuilder()
                 .setText(request.protocolVersion().text())
                 .setName(request.protocolVersion().protocolName())
                 .setMajorVersion(request.protocolVersion().majorVersion())
                 .setMinorVersion(request.protocolVersion().minorVersion()));
 
+        /**
+         * HTTP Method.
+         */
         builder.setMethod(request.method().name());
 
         /**
-         * Encode the URL.
+         * URI, etc.
          */
         final QueryStringDecoder qsDecoder = new QueryStringDecoder(request.uri());
         builder.setUri(qsDecoder.uri());
@@ -173,7 +189,7 @@ final class Translator
         }
 
         /**
-         * Encode Host.
+         * Header: Host.
          */
         if (request.headers().contains(HttpHeaders.Names.HOST))
         {
@@ -181,7 +197,7 @@ final class Translator
         }
 
         /**
-         * Encode Content Type.
+         * Header: Content-Type.
          */
         if (request.headers().contains(HttpHeaders.Names.CONTENT_TYPE))
         {
@@ -189,9 +205,19 @@ final class Translator
         }
 
         /**
-         * Encode the headers.
+         * Header: Content-Length.
          */
-        for (String name : request.headers().names())
+        if (request.headers().contains(HttpHeaders.Names.CONTENT_LENGTH))
+        {
+            final int length = Integer.parseInt(request.headers().get(HttpHeaders.Names.CONTENT_LENGTH));
+            builder.setContentLength(length);
+        }
+
+        /**
+         * Other HTTP Headers.
+         */
+        final List<String> headerNames = request.headers().names().stream().map(x -> x.toLowerCase()).collect(Collectors.toList());
+        for (String name : headerNames)
         {
             builder.putHeaders(name,
                                web_m.HttpHeader.newBuilder()
@@ -200,77 +226,126 @@ final class Translator
                                        .build());
         }
 
-        /**
-         * Encode the cookies.
-         */
-        for (String header : request.headers().getAll(HttpHeaders.Names.COOKIE))
-        {
-            for (Cookie cookie : ServerCookieDecoder.STRICT.decode(header))
-            {
-                final web_m.HttpCookie.Builder cookieBuilder = web_m.HttpCookie.newBuilder();
-
-                cookieBuilder.setDomain(cookie.domain());
-                cookieBuilder.setHttpOnly(cookie.isHttpOnly());
-                cookieBuilder.setSecure(cookie.isSecure());
-                cookieBuilder.setPath(cookie.path());
-                cookieBuilder.setMaxAge(cookie.maxAge());
-
-                builder.addCookies(cookieBuilder);
-            }
-        }
-
         return builder;
     }
 
-    public FullHttpResponse responseFromGPB (final HttpResponse encodedResponse)
+    /**
+     * Translate a GPB-based response to a Netty-based response.
+     *
+     * @param response is the GPB-based response to translate.
+     * @return the response translated to a Netty-based equivalent.
+     */
+    public FullHttpResponse responseFromGPB (final web_m.HttpResponse response)
     {
-        /**
-         * Decode the body.
-         */
-        final ByteBuf body = Unpooled.copiedBuffer(encodedResponse.getBody().asReadOnlyByteBuffer());
+        //Objects.requireNonNull(request, "request");
 
         /**
-         * Decode the HTTP status code.
+         * HTTP Entity.
          */
-        final HttpResponseStatus status = encodedResponse.hasStatus()
-                ? HttpResponseStatus.valueOf(encodedResponse.getStatus())
-                : HttpResponseStatus.OK;
+        final ByteBuf body = Unpooled.copiedBuffer(response.getBody().asReadOnlyByteBuffer());
 
         /**
-         * Create the response.
+         * HTTP Status Code.
          */
-        final FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, status, body);
+        final HttpResponseStatus status = response.hasStatus()
+                ? HttpResponseStatus.valueOf(response.getStatus())
+                : HttpResponseStatus.INTERNAL_SERVER_ERROR;
 
         /**
-         * Decode the headers.
+         * Create the response object.
          */
-        for (Map.Entry<String, web_m.HttpHeader> header : encodedResponse.getHeadersMap().entrySet())
+        final FullHttpResponse netty = new DefaultFullHttpResponse(HTTP_1_0, status, body);
+
+        /**
+         * HTTP Headers.
+         */
+        for (web_m.HttpHeader header : response.getHeadersList())
         {
-            response.headers().add(header.getKey(), header.getValue().getValuesList());
+            if (header.hasKey() == false)
+            {
+                throw new IllegalArgumentException("Unnamed Header in Response");
+            }
+
+            /**
+             * Normalize header names to lower-case.
+             */
+            final String key = header.getKey().toLowerCase();
+
+            /**
+             * If a header is specified with a name, but no value,
+             * then assume that the value is an empty string.
+             */
+            if (header.getValuesList().isEmpty())
+            {
+                netty.headers().add(key, "");
+            }
+
+            /**
+             * If a header is specified with one or more values,
+             * then add each key-value pair to the response.
+             */
+            for (String value : header.getValuesList())
+            {
+                netty.headers().add(key, value);
+            }
         }
 
         /**
-         * Always close the connection.
+         * Always include an HTTP 1.1 compatible header to close the connection.
+         * Since the response is HTTP 1.0, this is strictly optional.
          */
-        response.headers().add("connection", "close");
+        netty.headers().set("connection", "close");
 
         /**
-         * Decode the content-type.
+         * Header: Content-Type.response
          */
-        if (encodedResponse.hasContentType())
+        if (response.hasContentType())
         {
-            response.headers().add(HttpHeaders.Names.CONTENT_TYPE, encodedResponse.getContentType());
+            netty.headers().set(HttpHeaders.Names.CONTENT_TYPE, response.getContentType());
+        }
+        else if (netty.headers().contains(HttpHeaders.Names.CONTENT_TYPE))
+        {
+            // Pass, because the Content-Type is already set.
         }
         else
         {
-            response.headers().add(HttpHeaders.Names.CONTENT_TYPE, MediaType.OCTET_STREAM.toString());
+            netty.headers().set(HttpHeaders.Names.CONTENT_TYPE, MediaType.OCTET_STREAM.toString());
         }
 
         /**
-         * Decode the content-length.
+         * Header: ConteresponseLength.
          */
-        response.headers().add(HttpHeaders.Names.CONTENT_LENGTH, encodedResponse.getBody().size());
+        if (response.hasBody())
+        {
+            netty.headers().set(HttpHeaders.Names.CONTENT_LENGTH, response.getBody().size());
+        }
+        else
+        {
+            netty.headers().set(HttpHeaders.Names.CONTENT_LENGTH, 0);
+        }
 
+        return netty;
+    }
+
+    /**
+     * Static utility method for creating common error-responses.
+     *
+     * <p>
+     * The response will redirect the client to an HTML page
+     * under the web-root, whose name is the numeric error-code.
+     * </p>
+     *
+     * @param status is the HTTP error-code.
+     * @return the Netty-based response object.
+     */
+    public static FullHttpResponse newErrorResponse (final HttpResponseStatus status)
+    {
+        final String message = "<head> <meta http-equiv=\"refresh\" content=\"0; URL=\"/" + status.code() + ".html\" /> </head>";
+        final ByteBuf content = Unpooled.copiedBuffer(message.getBytes(StandardCharsets.US_ASCII));
+        final FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_0, status, content);
+        response.headers().set("connection", "close");
+        response.headers().set("content-length", "0");
+        response.headers().set("content-type", "text/html");
         return response;
     }
 }

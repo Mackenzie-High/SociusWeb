@@ -22,7 +22,6 @@ import com.mackenziehigh.cascade.Cascade;
 import com.mackenziehigh.cascade.Cascade.Stage.Actor.Input;
 import com.mackenziehigh.cascade.Cascade.Stage.Actor.Output;
 import com.mackenziehigh.socius.web.messages.web_m;
-import com.mackenziehigh.socius.web.messages.web_m.HttpPrefix;
 import com.mackenziehigh.socius.web.messages.web_m.HttpRequest;
 import com.mackenziehigh.socius.web.messages.web_m.HttpResponse;
 import io.netty.bootstrap.ServerBootstrap;
@@ -428,7 +427,7 @@ public final class WebServer
             return withPrecheckAccept(x -> true);
         }
 
-        public Builder withPrecheckAccept (final Predicate<HttpPrefix> condition)
+        public Builder withPrecheckAccept (final Predicate<web_m.HttpRequest> condition)
         {
             final Precheck check = msg ->
             {
@@ -445,7 +444,7 @@ public final class WebServer
             return withPrecheckDeny(x -> true);
         }
 
-        public Builder withPrecheckDeny (final Predicate<HttpPrefix> condition)
+        public Builder withPrecheckDeny (final Predicate<web_m.HttpRequest> condition)
         {
             final Precheck check = msg ->
             {

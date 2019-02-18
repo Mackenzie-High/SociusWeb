@@ -14,3634 +14,6 @@ public final class web_m {
     registerAllExtensions(
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
-  public interface HttpPrefixOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:com.mackenziehigh.socius.web.messages.HttpPrefix)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <pre>
-     **
-     * Request Protocol.
-     * </pre>
-     *
-     * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 8;</code>
-     */
-    boolean hasProtocol();
-    /**
-     * <pre>
-     **
-     * Request Protocol.
-     * </pre>
-     *
-     * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 8;</code>
-     */
-    com.mackenziehigh.socius.web.messages.web_m.HttpProtocol getProtocol();
-    /**
-     * <pre>
-     **
-     * Request Protocol.
-     * </pre>
-     *
-     * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 8;</code>
-     */
-    com.mackenziehigh.socius.web.messages.web_m.HttpProtocolOrBuilder getProtocolOrBuilder();
-
-    /**
-     * <pre>
-     **
-     * HTTP Verb of the request (GET/POST/etc).
-     * </pre>
-     *
-     * <code>optional string method = 9;</code>
-     */
-    boolean hasMethod();
-    /**
-     * <pre>
-     **
-     * HTTP Verb of the request (GET/POST/etc).
-     * </pre>
-     *
-     * <code>optional string method = 9;</code>
-     */
-    java.lang.String getMethod();
-    /**
-     * <pre>
-     **
-     * HTTP Verb of the request (GET/POST/etc).
-     * </pre>
-     *
-     * <code>optional string method = 9;</code>
-     */
-    com.google.protobuf.ByteString
-        getMethodBytes();
-
-    /**
-     * <pre>
-     **
-     * Requested URI.
-     * </pre>
-     *
-     * <code>optional string uri = 10;</code>
-     */
-    boolean hasUri();
-    /**
-     * <pre>
-     **
-     * Requested URI.
-     * </pre>
-     *
-     * <code>optional string uri = 10;</code>
-     */
-    java.lang.String getUri();
-    /**
-     * <pre>
-     **
-     * Requested URI.
-     * </pre>
-     *
-     * <code>optional string uri = 10;</code>
-     */
-    com.google.protobuf.ByteString
-        getUriBytes();
-
-    /**
-     * <pre>
-     **
-     * Requested Path of URI.
-     * </pre>
-     *
-     * <code>optional string path = 11;</code>
-     */
-    boolean hasPath();
-    /**
-     * <pre>
-     **
-     * Requested Path of URI.
-     * </pre>
-     *
-     * <code>optional string path = 11;</code>
-     */
-    java.lang.String getPath();
-    /**
-     * <pre>
-     **
-     * Requested Path of URI.
-     * </pre>
-     *
-     * <code>optional string path = 11;</code>
-     */
-    com.google.protobuf.ByteString
-        getPathBytes();
-
-    /**
-     * <pre>
-     **
-     * Raw Requested Path of URI.
-     * </pre>
-     *
-     * <code>optional string rawPath = 12;</code>
-     */
-    boolean hasRawPath();
-    /**
-     * <pre>
-     **
-     * Raw Requested Path of URI.
-     * </pre>
-     *
-     * <code>optional string rawPath = 12;</code>
-     */
-    java.lang.String getRawPath();
-    /**
-     * <pre>
-     **
-     * Raw Requested Path of URI.
-     * </pre>
-     *
-     * <code>optional string rawPath = 12;</code>
-     */
-    com.google.protobuf.ByteString
-        getRawPathBytes();
-
-    /**
-     * <pre>
-     **
-     * Raw Query String.
-     * </pre>
-     *
-     * <code>optional string rawQuery = 13;</code>
-     */
-    boolean hasRawQuery();
-    /**
-     * <pre>
-     **
-     * Raw Query String.
-     * </pre>
-     *
-     * <code>optional string rawQuery = 13;</code>
-     */
-    java.lang.String getRawQuery();
-    /**
-     * <pre>
-     **
-     * Raw Query String.
-     * </pre>
-     *
-     * <code>optional string rawQuery = 13;</code>
-     */
-    com.google.protobuf.ByteString
-        getRawQueryBytes();
-
-    /**
-     * <pre>
-     **
-     * Query Parameters.
-     * </pre>
-     *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 14;</code>
-     */
-    int getParametersCount();
-    /**
-     * <pre>
-     **
-     * Query Parameters.
-     * </pre>
-     *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 14;</code>
-     */
-    boolean containsParameters(
-        java.lang.String key);
-    /**
-     * Use {@link #getParametersMap()} instead.
-     */
-    @java.lang.Deprecated
-    java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter>
-    getParameters();
-    /**
-     * <pre>
-     **
-     * Query Parameters.
-     * </pre>
-     *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 14;</code>
-     */
-    java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter>
-    getParametersMap();
-    /**
-     * <pre>
-     **
-     * Query Parameters.
-     * </pre>
-     *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 14;</code>
-     */
-
-    com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter getParametersOrDefault(
-        java.lang.String key,
-        com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter defaultValue);
-    /**
-     * <pre>
-     **
-     * Query Parameters.
-     * </pre>
-     *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 14;</code>
-     */
-
-    com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter getParametersOrThrow(
-        java.lang.String key);
-
-    /**
-     * <pre>
-     **
-     * HTTP Headers.
-     * </pre>
-     *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 15;</code>
-     */
-    int getHeadersCount();
-    /**
-     * <pre>
-     **
-     * HTTP Headers.
-     * </pre>
-     *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 15;</code>
-     */
-    boolean containsHeaders(
-        java.lang.String key);
-    /**
-     * Use {@link #getHeadersMap()} instead.
-     */
-    @java.lang.Deprecated
-    java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>
-    getHeaders();
-    /**
-     * <pre>
-     **
-     * HTTP Headers.
-     * </pre>
-     *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 15;</code>
-     */
-    java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>
-    getHeadersMap();
-    /**
-     * <pre>
-     **
-     * HTTP Headers.
-     * </pre>
-     *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 15;</code>
-     */
-
-    com.mackenziehigh.socius.web.messages.web_m.HttpHeader getHeadersOrDefault(
-        java.lang.String key,
-        com.mackenziehigh.socius.web.messages.web_m.HttpHeader defaultValue);
-    /**
-     * <pre>
-     **
-     * HTTP Headers.
-     * </pre>
-     *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 15;</code>
-     */
-
-    com.mackenziehigh.socius.web.messages.web_m.HttpHeader getHeadersOrThrow(
-        java.lang.String key);
-
-    /**
-     * <pre>
-     **
-     * Client Host.
-     * </pre>
-     *
-     * <code>optional string host = 16;</code>
-     */
-    boolean hasHost();
-    /**
-     * <pre>
-     **
-     * Client Host.
-     * </pre>
-     *
-     * <code>optional string host = 16;</code>
-     */
-    java.lang.String getHost();
-    /**
-     * <pre>
-     **
-     * Client Host.
-     * </pre>
-     *
-     * <code>optional string host = 16;</code>
-     */
-    com.google.protobuf.ByteString
-        getHostBytes();
-
-    /**
-     * <pre>
-     **
-     * HTTP cookies from the client.
-     * </pre>
-     *
-     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-     */
-    java.util.List<com.mackenziehigh.socius.web.messages.web_m.HttpCookie> 
-        getCookiesList();
-    /**
-     * <pre>
-     **
-     * HTTP cookies from the client.
-     * </pre>
-     *
-     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-     */
-    com.mackenziehigh.socius.web.messages.web_m.HttpCookie getCookies(int index);
-    /**
-     * <pre>
-     **
-     * HTTP cookies from the client.
-     * </pre>
-     *
-     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-     */
-    int getCookiesCount();
-    /**
-     * <pre>
-     **
-     * HTTP cookies from the client.
-     * </pre>
-     *
-     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-     */
-    java.util.List<? extends com.mackenziehigh.socius.web.messages.web_m.HttpCookieOrBuilder> 
-        getCookiesOrBuilderList();
-    /**
-     * <pre>
-     **
-     * HTTP cookies from the client.
-     * </pre>
-     *
-     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-     */
-    com.mackenziehigh.socius.web.messages.web_m.HttpCookieOrBuilder getCookiesOrBuilder(
-        int index);
-
-    /**
-     * <pre>
-     **
-     * MIME Type of the body.
-     * </pre>
-     *
-     * <code>optional string contentType = 18;</code>
-     */
-    boolean hasContentType();
-    /**
-     * <pre>
-     **
-     * MIME Type of the body.
-     * </pre>
-     *
-     * <code>optional string contentType = 18;</code>
-     */
-    java.lang.String getContentType();
-    /**
-     * <pre>
-     **
-     * MIME Type of the body.
-     * </pre>
-     *
-     * <code>optional string contentType = 18;</code>
-     */
-    com.google.protobuf.ByteString
-        getContentTypeBytes();
-
-    /**
-     * <pre>
-     **
-     * Length of the body.
-     * </pre>
-     *
-     * <code>optional int32 contentLength = 19;</code>
-     */
-    boolean hasContentLength();
-    /**
-     * <pre>
-     **
-     * Length of the body.
-     * </pre>
-     *
-     * <code>optional int32 contentLength = 19;</code>
-     */
-    int getContentLength();
-  }
-  /**
-   * <pre>
-   **
-   * HTTP Request Prefix.
-   * </pre>
-   *
-   * Protobuf type {@code com.mackenziehigh.socius.web.messages.HttpPrefix}
-   */
-  public  static final class HttpPrefix extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:com.mackenziehigh.socius.web.messages.HttpPrefix)
-      HttpPrefixOrBuilder {
-    // Use HttpPrefix.newBuilder() to construct.
-    private HttpPrefix(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private HttpPrefix() {
-      method_ = "";
-      uri_ = "";
-      path_ = "";
-      rawPath_ = "";
-      rawQuery_ = "";
-      host_ = "";
-      cookies_ = java.util.Collections.emptyList();
-      contentType_ = "";
-      contentLength_ = 0;
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private HttpPrefix(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-            case 66: {
-              com.mackenziehigh.socius.web.messages.web_m.HttpProtocol.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000001) == 0x00000001)) {
-                subBuilder = protocol_.toBuilder();
-              }
-              protocol_ = input.readMessage(com.mackenziehigh.socius.web.messages.web_m.HttpProtocol.PARSER, extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(protocol_);
-                protocol_ = subBuilder.buildPartial();
-              }
-              bitField0_ |= 0x00000001;
-              break;
-            }
-            case 74: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000002;
-              method_ = bs;
-              break;
-            }
-            case 82: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000004;
-              uri_ = bs;
-              break;
-            }
-            case 90: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000008;
-              path_ = bs;
-              break;
-            }
-            case 98: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000010;
-              rawPath_ = bs;
-              break;
-            }
-            case 106: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000020;
-              rawQuery_ = bs;
-              break;
-            }
-            case 114: {
-              if (!((mutable_bitField0_ & 0x00000040) == 0x00000040)) {
-                parameters_ = com.google.protobuf.MapField.newMapField(
-                    ParametersDefaultEntryHolder.defaultEntry);
-                mutable_bitField0_ |= 0x00000040;
-              }
-              com.google.protobuf.MapEntry<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter>
-              parameters__ = input.readMessage(
-                  ParametersDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
-              parameters_.getMutableMap().put(
-                  parameters__.getKey(), parameters__.getValue());
-              break;
-            }
-            case 122: {
-              if (!((mutable_bitField0_ & 0x00000080) == 0x00000080)) {
-                headers_ = com.google.protobuf.MapField.newMapField(
-                    HeadersDefaultEntryHolder.defaultEntry);
-                mutable_bitField0_ |= 0x00000080;
-              }
-              com.google.protobuf.MapEntry<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>
-              headers__ = input.readMessage(
-                  HeadersDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
-              headers_.getMutableMap().put(
-                  headers__.getKey(), headers__.getValue());
-              break;
-            }
-            case 130: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000040;
-              host_ = bs;
-              break;
-            }
-            case 138: {
-              if (!((mutable_bitField0_ & 0x00000200) == 0x00000200)) {
-                cookies_ = new java.util.ArrayList<com.mackenziehigh.socius.web.messages.web_m.HttpCookie>();
-                mutable_bitField0_ |= 0x00000200;
-              }
-              cookies_.add(
-                  input.readMessage(com.mackenziehigh.socius.web.messages.web_m.HttpCookie.PARSER, extensionRegistry));
-              break;
-            }
-            case 146: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000080;
-              contentType_ = bs;
-              break;
-            }
-            case 152: {
-              bitField0_ |= 0x00000100;
-              contentLength_ = input.readInt32();
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        if (((mutable_bitField0_ & 0x00000200) == 0x00000200)) {
-          cookies_ = java.util.Collections.unmodifiableList(cookies_);
-        }
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_HttpPrefix_descriptor;
-    }
-
-    @SuppressWarnings({"rawtypes"})
-    protected com.google.protobuf.MapField internalGetMapField(
-        int number) {
-      switch (number) {
-        case 14:
-          return internalGetParameters();
-        case 15:
-          return internalGetHeaders();
-        default:
-          throw new RuntimeException(
-              "Invalid map field number: " + number);
-      }
-    }
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_HttpPrefix_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              com.mackenziehigh.socius.web.messages.web_m.HttpPrefix.class, com.mackenziehigh.socius.web.messages.web_m.HttpPrefix.Builder.class);
-    }
-
-    private int bitField0_;
-    public static final int PROTOCOL_FIELD_NUMBER = 8;
-    private com.mackenziehigh.socius.web.messages.web_m.HttpProtocol protocol_;
-    /**
-     * <pre>
-     **
-     * Request Protocol.
-     * </pre>
-     *
-     * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 8;</code>
-     */
-    public boolean hasProtocol() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <pre>
-     **
-     * Request Protocol.
-     * </pre>
-     *
-     * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 8;</code>
-     */
-    public com.mackenziehigh.socius.web.messages.web_m.HttpProtocol getProtocol() {
-      return protocol_ == null ? com.mackenziehigh.socius.web.messages.web_m.HttpProtocol.getDefaultInstance() : protocol_;
-    }
-    /**
-     * <pre>
-     **
-     * Request Protocol.
-     * </pre>
-     *
-     * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 8;</code>
-     */
-    public com.mackenziehigh.socius.web.messages.web_m.HttpProtocolOrBuilder getProtocolOrBuilder() {
-      return protocol_ == null ? com.mackenziehigh.socius.web.messages.web_m.HttpProtocol.getDefaultInstance() : protocol_;
-    }
-
-    public static final int METHOD_FIELD_NUMBER = 9;
-    private volatile java.lang.Object method_;
-    /**
-     * <pre>
-     **
-     * HTTP Verb of the request (GET/POST/etc).
-     * </pre>
-     *
-     * <code>optional string method = 9;</code>
-     */
-    public boolean hasMethod() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    /**
-     * <pre>
-     **
-     * HTTP Verb of the request (GET/POST/etc).
-     * </pre>
-     *
-     * <code>optional string method = 9;</code>
-     */
-    public java.lang.String getMethod() {
-      java.lang.Object ref = method_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          method_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <pre>
-     **
-     * HTTP Verb of the request (GET/POST/etc).
-     * </pre>
-     *
-     * <code>optional string method = 9;</code>
-     */
-    public com.google.protobuf.ByteString
-        getMethodBytes() {
-      java.lang.Object ref = method_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        method_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int URI_FIELD_NUMBER = 10;
-    private volatile java.lang.Object uri_;
-    /**
-     * <pre>
-     **
-     * Requested URI.
-     * </pre>
-     *
-     * <code>optional string uri = 10;</code>
-     */
-    public boolean hasUri() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    /**
-     * <pre>
-     **
-     * Requested URI.
-     * </pre>
-     *
-     * <code>optional string uri = 10;</code>
-     */
-    public java.lang.String getUri() {
-      java.lang.Object ref = uri_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          uri_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <pre>
-     **
-     * Requested URI.
-     * </pre>
-     *
-     * <code>optional string uri = 10;</code>
-     */
-    public com.google.protobuf.ByteString
-        getUriBytes() {
-      java.lang.Object ref = uri_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        uri_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int PATH_FIELD_NUMBER = 11;
-    private volatile java.lang.Object path_;
-    /**
-     * <pre>
-     **
-     * Requested Path of URI.
-     * </pre>
-     *
-     * <code>optional string path = 11;</code>
-     */
-    public boolean hasPath() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
-    /**
-     * <pre>
-     **
-     * Requested Path of URI.
-     * </pre>
-     *
-     * <code>optional string path = 11;</code>
-     */
-    public java.lang.String getPath() {
-      java.lang.Object ref = path_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          path_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <pre>
-     **
-     * Requested Path of URI.
-     * </pre>
-     *
-     * <code>optional string path = 11;</code>
-     */
-    public com.google.protobuf.ByteString
-        getPathBytes() {
-      java.lang.Object ref = path_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        path_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int RAWPATH_FIELD_NUMBER = 12;
-    private volatile java.lang.Object rawPath_;
-    /**
-     * <pre>
-     **
-     * Raw Requested Path of URI.
-     * </pre>
-     *
-     * <code>optional string rawPath = 12;</code>
-     */
-    public boolean hasRawPath() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
-    }
-    /**
-     * <pre>
-     **
-     * Raw Requested Path of URI.
-     * </pre>
-     *
-     * <code>optional string rawPath = 12;</code>
-     */
-    public java.lang.String getRawPath() {
-      java.lang.Object ref = rawPath_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          rawPath_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <pre>
-     **
-     * Raw Requested Path of URI.
-     * </pre>
-     *
-     * <code>optional string rawPath = 12;</code>
-     */
-    public com.google.protobuf.ByteString
-        getRawPathBytes() {
-      java.lang.Object ref = rawPath_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        rawPath_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int RAWQUERY_FIELD_NUMBER = 13;
-    private volatile java.lang.Object rawQuery_;
-    /**
-     * <pre>
-     **
-     * Raw Query String.
-     * </pre>
-     *
-     * <code>optional string rawQuery = 13;</code>
-     */
-    public boolean hasRawQuery() {
-      return ((bitField0_ & 0x00000020) == 0x00000020);
-    }
-    /**
-     * <pre>
-     **
-     * Raw Query String.
-     * </pre>
-     *
-     * <code>optional string rawQuery = 13;</code>
-     */
-    public java.lang.String getRawQuery() {
-      java.lang.Object ref = rawQuery_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          rawQuery_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <pre>
-     **
-     * Raw Query String.
-     * </pre>
-     *
-     * <code>optional string rawQuery = 13;</code>
-     */
-    public com.google.protobuf.ByteString
-        getRawQueryBytes() {
-      java.lang.Object ref = rawQuery_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        rawQuery_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int PARAMETERS_FIELD_NUMBER = 14;
-    private static final class ParametersDefaultEntryHolder {
-      static final com.google.protobuf.MapEntry<
-          java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter> defaultEntry =
-              com.google.protobuf.MapEntry
-              .<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter>newDefaultInstance(
-                  com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_HttpPrefix_ParametersEntry_descriptor, 
-                  com.google.protobuf.WireFormat.FieldType.STRING,
-                  "",
-                  com.google.protobuf.WireFormat.FieldType.MESSAGE,
-                  com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter.getDefaultInstance());
-    }
-    private com.google.protobuf.MapField<
-        java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter> parameters_;
-    private com.google.protobuf.MapField<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter>
-    internalGetParameters() {
-      if (parameters_ == null) {
-        return com.google.protobuf.MapField.emptyMapField(
-            ParametersDefaultEntryHolder.defaultEntry);
-      }
-      return parameters_;
-    }
-
-    public int getParametersCount() {
-      return internalGetParameters().getMap().size();
-    }
-    /**
-     * <pre>
-     **
-     * Query Parameters.
-     * </pre>
-     *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 14;</code>
-     */
-
-    public boolean containsParameters(
-        java.lang.String key) {
-      if (key == null) { throw new java.lang.NullPointerException(); }
-      return internalGetParameters().getMap().containsKey(key);
-    }
-    /**
-     * Use {@link #getParametersMap()} instead.
-     */
-    @java.lang.Deprecated
-    public java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter> getParameters() {
-      return getParametersMap();
-    }
-    /**
-     * <pre>
-     **
-     * Query Parameters.
-     * </pre>
-     *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 14;</code>
-     */
-
-    public java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter> getParametersMap() {
-      return internalGetParameters().getMap();
-    }
-    /**
-     * <pre>
-     **
-     * Query Parameters.
-     * </pre>
-     *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 14;</code>
-     */
-
-    public com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter getParametersOrDefault(
-        java.lang.String key,
-        com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter defaultValue) {
-      if (key == null) { throw new java.lang.NullPointerException(); }
-      java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter> map =
-          internalGetParameters().getMap();
-      return map.containsKey(key) ? map.get(key) : defaultValue;
-    }
-    /**
-     * <pre>
-     **
-     * Query Parameters.
-     * </pre>
-     *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 14;</code>
-     */
-
-    public com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter getParametersOrThrow(
-        java.lang.String key) {
-      if (key == null) { throw new java.lang.NullPointerException(); }
-      java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter> map =
-          internalGetParameters().getMap();
-      if (!map.containsKey(key)) {
-        throw new java.lang.IllegalArgumentException();
-      }
-      return map.get(key);
-    }
-
-    public static final int HEADERS_FIELD_NUMBER = 15;
-    private static final class HeadersDefaultEntryHolder {
-      static final com.google.protobuf.MapEntry<
-          java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> defaultEntry =
-              com.google.protobuf.MapEntry
-              .<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>newDefaultInstance(
-                  com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_HttpPrefix_HeadersEntry_descriptor, 
-                  com.google.protobuf.WireFormat.FieldType.STRING,
-                  "",
-                  com.google.protobuf.WireFormat.FieldType.MESSAGE,
-                  com.mackenziehigh.socius.web.messages.web_m.HttpHeader.getDefaultInstance());
-    }
-    private com.google.protobuf.MapField<
-        java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> headers_;
-    private com.google.protobuf.MapField<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>
-    internalGetHeaders() {
-      if (headers_ == null) {
-        return com.google.protobuf.MapField.emptyMapField(
-            HeadersDefaultEntryHolder.defaultEntry);
-      }
-      return headers_;
-    }
-
-    public int getHeadersCount() {
-      return internalGetHeaders().getMap().size();
-    }
-    /**
-     * <pre>
-     **
-     * HTTP Headers.
-     * </pre>
-     *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 15;</code>
-     */
-
-    public boolean containsHeaders(
-        java.lang.String key) {
-      if (key == null) { throw new java.lang.NullPointerException(); }
-      return internalGetHeaders().getMap().containsKey(key);
-    }
-    /**
-     * Use {@link #getHeadersMap()} instead.
-     */
-    @java.lang.Deprecated
-    public java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> getHeaders() {
-      return getHeadersMap();
-    }
-    /**
-     * <pre>
-     **
-     * HTTP Headers.
-     * </pre>
-     *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 15;</code>
-     */
-
-    public java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> getHeadersMap() {
-      return internalGetHeaders().getMap();
-    }
-    /**
-     * <pre>
-     **
-     * HTTP Headers.
-     * </pre>
-     *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 15;</code>
-     */
-
-    public com.mackenziehigh.socius.web.messages.web_m.HttpHeader getHeadersOrDefault(
-        java.lang.String key,
-        com.mackenziehigh.socius.web.messages.web_m.HttpHeader defaultValue) {
-      if (key == null) { throw new java.lang.NullPointerException(); }
-      java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> map =
-          internalGetHeaders().getMap();
-      return map.containsKey(key) ? map.get(key) : defaultValue;
-    }
-    /**
-     * <pre>
-     **
-     * HTTP Headers.
-     * </pre>
-     *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 15;</code>
-     */
-
-    public com.mackenziehigh.socius.web.messages.web_m.HttpHeader getHeadersOrThrow(
-        java.lang.String key) {
-      if (key == null) { throw new java.lang.NullPointerException(); }
-      java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> map =
-          internalGetHeaders().getMap();
-      if (!map.containsKey(key)) {
-        throw new java.lang.IllegalArgumentException();
-      }
-      return map.get(key);
-    }
-
-    public static final int HOST_FIELD_NUMBER = 16;
-    private volatile java.lang.Object host_;
-    /**
-     * <pre>
-     **
-     * Client Host.
-     * </pre>
-     *
-     * <code>optional string host = 16;</code>
-     */
-    public boolean hasHost() {
-      return ((bitField0_ & 0x00000040) == 0x00000040);
-    }
-    /**
-     * <pre>
-     **
-     * Client Host.
-     * </pre>
-     *
-     * <code>optional string host = 16;</code>
-     */
-    public java.lang.String getHost() {
-      java.lang.Object ref = host_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          host_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <pre>
-     **
-     * Client Host.
-     * </pre>
-     *
-     * <code>optional string host = 16;</code>
-     */
-    public com.google.protobuf.ByteString
-        getHostBytes() {
-      java.lang.Object ref = host_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        host_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int COOKIES_FIELD_NUMBER = 17;
-    private java.util.List<com.mackenziehigh.socius.web.messages.web_m.HttpCookie> cookies_;
-    /**
-     * <pre>
-     **
-     * HTTP cookies from the client.
-     * </pre>
-     *
-     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-     */
-    public java.util.List<com.mackenziehigh.socius.web.messages.web_m.HttpCookie> getCookiesList() {
-      return cookies_;
-    }
-    /**
-     * <pre>
-     **
-     * HTTP cookies from the client.
-     * </pre>
-     *
-     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-     */
-    public java.util.List<? extends com.mackenziehigh.socius.web.messages.web_m.HttpCookieOrBuilder> 
-        getCookiesOrBuilderList() {
-      return cookies_;
-    }
-    /**
-     * <pre>
-     **
-     * HTTP cookies from the client.
-     * </pre>
-     *
-     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-     */
-    public int getCookiesCount() {
-      return cookies_.size();
-    }
-    /**
-     * <pre>
-     **
-     * HTTP cookies from the client.
-     * </pre>
-     *
-     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-     */
-    public com.mackenziehigh.socius.web.messages.web_m.HttpCookie getCookies(int index) {
-      return cookies_.get(index);
-    }
-    /**
-     * <pre>
-     **
-     * HTTP cookies from the client.
-     * </pre>
-     *
-     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-     */
-    public com.mackenziehigh.socius.web.messages.web_m.HttpCookieOrBuilder getCookiesOrBuilder(
-        int index) {
-      return cookies_.get(index);
-    }
-
-    public static final int CONTENTTYPE_FIELD_NUMBER = 18;
-    private volatile java.lang.Object contentType_;
-    /**
-     * <pre>
-     **
-     * MIME Type of the body.
-     * </pre>
-     *
-     * <code>optional string contentType = 18;</code>
-     */
-    public boolean hasContentType() {
-      return ((bitField0_ & 0x00000080) == 0x00000080);
-    }
-    /**
-     * <pre>
-     **
-     * MIME Type of the body.
-     * </pre>
-     *
-     * <code>optional string contentType = 18;</code>
-     */
-    public java.lang.String getContentType() {
-      java.lang.Object ref = contentType_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          contentType_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <pre>
-     **
-     * MIME Type of the body.
-     * </pre>
-     *
-     * <code>optional string contentType = 18;</code>
-     */
-    public com.google.protobuf.ByteString
-        getContentTypeBytes() {
-      java.lang.Object ref = contentType_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        contentType_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int CONTENTLENGTH_FIELD_NUMBER = 19;
-    private int contentLength_;
-    /**
-     * <pre>
-     **
-     * Length of the body.
-     * </pre>
-     *
-     * <code>optional int32 contentLength = 19;</code>
-     */
-    public boolean hasContentLength() {
-      return ((bitField0_ & 0x00000100) == 0x00000100);
-    }
-    /**
-     * <pre>
-     **
-     * Length of the body.
-     * </pre>
-     *
-     * <code>optional int32 contentLength = 19;</code>
-     */
-    public int getContentLength() {
-      return contentLength_;
-    }
-
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeMessage(8, getProtocol());
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 9, method_);
-      }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 10, uri_);
-      }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 11, path_);
-      }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 12, rawPath_);
-      }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 13, rawQuery_);
-      }
-      com.google.protobuf.GeneratedMessageV3
-        .serializeStringMapTo(
-          output,
-          internalGetParameters(),
-          ParametersDefaultEntryHolder.defaultEntry,
-          14);
-      com.google.protobuf.GeneratedMessageV3
-        .serializeStringMapTo(
-          output,
-          internalGetHeaders(),
-          HeadersDefaultEntryHolder.defaultEntry,
-          15);
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 16, host_);
-      }
-      for (int i = 0; i < cookies_.size(); i++) {
-        output.writeMessage(17, cookies_.get(i));
-      }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 18, contentType_);
-      }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
-        output.writeInt32(19, contentLength_);
-      }
-      unknownFields.writeTo(output);
-    }
-
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(8, getProtocol());
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(9, method_);
-      }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(10, uri_);
-      }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(11, path_);
-      }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(12, rawPath_);
-      }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(13, rawQuery_);
-      }
-      for (java.util.Map.Entry<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter> entry
-           : internalGetParameters().getMap().entrySet()) {
-        com.google.protobuf.MapEntry<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter>
-        parameters__ = ParametersDefaultEntryHolder.defaultEntry.newBuilderForType()
-            .setKey(entry.getKey())
-            .setValue(entry.getValue())
-            .build();
-        size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(14, parameters__);
-      }
-      for (java.util.Map.Entry<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> entry
-           : internalGetHeaders().getMap().entrySet()) {
-        com.google.protobuf.MapEntry<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>
-        headers__ = HeadersDefaultEntryHolder.defaultEntry.newBuilderForType()
-            .setKey(entry.getKey())
-            .setValue(entry.getValue())
-            .build();
-        size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(15, headers__);
-      }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(16, host_);
-      }
-      for (int i = 0; i < cookies_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(17, cookies_.get(i));
-      }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(18, contentType_);
-      }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(19, contentLength_);
-      }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof com.mackenziehigh.socius.web.messages.web_m.HttpPrefix)) {
-        return super.equals(obj);
-      }
-      com.mackenziehigh.socius.web.messages.web_m.HttpPrefix other = (com.mackenziehigh.socius.web.messages.web_m.HttpPrefix) obj;
-
-      boolean result = true;
-      result = result && (hasProtocol() == other.hasProtocol());
-      if (hasProtocol()) {
-        result = result && getProtocol()
-            .equals(other.getProtocol());
-      }
-      result = result && (hasMethod() == other.hasMethod());
-      if (hasMethod()) {
-        result = result && getMethod()
-            .equals(other.getMethod());
-      }
-      result = result && (hasUri() == other.hasUri());
-      if (hasUri()) {
-        result = result && getUri()
-            .equals(other.getUri());
-      }
-      result = result && (hasPath() == other.hasPath());
-      if (hasPath()) {
-        result = result && getPath()
-            .equals(other.getPath());
-      }
-      result = result && (hasRawPath() == other.hasRawPath());
-      if (hasRawPath()) {
-        result = result && getRawPath()
-            .equals(other.getRawPath());
-      }
-      result = result && (hasRawQuery() == other.hasRawQuery());
-      if (hasRawQuery()) {
-        result = result && getRawQuery()
-            .equals(other.getRawQuery());
-      }
-      result = result && internalGetParameters().equals(
-          other.internalGetParameters());
-      result = result && internalGetHeaders().equals(
-          other.internalGetHeaders());
-      result = result && (hasHost() == other.hasHost());
-      if (hasHost()) {
-        result = result && getHost()
-            .equals(other.getHost());
-      }
-      result = result && getCookiesList()
-          .equals(other.getCookiesList());
-      result = result && (hasContentType() == other.hasContentType());
-      if (hasContentType()) {
-        result = result && getContentType()
-            .equals(other.getContentType());
-      }
-      result = result && (hasContentLength() == other.hasContentLength());
-      if (hasContentLength()) {
-        result = result && (getContentLength()
-            == other.getContentLength());
-      }
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      if (hasProtocol()) {
-        hash = (37 * hash) + PROTOCOL_FIELD_NUMBER;
-        hash = (53 * hash) + getProtocol().hashCode();
-      }
-      if (hasMethod()) {
-        hash = (37 * hash) + METHOD_FIELD_NUMBER;
-        hash = (53 * hash) + getMethod().hashCode();
-      }
-      if (hasUri()) {
-        hash = (37 * hash) + URI_FIELD_NUMBER;
-        hash = (53 * hash) + getUri().hashCode();
-      }
-      if (hasPath()) {
-        hash = (37 * hash) + PATH_FIELD_NUMBER;
-        hash = (53 * hash) + getPath().hashCode();
-      }
-      if (hasRawPath()) {
-        hash = (37 * hash) + RAWPATH_FIELD_NUMBER;
-        hash = (53 * hash) + getRawPath().hashCode();
-      }
-      if (hasRawQuery()) {
-        hash = (37 * hash) + RAWQUERY_FIELD_NUMBER;
-        hash = (53 * hash) + getRawQuery().hashCode();
-      }
-      if (!internalGetParameters().getMap().isEmpty()) {
-        hash = (37 * hash) + PARAMETERS_FIELD_NUMBER;
-        hash = (53 * hash) + internalGetParameters().hashCode();
-      }
-      if (!internalGetHeaders().getMap().isEmpty()) {
-        hash = (37 * hash) + HEADERS_FIELD_NUMBER;
-        hash = (53 * hash) + internalGetHeaders().hashCode();
-      }
-      if (hasHost()) {
-        hash = (37 * hash) + HOST_FIELD_NUMBER;
-        hash = (53 * hash) + getHost().hashCode();
-      }
-      if (getCookiesCount() > 0) {
-        hash = (37 * hash) + COOKIES_FIELD_NUMBER;
-        hash = (53 * hash) + getCookiesList().hashCode();
-      }
-      if (hasContentType()) {
-        hash = (37 * hash) + CONTENTTYPE_FIELD_NUMBER;
-        hash = (53 * hash) + getContentType().hashCode();
-      }
-      if (hasContentLength()) {
-        hash = (37 * hash) + CONTENTLENGTH_FIELD_NUMBER;
-        hash = (53 * hash) + getContentLength();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpPrefix parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpPrefix parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpPrefix parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpPrefix parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpPrefix parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpPrefix parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpPrefix parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpPrefix parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpPrefix parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpPrefix parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpPrefix parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpPrefix parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(com.mackenziehigh.socius.web.messages.web_m.HttpPrefix prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * <pre>
-     **
-     * HTTP Request Prefix.
-     * </pre>
-     *
-     * Protobuf type {@code com.mackenziehigh.socius.web.messages.HttpPrefix}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:com.mackenziehigh.socius.web.messages.HttpPrefix)
-        com.mackenziehigh.socius.web.messages.web_m.HttpPrefixOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_HttpPrefix_descriptor;
-      }
-
-      @SuppressWarnings({"rawtypes"})
-      protected com.google.protobuf.MapField internalGetMapField(
-          int number) {
-        switch (number) {
-          case 14:
-            return internalGetParameters();
-          case 15:
-            return internalGetHeaders();
-          default:
-            throw new RuntimeException(
-                "Invalid map field number: " + number);
-        }
-      }
-      @SuppressWarnings({"rawtypes"})
-      protected com.google.protobuf.MapField internalGetMutableMapField(
-          int number) {
-        switch (number) {
-          case 14:
-            return internalGetMutableParameters();
-          case 15:
-            return internalGetMutableHeaders();
-          default:
-            throw new RuntimeException(
-                "Invalid map field number: " + number);
-        }
-      }
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_HttpPrefix_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                com.mackenziehigh.socius.web.messages.web_m.HttpPrefix.class, com.mackenziehigh.socius.web.messages.web_m.HttpPrefix.Builder.class);
-      }
-
-      // Construct using com.mackenziehigh.socius.web.messages.web_m.HttpPrefix.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-          getProtocolFieldBuilder();
-          getCookiesFieldBuilder();
-        }
-      }
-      public Builder clear() {
-        super.clear();
-        if (protocolBuilder_ == null) {
-          protocol_ = null;
-        } else {
-          protocolBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000001);
-        method_ = "";
-        bitField0_ = (bitField0_ & ~0x00000002);
-        uri_ = "";
-        bitField0_ = (bitField0_ & ~0x00000004);
-        path_ = "";
-        bitField0_ = (bitField0_ & ~0x00000008);
-        rawPath_ = "";
-        bitField0_ = (bitField0_ & ~0x00000010);
-        rawQuery_ = "";
-        bitField0_ = (bitField0_ & ~0x00000020);
-        internalGetMutableParameters().clear();
-        internalGetMutableHeaders().clear();
-        host_ = "";
-        bitField0_ = (bitField0_ & ~0x00000100);
-        if (cookiesBuilder_ == null) {
-          cookies_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000200);
-        } else {
-          cookiesBuilder_.clear();
-        }
-        contentType_ = "";
-        bitField0_ = (bitField0_ & ~0x00000400);
-        contentLength_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000800);
-        return this;
-      }
-
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_HttpPrefix_descriptor;
-      }
-
-      public com.mackenziehigh.socius.web.messages.web_m.HttpPrefix getDefaultInstanceForType() {
-        return com.mackenziehigh.socius.web.messages.web_m.HttpPrefix.getDefaultInstance();
-      }
-
-      public com.mackenziehigh.socius.web.messages.web_m.HttpPrefix build() {
-        com.mackenziehigh.socius.web.messages.web_m.HttpPrefix result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      public com.mackenziehigh.socius.web.messages.web_m.HttpPrefix buildPartial() {
-        com.mackenziehigh.socius.web.messages.web_m.HttpPrefix result = new com.mackenziehigh.socius.web.messages.web_m.HttpPrefix(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
-        if (protocolBuilder_ == null) {
-          result.protocol_ = protocol_;
-        } else {
-          result.protocol_ = protocolBuilder_.build();
-        }
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
-        result.method_ = method_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
-        result.uri_ = uri_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
-        }
-        result.path_ = path_;
-        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-          to_bitField0_ |= 0x00000010;
-        }
-        result.rawPath_ = rawPath_;
-        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
-          to_bitField0_ |= 0x00000020;
-        }
-        result.rawQuery_ = rawQuery_;
-        result.parameters_ = internalGetParameters();
-        result.parameters_.makeImmutable();
-        result.headers_ = internalGetHeaders();
-        result.headers_.makeImmutable();
-        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
-          to_bitField0_ |= 0x00000040;
-        }
-        result.host_ = host_;
-        if (cookiesBuilder_ == null) {
-          if (((bitField0_ & 0x00000200) == 0x00000200)) {
-            cookies_ = java.util.Collections.unmodifiableList(cookies_);
-            bitField0_ = (bitField0_ & ~0x00000200);
-          }
-          result.cookies_ = cookies_;
-        } else {
-          result.cookies_ = cookiesBuilder_.build();
-        }
-        if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
-          to_bitField0_ |= 0x00000080;
-        }
-        result.contentType_ = contentType_;
-        if (((from_bitField0_ & 0x00000800) == 0x00000800)) {
-          to_bitField0_ |= 0x00000100;
-        }
-        result.contentLength_ = contentLength_;
-        result.bitField0_ = to_bitField0_;
-        onBuilt();
-        return result;
-      }
-
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.mackenziehigh.socius.web.messages.web_m.HttpPrefix) {
-          return mergeFrom((com.mackenziehigh.socius.web.messages.web_m.HttpPrefix)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(com.mackenziehigh.socius.web.messages.web_m.HttpPrefix other) {
-        if (other == com.mackenziehigh.socius.web.messages.web_m.HttpPrefix.getDefaultInstance()) return this;
-        if (other.hasProtocol()) {
-          mergeProtocol(other.getProtocol());
-        }
-        if (other.hasMethod()) {
-          bitField0_ |= 0x00000002;
-          method_ = other.method_;
-          onChanged();
-        }
-        if (other.hasUri()) {
-          bitField0_ |= 0x00000004;
-          uri_ = other.uri_;
-          onChanged();
-        }
-        if (other.hasPath()) {
-          bitField0_ |= 0x00000008;
-          path_ = other.path_;
-          onChanged();
-        }
-        if (other.hasRawPath()) {
-          bitField0_ |= 0x00000010;
-          rawPath_ = other.rawPath_;
-          onChanged();
-        }
-        if (other.hasRawQuery()) {
-          bitField0_ |= 0x00000020;
-          rawQuery_ = other.rawQuery_;
-          onChanged();
-        }
-        internalGetMutableParameters().mergeFrom(
-            other.internalGetParameters());
-        internalGetMutableHeaders().mergeFrom(
-            other.internalGetHeaders());
-        if (other.hasHost()) {
-          bitField0_ |= 0x00000100;
-          host_ = other.host_;
-          onChanged();
-        }
-        if (cookiesBuilder_ == null) {
-          if (!other.cookies_.isEmpty()) {
-            if (cookies_.isEmpty()) {
-              cookies_ = other.cookies_;
-              bitField0_ = (bitField0_ & ~0x00000200);
-            } else {
-              ensureCookiesIsMutable();
-              cookies_.addAll(other.cookies_);
-            }
-            onChanged();
-          }
-        } else {
-          if (!other.cookies_.isEmpty()) {
-            if (cookiesBuilder_.isEmpty()) {
-              cookiesBuilder_.dispose();
-              cookiesBuilder_ = null;
-              cookies_ = other.cookies_;
-              bitField0_ = (bitField0_ & ~0x00000200);
-              cookiesBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getCookiesFieldBuilder() : null;
-            } else {
-              cookiesBuilder_.addAllMessages(other.cookies_);
-            }
-          }
-        }
-        if (other.hasContentType()) {
-          bitField0_ |= 0x00000400;
-          contentType_ = other.contentType_;
-          onChanged();
-        }
-        if (other.hasContentLength()) {
-          setContentLength(other.getContentLength());
-        }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        com.mackenziehigh.socius.web.messages.web_m.HttpPrefix parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.mackenziehigh.socius.web.messages.web_m.HttpPrefix) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-      private int bitField0_;
-
-      private com.mackenziehigh.socius.web.messages.web_m.HttpProtocol protocol_ = null;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          com.mackenziehigh.socius.web.messages.web_m.HttpProtocol, com.mackenziehigh.socius.web.messages.web_m.HttpProtocol.Builder, com.mackenziehigh.socius.web.messages.web_m.HttpProtocolOrBuilder> protocolBuilder_;
-      /**
-       * <pre>
-       **
-       * Request Protocol.
-       * </pre>
-       *
-       * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 8;</code>
-       */
-      public boolean hasProtocol() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <pre>
-       **
-       * Request Protocol.
-       * </pre>
-       *
-       * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 8;</code>
-       */
-      public com.mackenziehigh.socius.web.messages.web_m.HttpProtocol getProtocol() {
-        if (protocolBuilder_ == null) {
-          return protocol_ == null ? com.mackenziehigh.socius.web.messages.web_m.HttpProtocol.getDefaultInstance() : protocol_;
-        } else {
-          return protocolBuilder_.getMessage();
-        }
-      }
-      /**
-       * <pre>
-       **
-       * Request Protocol.
-       * </pre>
-       *
-       * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 8;</code>
-       */
-      public Builder setProtocol(com.mackenziehigh.socius.web.messages.web_m.HttpProtocol value) {
-        if (protocolBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          protocol_ = value;
-          onChanged();
-        } else {
-          protocolBuilder_.setMessage(value);
-        }
-        bitField0_ |= 0x00000001;
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * Request Protocol.
-       * </pre>
-       *
-       * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 8;</code>
-       */
-      public Builder setProtocol(
-          com.mackenziehigh.socius.web.messages.web_m.HttpProtocol.Builder builderForValue) {
-        if (protocolBuilder_ == null) {
-          protocol_ = builderForValue.build();
-          onChanged();
-        } else {
-          protocolBuilder_.setMessage(builderForValue.build());
-        }
-        bitField0_ |= 0x00000001;
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * Request Protocol.
-       * </pre>
-       *
-       * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 8;</code>
-       */
-      public Builder mergeProtocol(com.mackenziehigh.socius.web.messages.web_m.HttpProtocol value) {
-        if (protocolBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              protocol_ != null &&
-              protocol_ != com.mackenziehigh.socius.web.messages.web_m.HttpProtocol.getDefaultInstance()) {
-            protocol_ =
-              com.mackenziehigh.socius.web.messages.web_m.HttpProtocol.newBuilder(protocol_).mergeFrom(value).buildPartial();
-          } else {
-            protocol_ = value;
-          }
-          onChanged();
-        } else {
-          protocolBuilder_.mergeFrom(value);
-        }
-        bitField0_ |= 0x00000001;
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * Request Protocol.
-       * </pre>
-       *
-       * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 8;</code>
-       */
-      public Builder clearProtocol() {
-        if (protocolBuilder_ == null) {
-          protocol_ = null;
-          onChanged();
-        } else {
-          protocolBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000001);
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * Request Protocol.
-       * </pre>
-       *
-       * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 8;</code>
-       */
-      public com.mackenziehigh.socius.web.messages.web_m.HttpProtocol.Builder getProtocolBuilder() {
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return getProtocolFieldBuilder().getBuilder();
-      }
-      /**
-       * <pre>
-       **
-       * Request Protocol.
-       * </pre>
-       *
-       * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 8;</code>
-       */
-      public com.mackenziehigh.socius.web.messages.web_m.HttpProtocolOrBuilder getProtocolOrBuilder() {
-        if (protocolBuilder_ != null) {
-          return protocolBuilder_.getMessageOrBuilder();
-        } else {
-          return protocol_ == null ?
-              com.mackenziehigh.socius.web.messages.web_m.HttpProtocol.getDefaultInstance() : protocol_;
-        }
-      }
-      /**
-       * <pre>
-       **
-       * Request Protocol.
-       * </pre>
-       *
-       * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 8;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          com.mackenziehigh.socius.web.messages.web_m.HttpProtocol, com.mackenziehigh.socius.web.messages.web_m.HttpProtocol.Builder, com.mackenziehigh.socius.web.messages.web_m.HttpProtocolOrBuilder> 
-          getProtocolFieldBuilder() {
-        if (protocolBuilder_ == null) {
-          protocolBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.mackenziehigh.socius.web.messages.web_m.HttpProtocol, com.mackenziehigh.socius.web.messages.web_m.HttpProtocol.Builder, com.mackenziehigh.socius.web.messages.web_m.HttpProtocolOrBuilder>(
-                  getProtocol(),
-                  getParentForChildren(),
-                  isClean());
-          protocol_ = null;
-        }
-        return protocolBuilder_;
-      }
-
-      private java.lang.Object method_ = "";
-      /**
-       * <pre>
-       **
-       * HTTP Verb of the request (GET/POST/etc).
-       * </pre>
-       *
-       * <code>optional string method = 9;</code>
-       */
-      public boolean hasMethod() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <pre>
-       **
-       * HTTP Verb of the request (GET/POST/etc).
-       * </pre>
-       *
-       * <code>optional string method = 9;</code>
-       */
-      public java.lang.String getMethod() {
-        java.lang.Object ref = method_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            method_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <pre>
-       **
-       * HTTP Verb of the request (GET/POST/etc).
-       * </pre>
-       *
-       * <code>optional string method = 9;</code>
-       */
-      public com.google.protobuf.ByteString
-          getMethodBytes() {
-        java.lang.Object ref = method_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          method_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <pre>
-       **
-       * HTTP Verb of the request (GET/POST/etc).
-       * </pre>
-       *
-       * <code>optional string method = 9;</code>
-       */
-      public Builder setMethod(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-        method_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * HTTP Verb of the request (GET/POST/etc).
-       * </pre>
-       *
-       * <code>optional string method = 9;</code>
-       */
-      public Builder clearMethod() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        method_ = getDefaultInstance().getMethod();
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * HTTP Verb of the request (GET/POST/etc).
-       * </pre>
-       *
-       * <code>optional string method = 9;</code>
-       */
-      public Builder setMethodBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-        method_ = value;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object uri_ = "";
-      /**
-       * <pre>
-       **
-       * Requested URI.
-       * </pre>
-       *
-       * <code>optional string uri = 10;</code>
-       */
-      public boolean hasUri() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <pre>
-       **
-       * Requested URI.
-       * </pre>
-       *
-       * <code>optional string uri = 10;</code>
-       */
-      public java.lang.String getUri() {
-        java.lang.Object ref = uri_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            uri_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <pre>
-       **
-       * Requested URI.
-       * </pre>
-       *
-       * <code>optional string uri = 10;</code>
-       */
-      public com.google.protobuf.ByteString
-          getUriBytes() {
-        java.lang.Object ref = uri_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          uri_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <pre>
-       **
-       * Requested URI.
-       * </pre>
-       *
-       * <code>optional string uri = 10;</code>
-       */
-      public Builder setUri(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000004;
-        uri_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * Requested URI.
-       * </pre>
-       *
-       * <code>optional string uri = 10;</code>
-       */
-      public Builder clearUri() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        uri_ = getDefaultInstance().getUri();
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * Requested URI.
-       * </pre>
-       *
-       * <code>optional string uri = 10;</code>
-       */
-      public Builder setUriBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000004;
-        uri_ = value;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object path_ = "";
-      /**
-       * <pre>
-       **
-       * Requested Path of URI.
-       * </pre>
-       *
-       * <code>optional string path = 11;</code>
-       */
-      public boolean hasPath() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      /**
-       * <pre>
-       **
-       * Requested Path of URI.
-       * </pre>
-       *
-       * <code>optional string path = 11;</code>
-       */
-      public java.lang.String getPath() {
-        java.lang.Object ref = path_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            path_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <pre>
-       **
-       * Requested Path of URI.
-       * </pre>
-       *
-       * <code>optional string path = 11;</code>
-       */
-      public com.google.protobuf.ByteString
-          getPathBytes() {
-        java.lang.Object ref = path_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          path_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <pre>
-       **
-       * Requested Path of URI.
-       * </pre>
-       *
-       * <code>optional string path = 11;</code>
-       */
-      public Builder setPath(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000008;
-        path_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * Requested Path of URI.
-       * </pre>
-       *
-       * <code>optional string path = 11;</code>
-       */
-      public Builder clearPath() {
-        bitField0_ = (bitField0_ & ~0x00000008);
-        path_ = getDefaultInstance().getPath();
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * Requested Path of URI.
-       * </pre>
-       *
-       * <code>optional string path = 11;</code>
-       */
-      public Builder setPathBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000008;
-        path_ = value;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object rawPath_ = "";
-      /**
-       * <pre>
-       **
-       * Raw Requested Path of URI.
-       * </pre>
-       *
-       * <code>optional string rawPath = 12;</code>
-       */
-      public boolean hasRawPath() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
-      }
-      /**
-       * <pre>
-       **
-       * Raw Requested Path of URI.
-       * </pre>
-       *
-       * <code>optional string rawPath = 12;</code>
-       */
-      public java.lang.String getRawPath() {
-        java.lang.Object ref = rawPath_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            rawPath_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <pre>
-       **
-       * Raw Requested Path of URI.
-       * </pre>
-       *
-       * <code>optional string rawPath = 12;</code>
-       */
-      public com.google.protobuf.ByteString
-          getRawPathBytes() {
-        java.lang.Object ref = rawPath_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          rawPath_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <pre>
-       **
-       * Raw Requested Path of URI.
-       * </pre>
-       *
-       * <code>optional string rawPath = 12;</code>
-       */
-      public Builder setRawPath(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000010;
-        rawPath_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * Raw Requested Path of URI.
-       * </pre>
-       *
-       * <code>optional string rawPath = 12;</code>
-       */
-      public Builder clearRawPath() {
-        bitField0_ = (bitField0_ & ~0x00000010);
-        rawPath_ = getDefaultInstance().getRawPath();
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * Raw Requested Path of URI.
-       * </pre>
-       *
-       * <code>optional string rawPath = 12;</code>
-       */
-      public Builder setRawPathBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000010;
-        rawPath_ = value;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object rawQuery_ = "";
-      /**
-       * <pre>
-       **
-       * Raw Query String.
-       * </pre>
-       *
-       * <code>optional string rawQuery = 13;</code>
-       */
-      public boolean hasRawQuery() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
-      }
-      /**
-       * <pre>
-       **
-       * Raw Query String.
-       * </pre>
-       *
-       * <code>optional string rawQuery = 13;</code>
-       */
-      public java.lang.String getRawQuery() {
-        java.lang.Object ref = rawQuery_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            rawQuery_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <pre>
-       **
-       * Raw Query String.
-       * </pre>
-       *
-       * <code>optional string rawQuery = 13;</code>
-       */
-      public com.google.protobuf.ByteString
-          getRawQueryBytes() {
-        java.lang.Object ref = rawQuery_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          rawQuery_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <pre>
-       **
-       * Raw Query String.
-       * </pre>
-       *
-       * <code>optional string rawQuery = 13;</code>
-       */
-      public Builder setRawQuery(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000020;
-        rawQuery_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * Raw Query String.
-       * </pre>
-       *
-       * <code>optional string rawQuery = 13;</code>
-       */
-      public Builder clearRawQuery() {
-        bitField0_ = (bitField0_ & ~0x00000020);
-        rawQuery_ = getDefaultInstance().getRawQuery();
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * Raw Query String.
-       * </pre>
-       *
-       * <code>optional string rawQuery = 13;</code>
-       */
-      public Builder setRawQueryBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000020;
-        rawQuery_ = value;
-        onChanged();
-        return this;
-      }
-
-      private com.google.protobuf.MapField<
-          java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter> parameters_;
-      private com.google.protobuf.MapField<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter>
-      internalGetParameters() {
-        if (parameters_ == null) {
-          return com.google.protobuf.MapField.emptyMapField(
-              ParametersDefaultEntryHolder.defaultEntry);
-        }
-        return parameters_;
-      }
-      private com.google.protobuf.MapField<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter>
-      internalGetMutableParameters() {
-        onChanged();;
-        if (parameters_ == null) {
-          parameters_ = com.google.protobuf.MapField.newMapField(
-              ParametersDefaultEntryHolder.defaultEntry);
-        }
-        if (!parameters_.isMutable()) {
-          parameters_ = parameters_.copy();
-        }
-        return parameters_;
-      }
-
-      public int getParametersCount() {
-        return internalGetParameters().getMap().size();
-      }
-      /**
-       * <pre>
-       **
-       * Query Parameters.
-       * </pre>
-       *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 14;</code>
-       */
-
-      public boolean containsParameters(
-          java.lang.String key) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
-        return internalGetParameters().getMap().containsKey(key);
-      }
-      /**
-       * Use {@link #getParametersMap()} instead.
-       */
-      @java.lang.Deprecated
-      public java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter> getParameters() {
-        return getParametersMap();
-      }
-      /**
-       * <pre>
-       **
-       * Query Parameters.
-       * </pre>
-       *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 14;</code>
-       */
-
-      public java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter> getParametersMap() {
-        return internalGetParameters().getMap();
-      }
-      /**
-       * <pre>
-       **
-       * Query Parameters.
-       * </pre>
-       *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 14;</code>
-       */
-
-      public com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter getParametersOrDefault(
-          java.lang.String key,
-          com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter defaultValue) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
-        java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter> map =
-            internalGetParameters().getMap();
-        return map.containsKey(key) ? map.get(key) : defaultValue;
-      }
-      /**
-       * <pre>
-       **
-       * Query Parameters.
-       * </pre>
-       *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 14;</code>
-       */
-
-      public com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter getParametersOrThrow(
-          java.lang.String key) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
-        java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter> map =
-            internalGetParameters().getMap();
-        if (!map.containsKey(key)) {
-          throw new java.lang.IllegalArgumentException();
-        }
-        return map.get(key);
-      }
-
-      public Builder clearParameters() {
-        internalGetMutableParameters().getMutableMap()
-            .clear();
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * Query Parameters.
-       * </pre>
-       *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 14;</code>
-       */
-
-      public Builder removeParameters(
-          java.lang.String key) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
-        internalGetMutableParameters().getMutableMap()
-            .remove(key);
-        return this;
-      }
-      /**
-       * Use alternate mutation accessors instead.
-       */
-      @java.lang.Deprecated
-      public java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter>
-      getMutableParameters() {
-        return internalGetMutableParameters().getMutableMap();
-      }
-      /**
-       * <pre>
-       **
-       * Query Parameters.
-       * </pre>
-       *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 14;</code>
-       */
-      public Builder putParameters(
-          java.lang.String key,
-          com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter value) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
-        if (value == null) { throw new java.lang.NullPointerException(); }
-        internalGetMutableParameters().getMutableMap()
-            .put(key, value);
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * Query Parameters.
-       * </pre>
-       *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 14;</code>
-       */
-
-      public Builder putAllParameters(
-          java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter> values) {
-        internalGetMutableParameters().getMutableMap()
-            .putAll(values);
-        return this;
-      }
-
-      private com.google.protobuf.MapField<
-          java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> headers_;
-      private com.google.protobuf.MapField<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>
-      internalGetHeaders() {
-        if (headers_ == null) {
-          return com.google.protobuf.MapField.emptyMapField(
-              HeadersDefaultEntryHolder.defaultEntry);
-        }
-        return headers_;
-      }
-      private com.google.protobuf.MapField<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>
-      internalGetMutableHeaders() {
-        onChanged();;
-        if (headers_ == null) {
-          headers_ = com.google.protobuf.MapField.newMapField(
-              HeadersDefaultEntryHolder.defaultEntry);
-        }
-        if (!headers_.isMutable()) {
-          headers_ = headers_.copy();
-        }
-        return headers_;
-      }
-
-      public int getHeadersCount() {
-        return internalGetHeaders().getMap().size();
-      }
-      /**
-       * <pre>
-       **
-       * HTTP Headers.
-       * </pre>
-       *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 15;</code>
-       */
-
-      public boolean containsHeaders(
-          java.lang.String key) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
-        return internalGetHeaders().getMap().containsKey(key);
-      }
-      /**
-       * Use {@link #getHeadersMap()} instead.
-       */
-      @java.lang.Deprecated
-      public java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> getHeaders() {
-        return getHeadersMap();
-      }
-      /**
-       * <pre>
-       **
-       * HTTP Headers.
-       * </pre>
-       *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 15;</code>
-       */
-
-      public java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> getHeadersMap() {
-        return internalGetHeaders().getMap();
-      }
-      /**
-       * <pre>
-       **
-       * HTTP Headers.
-       * </pre>
-       *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 15;</code>
-       */
-
-      public com.mackenziehigh.socius.web.messages.web_m.HttpHeader getHeadersOrDefault(
-          java.lang.String key,
-          com.mackenziehigh.socius.web.messages.web_m.HttpHeader defaultValue) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
-        java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> map =
-            internalGetHeaders().getMap();
-        return map.containsKey(key) ? map.get(key) : defaultValue;
-      }
-      /**
-       * <pre>
-       **
-       * HTTP Headers.
-       * </pre>
-       *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 15;</code>
-       */
-
-      public com.mackenziehigh.socius.web.messages.web_m.HttpHeader getHeadersOrThrow(
-          java.lang.String key) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
-        java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> map =
-            internalGetHeaders().getMap();
-        if (!map.containsKey(key)) {
-          throw new java.lang.IllegalArgumentException();
-        }
-        return map.get(key);
-      }
-
-      public Builder clearHeaders() {
-        internalGetMutableHeaders().getMutableMap()
-            .clear();
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * HTTP Headers.
-       * </pre>
-       *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 15;</code>
-       */
-
-      public Builder removeHeaders(
-          java.lang.String key) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
-        internalGetMutableHeaders().getMutableMap()
-            .remove(key);
-        return this;
-      }
-      /**
-       * Use alternate mutation accessors instead.
-       */
-      @java.lang.Deprecated
-      public java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>
-      getMutableHeaders() {
-        return internalGetMutableHeaders().getMutableMap();
-      }
-      /**
-       * <pre>
-       **
-       * HTTP Headers.
-       * </pre>
-       *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 15;</code>
-       */
-      public Builder putHeaders(
-          java.lang.String key,
-          com.mackenziehigh.socius.web.messages.web_m.HttpHeader value) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
-        if (value == null) { throw new java.lang.NullPointerException(); }
-        internalGetMutableHeaders().getMutableMap()
-            .put(key, value);
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * HTTP Headers.
-       * </pre>
-       *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 15;</code>
-       */
-
-      public Builder putAllHeaders(
-          java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> values) {
-        internalGetMutableHeaders().getMutableMap()
-            .putAll(values);
-        return this;
-      }
-
-      private java.lang.Object host_ = "";
-      /**
-       * <pre>
-       **
-       * Client Host.
-       * </pre>
-       *
-       * <code>optional string host = 16;</code>
-       */
-      public boolean hasHost() {
-        return ((bitField0_ & 0x00000100) == 0x00000100);
-      }
-      /**
-       * <pre>
-       **
-       * Client Host.
-       * </pre>
-       *
-       * <code>optional string host = 16;</code>
-       */
-      public java.lang.String getHost() {
-        java.lang.Object ref = host_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            host_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <pre>
-       **
-       * Client Host.
-       * </pre>
-       *
-       * <code>optional string host = 16;</code>
-       */
-      public com.google.protobuf.ByteString
-          getHostBytes() {
-        java.lang.Object ref = host_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          host_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <pre>
-       **
-       * Client Host.
-       * </pre>
-       *
-       * <code>optional string host = 16;</code>
-       */
-      public Builder setHost(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000100;
-        host_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * Client Host.
-       * </pre>
-       *
-       * <code>optional string host = 16;</code>
-       */
-      public Builder clearHost() {
-        bitField0_ = (bitField0_ & ~0x00000100);
-        host_ = getDefaultInstance().getHost();
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * Client Host.
-       * </pre>
-       *
-       * <code>optional string host = 16;</code>
-       */
-      public Builder setHostBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000100;
-        host_ = value;
-        onChanged();
-        return this;
-      }
-
-      private java.util.List<com.mackenziehigh.socius.web.messages.web_m.HttpCookie> cookies_ =
-        java.util.Collections.emptyList();
-      private void ensureCookiesIsMutable() {
-        if (!((bitField0_ & 0x00000200) == 0x00000200)) {
-          cookies_ = new java.util.ArrayList<com.mackenziehigh.socius.web.messages.web_m.HttpCookie>(cookies_);
-          bitField0_ |= 0x00000200;
-         }
-      }
-
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.mackenziehigh.socius.web.messages.web_m.HttpCookie, com.mackenziehigh.socius.web.messages.web_m.HttpCookie.Builder, com.mackenziehigh.socius.web.messages.web_m.HttpCookieOrBuilder> cookiesBuilder_;
-
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public java.util.List<com.mackenziehigh.socius.web.messages.web_m.HttpCookie> getCookiesList() {
-        if (cookiesBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(cookies_);
-        } else {
-          return cookiesBuilder_.getMessageList();
-        }
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public int getCookiesCount() {
-        if (cookiesBuilder_ == null) {
-          return cookies_.size();
-        } else {
-          return cookiesBuilder_.getCount();
-        }
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public com.mackenziehigh.socius.web.messages.web_m.HttpCookie getCookies(int index) {
-        if (cookiesBuilder_ == null) {
-          return cookies_.get(index);
-        } else {
-          return cookiesBuilder_.getMessage(index);
-        }
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public Builder setCookies(
-          int index, com.mackenziehigh.socius.web.messages.web_m.HttpCookie value) {
-        if (cookiesBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureCookiesIsMutable();
-          cookies_.set(index, value);
-          onChanged();
-        } else {
-          cookiesBuilder_.setMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public Builder setCookies(
-          int index, com.mackenziehigh.socius.web.messages.web_m.HttpCookie.Builder builderForValue) {
-        if (cookiesBuilder_ == null) {
-          ensureCookiesIsMutable();
-          cookies_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          cookiesBuilder_.setMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public Builder addCookies(com.mackenziehigh.socius.web.messages.web_m.HttpCookie value) {
-        if (cookiesBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureCookiesIsMutable();
-          cookies_.add(value);
-          onChanged();
-        } else {
-          cookiesBuilder_.addMessage(value);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public Builder addCookies(
-          int index, com.mackenziehigh.socius.web.messages.web_m.HttpCookie value) {
-        if (cookiesBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureCookiesIsMutable();
-          cookies_.add(index, value);
-          onChanged();
-        } else {
-          cookiesBuilder_.addMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public Builder addCookies(
-          com.mackenziehigh.socius.web.messages.web_m.HttpCookie.Builder builderForValue) {
-        if (cookiesBuilder_ == null) {
-          ensureCookiesIsMutable();
-          cookies_.add(builderForValue.build());
-          onChanged();
-        } else {
-          cookiesBuilder_.addMessage(builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public Builder addCookies(
-          int index, com.mackenziehigh.socius.web.messages.web_m.HttpCookie.Builder builderForValue) {
-        if (cookiesBuilder_ == null) {
-          ensureCookiesIsMutable();
-          cookies_.add(index, builderForValue.build());
-          onChanged();
-        } else {
-          cookiesBuilder_.addMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public Builder addAllCookies(
-          java.lang.Iterable<? extends com.mackenziehigh.socius.web.messages.web_m.HttpCookie> values) {
-        if (cookiesBuilder_ == null) {
-          ensureCookiesIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, cookies_);
-          onChanged();
-        } else {
-          cookiesBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public Builder clearCookies() {
-        if (cookiesBuilder_ == null) {
-          cookies_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000200);
-          onChanged();
-        } else {
-          cookiesBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public Builder removeCookies(int index) {
-        if (cookiesBuilder_ == null) {
-          ensureCookiesIsMutable();
-          cookies_.remove(index);
-          onChanged();
-        } else {
-          cookiesBuilder_.remove(index);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public com.mackenziehigh.socius.web.messages.web_m.HttpCookie.Builder getCookiesBuilder(
-          int index) {
-        return getCookiesFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public com.mackenziehigh.socius.web.messages.web_m.HttpCookieOrBuilder getCookiesOrBuilder(
-          int index) {
-        if (cookiesBuilder_ == null) {
-          return cookies_.get(index);  } else {
-          return cookiesBuilder_.getMessageOrBuilder(index);
-        }
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public java.util.List<? extends com.mackenziehigh.socius.web.messages.web_m.HttpCookieOrBuilder> 
-           getCookiesOrBuilderList() {
-        if (cookiesBuilder_ != null) {
-          return cookiesBuilder_.getMessageOrBuilderList();
-        } else {
-          return java.util.Collections.unmodifiableList(cookies_);
-        }
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public com.mackenziehigh.socius.web.messages.web_m.HttpCookie.Builder addCookiesBuilder() {
-        return getCookiesFieldBuilder().addBuilder(
-            com.mackenziehigh.socius.web.messages.web_m.HttpCookie.getDefaultInstance());
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public com.mackenziehigh.socius.web.messages.web_m.HttpCookie.Builder addCookiesBuilder(
-          int index) {
-        return getCookiesFieldBuilder().addBuilder(
-            index, com.mackenziehigh.socius.web.messages.web_m.HttpCookie.getDefaultInstance());
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public java.util.List<com.mackenziehigh.socius.web.messages.web_m.HttpCookie.Builder> 
-           getCookiesBuilderList() {
-        return getCookiesFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.mackenziehigh.socius.web.messages.web_m.HttpCookie, com.mackenziehigh.socius.web.messages.web_m.HttpCookie.Builder, com.mackenziehigh.socius.web.messages.web_m.HttpCookieOrBuilder> 
-          getCookiesFieldBuilder() {
-        if (cookiesBuilder_ == null) {
-          cookiesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              com.mackenziehigh.socius.web.messages.web_m.HttpCookie, com.mackenziehigh.socius.web.messages.web_m.HttpCookie.Builder, com.mackenziehigh.socius.web.messages.web_m.HttpCookieOrBuilder>(
-                  cookies_,
-                  ((bitField0_ & 0x00000200) == 0x00000200),
-                  getParentForChildren(),
-                  isClean());
-          cookies_ = null;
-        }
-        return cookiesBuilder_;
-      }
-
-      private java.lang.Object contentType_ = "";
-      /**
-       * <pre>
-       **
-       * MIME Type of the body.
-       * </pre>
-       *
-       * <code>optional string contentType = 18;</code>
-       */
-      public boolean hasContentType() {
-        return ((bitField0_ & 0x00000400) == 0x00000400);
-      }
-      /**
-       * <pre>
-       **
-       * MIME Type of the body.
-       * </pre>
-       *
-       * <code>optional string contentType = 18;</code>
-       */
-      public java.lang.String getContentType() {
-        java.lang.Object ref = contentType_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            contentType_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <pre>
-       **
-       * MIME Type of the body.
-       * </pre>
-       *
-       * <code>optional string contentType = 18;</code>
-       */
-      public com.google.protobuf.ByteString
-          getContentTypeBytes() {
-        java.lang.Object ref = contentType_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          contentType_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <pre>
-       **
-       * MIME Type of the body.
-       * </pre>
-       *
-       * <code>optional string contentType = 18;</code>
-       */
-      public Builder setContentType(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000400;
-        contentType_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * MIME Type of the body.
-       * </pre>
-       *
-       * <code>optional string contentType = 18;</code>
-       */
-      public Builder clearContentType() {
-        bitField0_ = (bitField0_ & ~0x00000400);
-        contentType_ = getDefaultInstance().getContentType();
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * MIME Type of the body.
-       * </pre>
-       *
-       * <code>optional string contentType = 18;</code>
-       */
-      public Builder setContentTypeBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000400;
-        contentType_ = value;
-        onChanged();
-        return this;
-      }
-
-      private int contentLength_ ;
-      /**
-       * <pre>
-       **
-       * Length of the body.
-       * </pre>
-       *
-       * <code>optional int32 contentLength = 19;</code>
-       */
-      public boolean hasContentLength() {
-        return ((bitField0_ & 0x00000800) == 0x00000800);
-      }
-      /**
-       * <pre>
-       **
-       * Length of the body.
-       * </pre>
-       *
-       * <code>optional int32 contentLength = 19;</code>
-       */
-      public int getContentLength() {
-        return contentLength_;
-      }
-      /**
-       * <pre>
-       **
-       * Length of the body.
-       * </pre>
-       *
-       * <code>optional int32 contentLength = 19;</code>
-       */
-      public Builder setContentLength(int value) {
-        bitField0_ |= 0x00000800;
-        contentLength_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * Length of the body.
-       * </pre>
-       *
-       * <code>optional int32 contentLength = 19;</code>
-       */
-      public Builder clearContentLength() {
-        bitField0_ = (bitField0_ & ~0x00000800);
-        contentLength_ = 0;
-        onChanged();
-        return this;
-      }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:com.mackenziehigh.socius.web.messages.HttpPrefix)
-    }
-
-    // @@protoc_insertion_point(class_scope:com.mackenziehigh.socius.web.messages.HttpPrefix)
-    private static final com.mackenziehigh.socius.web.messages.web_m.HttpPrefix DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new com.mackenziehigh.socius.web.messages.web_m.HttpPrefix();
-    }
-
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpPrefix getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<HttpPrefix>
-        PARSER = new com.google.protobuf.AbstractParser<HttpPrefix>() {
-      public HttpPrefix parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-          return new HttpPrefix(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<HttpPrefix> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<HttpPrefix> getParserForType() {
-      return PARSER;
-    }
-
-    public com.mackenziehigh.socius.web.messages.web_m.HttpPrefix getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
   public interface HttpRequestOrBuilder extends
       // @@protoc_insertion_point(interface_extends:com.mackenziehigh.socius.web.messages.HttpRequest)
       com.google.protobuf.MessageOrBuilder {
@@ -3649,7 +21,7 @@ public final class web_m {
     /**
      * <pre>
      **
-     * Use this field to attach debugging information.
+     * (optional) Use this field to attach debugging information.
      * </pre>
      *
      * <code>repeated string debug = 1;</code>
@@ -3659,7 +31,7 @@ public final class web_m {
     /**
      * <pre>
      **
-     * Use this field to attach debugging information.
+     * (optional) Use this field to attach debugging information.
      * </pre>
      *
      * <code>repeated string debug = 1;</code>
@@ -3668,7 +40,7 @@ public final class web_m {
     /**
      * <pre>
      **
-     * Use this field to attach debugging information.
+     * (optional) Use this field to attach debugging information.
      * </pre>
      *
      * <code>repeated string debug = 1;</code>
@@ -3677,7 +49,7 @@ public final class web_m {
     /**
      * <pre>
      **
-     * Use this field to attach debugging information.
+     * (optional) Use this field to attach debugging information.
      * </pre>
      *
      * <code>repeated string debug = 1;</code>
@@ -3689,6 +61,9 @@ public final class web_m {
      * <pre>
      **
      * Human readable name of the server receiving the request.
+     * &lt;p&gt;
+     * This value is assigned by the server itself, not the client.
+     * &lt;/p&gt;
      * </pre>
      *
      * <code>optional string serverName = 2;</code>
@@ -3698,6 +73,9 @@ public final class web_m {
      * <pre>
      **
      * Human readable name of the server receiving the request.
+     * &lt;p&gt;
+     * This value is assigned by the server itself, not the client.
+     * &lt;/p&gt;
      * </pre>
      *
      * <code>optional string serverName = 2;</code>
@@ -3707,6 +85,9 @@ public final class web_m {
      * <pre>
      **
      * Human readable name of the server receiving the request.
+     * &lt;p&gt;
+     * This value is assigned by the server itself, not the client.
+     * &lt;/p&gt;
      * </pre>
      *
      * <code>optional string serverName = 2;</code>
@@ -4174,59 +555,10 @@ public final class web_m {
     /**
      * <pre>
      **
-     * HTTP cookies from the client.
-     * </pre>
-     *
-     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-     */
-    java.util.List<com.mackenziehigh.socius.web.messages.web_m.HttpCookie> 
-        getCookiesList();
-    /**
-     * <pre>
-     **
-     * HTTP cookies from the client.
-     * </pre>
-     *
-     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-     */
-    com.mackenziehigh.socius.web.messages.web_m.HttpCookie getCookies(int index);
-    /**
-     * <pre>
-     **
-     * HTTP cookies from the client.
-     * </pre>
-     *
-     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-     */
-    int getCookiesCount();
-    /**
-     * <pre>
-     **
-     * HTTP cookies from the client.
-     * </pre>
-     *
-     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-     */
-    java.util.List<? extends com.mackenziehigh.socius.web.messages.web_m.HttpCookieOrBuilder> 
-        getCookiesOrBuilderList();
-    /**
-     * <pre>
-     **
-     * HTTP cookies from the client.
-     * </pre>
-     *
-     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-     */
-    com.mackenziehigh.socius.web.messages.web_m.HttpCookieOrBuilder getCookiesOrBuilder(
-        int index);
-
-    /**
-     * <pre>
-     **
      * MIME Type of the body.
      * </pre>
      *
-     * <code>optional string contentType = 18;</code>
+     * <code>optional string contentType = 17;</code>
      */
     boolean hasContentType();
     /**
@@ -4235,7 +567,7 @@ public final class web_m {
      * MIME Type of the body.
      * </pre>
      *
-     * <code>optional string contentType = 18;</code>
+     * <code>optional string contentType = 17;</code>
      */
     java.lang.String getContentType();
     /**
@@ -4244,7 +576,7 @@ public final class web_m {
      * MIME Type of the body.
      * </pre>
      *
-     * <code>optional string contentType = 18;</code>
+     * <code>optional string contentType = 17;</code>
      */
     com.google.protobuf.ByteString
         getContentTypeBytes();
@@ -4255,7 +587,7 @@ public final class web_m {
      * Length of the body.
      * </pre>
      *
-     * <code>optional int32 contentLength = 19;</code>
+     * <code>optional int32 contentLength = 18;</code>
      */
     boolean hasContentLength();
     /**
@@ -4264,7 +596,7 @@ public final class web_m {
      * Length of the body.
      * </pre>
      *
-     * <code>optional int32 contentLength = 19;</code>
+     * <code>optional int32 contentLength = 18;</code>
      */
     int getContentLength();
 
@@ -4274,7 +606,7 @@ public final class web_m {
      * Body of the request.
      * </pre>
      *
-     * <code>optional bytes body = 20;</code>
+     * <code>optional bytes body = 19;</code>
      */
     boolean hasBody();
     /**
@@ -4283,9 +615,68 @@ public final class web_m {
      * Body of the request.
      * </pre>
      *
-     * <code>optional bytes body = 20;</code>
+     * <code>optional bytes body = 19;</code>
      */
     com.google.protobuf.ByteString getBody();
+
+    /**
+     * <pre>
+     **
+     * Trailing HTTP Headers.
+     * </pre>
+     *
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 20;</code>
+     */
+    int getTrailersCount();
+    /**
+     * <pre>
+     **
+     * Trailing HTTP Headers.
+     * </pre>
+     *
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 20;</code>
+     */
+    boolean containsTrailers(
+        java.lang.String key);
+    /**
+     * Use {@link #getTrailersMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>
+    getTrailers();
+    /**
+     * <pre>
+     **
+     * Trailing HTTP Headers.
+     * </pre>
+     *
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 20;</code>
+     */
+    java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>
+    getTrailersMap();
+    /**
+     * <pre>
+     **
+     * Trailing HTTP Headers.
+     * </pre>
+     *
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 20;</code>
+     */
+
+    com.mackenziehigh.socius.web.messages.web_m.HttpHeader getTrailersOrDefault(
+        java.lang.String key,
+        com.mackenziehigh.socius.web.messages.web_m.HttpHeader defaultValue);
+    /**
+     * <pre>
+     **
+     * Trailing HTTP Headers.
+     * </pre>
+     *
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 20;</code>
+     */
+
+    com.mackenziehigh.socius.web.messages.web_m.HttpHeader getTrailersOrThrow(
+        java.lang.String key);
   }
   /**
    * <pre>
@@ -4317,7 +708,6 @@ public final class web_m {
       rawPath_ = "";
       rawQuery_ = "";
       host_ = "";
-      cookies_ = java.util.Collections.emptyList();
       contentType_ = "";
       contentLength_ = 0;
       body_ = com.google.protobuf.ByteString.EMPTY;
@@ -4470,28 +860,32 @@ public final class web_m {
               break;
             }
             case 138: {
-              if (!((mutable_bitField0_ & 0x00010000) == 0x00010000)) {
-                cookies_ = new java.util.ArrayList<com.mackenziehigh.socius.web.messages.web_m.HttpCookie>();
-                mutable_bitField0_ |= 0x00010000;
-              }
-              cookies_.add(
-                  input.readMessage(com.mackenziehigh.socius.web.messages.web_m.HttpCookie.PARSER, extensionRegistry));
-              break;
-            }
-            case 146: {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00002000;
               contentType_ = bs;
               break;
             }
-            case 152: {
+            case 144: {
               bitField0_ |= 0x00004000;
               contentLength_ = input.readInt32();
               break;
             }
-            case 162: {
+            case 154: {
               bitField0_ |= 0x00008000;
               body_ = input.readBytes();
+              break;
+            }
+            case 162: {
+              if (!((mutable_bitField0_ & 0x00080000) == 0x00080000)) {
+                trailers_ = com.google.protobuf.MapField.newMapField(
+                    TrailersDefaultEntryHolder.defaultEntry);
+                mutable_bitField0_ |= 0x00080000;
+              }
+              com.google.protobuf.MapEntry<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>
+              trailers__ = input.readMessage(
+                  TrailersDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              trailers_.getMutableMap().put(
+                  trailers__.getKey(), trailers__.getValue());
               break;
             }
           }
@@ -4504,9 +898,6 @@ public final class web_m {
       } finally {
         if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
           debug_ = debug_.getUnmodifiableView();
-        }
-        if (((mutable_bitField0_ & 0x00010000) == 0x00010000)) {
-          cookies_ = java.util.Collections.unmodifiableList(cookies_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -4525,6 +916,8 @@ public final class web_m {
           return internalGetParameters();
         case 15:
           return internalGetHeaders();
+        case 20:
+          return internalGetTrailers();
         default:
           throw new RuntimeException(
               "Invalid map field number: " + number);
@@ -4543,7 +936,7 @@ public final class web_m {
     /**
      * <pre>
      **
-     * Use this field to attach debugging information.
+     * (optional) Use this field to attach debugging information.
      * </pre>
      *
      * <code>repeated string debug = 1;</code>
@@ -4555,7 +948,7 @@ public final class web_m {
     /**
      * <pre>
      **
-     * Use this field to attach debugging information.
+     * (optional) Use this field to attach debugging information.
      * </pre>
      *
      * <code>repeated string debug = 1;</code>
@@ -4566,7 +959,7 @@ public final class web_m {
     /**
      * <pre>
      **
-     * Use this field to attach debugging information.
+     * (optional) Use this field to attach debugging information.
      * </pre>
      *
      * <code>repeated string debug = 1;</code>
@@ -4577,7 +970,7 @@ public final class web_m {
     /**
      * <pre>
      **
-     * Use this field to attach debugging information.
+     * (optional) Use this field to attach debugging information.
      * </pre>
      *
      * <code>repeated string debug = 1;</code>
@@ -4593,6 +986,9 @@ public final class web_m {
      * <pre>
      **
      * Human readable name of the server receiving the request.
+     * &lt;p&gt;
+     * This value is assigned by the server itself, not the client.
+     * &lt;/p&gt;
      * </pre>
      *
      * <code>optional string serverName = 2;</code>
@@ -4604,6 +1000,9 @@ public final class web_m {
      * <pre>
      **
      * Human readable name of the server receiving the request.
+     * &lt;p&gt;
+     * This value is assigned by the server itself, not the client.
+     * &lt;/p&gt;
      * </pre>
      *
      * <code>optional string serverName = 2;</code>
@@ -4626,6 +1025,9 @@ public final class web_m {
      * <pre>
      **
      * Human readable name of the server receiving the request.
+     * &lt;p&gt;
+     * This value is assigned by the server itself, not the client.
+     * &lt;/p&gt;
      * </pre>
      *
      * <code>optional string serverName = 2;</code>
@@ -5447,67 +1849,7 @@ public final class web_m {
       }
     }
 
-    public static final int COOKIES_FIELD_NUMBER = 17;
-    private java.util.List<com.mackenziehigh.socius.web.messages.web_m.HttpCookie> cookies_;
-    /**
-     * <pre>
-     **
-     * HTTP cookies from the client.
-     * </pre>
-     *
-     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-     */
-    public java.util.List<com.mackenziehigh.socius.web.messages.web_m.HttpCookie> getCookiesList() {
-      return cookies_;
-    }
-    /**
-     * <pre>
-     **
-     * HTTP cookies from the client.
-     * </pre>
-     *
-     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-     */
-    public java.util.List<? extends com.mackenziehigh.socius.web.messages.web_m.HttpCookieOrBuilder> 
-        getCookiesOrBuilderList() {
-      return cookies_;
-    }
-    /**
-     * <pre>
-     **
-     * HTTP cookies from the client.
-     * </pre>
-     *
-     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-     */
-    public int getCookiesCount() {
-      return cookies_.size();
-    }
-    /**
-     * <pre>
-     **
-     * HTTP cookies from the client.
-     * </pre>
-     *
-     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-     */
-    public com.mackenziehigh.socius.web.messages.web_m.HttpCookie getCookies(int index) {
-      return cookies_.get(index);
-    }
-    /**
-     * <pre>
-     **
-     * HTTP cookies from the client.
-     * </pre>
-     *
-     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-     */
-    public com.mackenziehigh.socius.web.messages.web_m.HttpCookieOrBuilder getCookiesOrBuilder(
-        int index) {
-      return cookies_.get(index);
-    }
-
-    public static final int CONTENTTYPE_FIELD_NUMBER = 18;
+    public static final int CONTENTTYPE_FIELD_NUMBER = 17;
     private volatile java.lang.Object contentType_;
     /**
      * <pre>
@@ -5515,7 +1857,7 @@ public final class web_m {
      * MIME Type of the body.
      * </pre>
      *
-     * <code>optional string contentType = 18;</code>
+     * <code>optional string contentType = 17;</code>
      */
     public boolean hasContentType() {
       return ((bitField0_ & 0x00002000) == 0x00002000);
@@ -5526,7 +1868,7 @@ public final class web_m {
      * MIME Type of the body.
      * </pre>
      *
-     * <code>optional string contentType = 18;</code>
+     * <code>optional string contentType = 17;</code>
      */
     public java.lang.String getContentType() {
       java.lang.Object ref = contentType_;
@@ -5548,7 +1890,7 @@ public final class web_m {
      * MIME Type of the body.
      * </pre>
      *
-     * <code>optional string contentType = 18;</code>
+     * <code>optional string contentType = 17;</code>
      */
     public com.google.protobuf.ByteString
         getContentTypeBytes() {
@@ -5564,7 +1906,7 @@ public final class web_m {
       }
     }
 
-    public static final int CONTENTLENGTH_FIELD_NUMBER = 19;
+    public static final int CONTENTLENGTH_FIELD_NUMBER = 18;
     private int contentLength_;
     /**
      * <pre>
@@ -5572,7 +1914,7 @@ public final class web_m {
      * Length of the body.
      * </pre>
      *
-     * <code>optional int32 contentLength = 19;</code>
+     * <code>optional int32 contentLength = 18;</code>
      */
     public boolean hasContentLength() {
       return ((bitField0_ & 0x00004000) == 0x00004000);
@@ -5583,13 +1925,13 @@ public final class web_m {
      * Length of the body.
      * </pre>
      *
-     * <code>optional int32 contentLength = 19;</code>
+     * <code>optional int32 contentLength = 18;</code>
      */
     public int getContentLength() {
       return contentLength_;
     }
 
-    public static final int BODY_FIELD_NUMBER = 20;
+    public static final int BODY_FIELD_NUMBER = 19;
     private com.google.protobuf.ByteString body_;
     /**
      * <pre>
@@ -5597,7 +1939,7 @@ public final class web_m {
      * Body of the request.
      * </pre>
      *
-     * <code>optional bytes body = 20;</code>
+     * <code>optional bytes body = 19;</code>
      */
     public boolean hasBody() {
       return ((bitField0_ & 0x00008000) == 0x00008000);
@@ -5608,10 +1950,106 @@ public final class web_m {
      * Body of the request.
      * </pre>
      *
-     * <code>optional bytes body = 20;</code>
+     * <code>optional bytes body = 19;</code>
      */
     public com.google.protobuf.ByteString getBody() {
       return body_;
+    }
+
+    public static final int TRAILERS_FIELD_NUMBER = 20;
+    private static final class TrailersDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>newDefaultInstance(
+                  com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_TrailersEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "",
+                  com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                  com.mackenziehigh.socius.web.messages.web_m.HttpHeader.getDefaultInstance());
+    }
+    private com.google.protobuf.MapField<
+        java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> trailers_;
+    private com.google.protobuf.MapField<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>
+    internalGetTrailers() {
+      if (trailers_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            TrailersDefaultEntryHolder.defaultEntry);
+      }
+      return trailers_;
+    }
+
+    public int getTrailersCount() {
+      return internalGetTrailers().getMap().size();
+    }
+    /**
+     * <pre>
+     **
+     * Trailing HTTP Headers.
+     * </pre>
+     *
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 20;</code>
+     */
+
+    public boolean containsTrailers(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      return internalGetTrailers().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getTrailersMap()} instead.
+     */
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> getTrailers() {
+      return getTrailersMap();
+    }
+    /**
+     * <pre>
+     **
+     * Trailing HTTP Headers.
+     * </pre>
+     *
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 20;</code>
+     */
+
+    public java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> getTrailersMap() {
+      return internalGetTrailers().getMap();
+    }
+    /**
+     * <pre>
+     **
+     * Trailing HTTP Headers.
+     * </pre>
+     *
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 20;</code>
+     */
+
+    public com.mackenziehigh.socius.web.messages.web_m.HttpHeader getTrailersOrDefault(
+        java.lang.String key,
+        com.mackenziehigh.socius.web.messages.web_m.HttpHeader defaultValue) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> map =
+          internalGetTrailers().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <pre>
+     **
+     * Trailing HTTP Headers.
+     * </pre>
+     *
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 20;</code>
+     */
+
+    public com.mackenziehigh.socius.web.messages.web_m.HttpHeader getTrailersOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> map =
+          internalGetTrailers().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -5680,18 +2118,21 @@ public final class web_m {
       if (((bitField0_ & 0x00001000) == 0x00001000)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 16, host_);
       }
-      for (int i = 0; i < cookies_.size(); i++) {
-        output.writeMessage(17, cookies_.get(i));
-      }
       if (((bitField0_ & 0x00002000) == 0x00002000)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 18, contentType_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 17, contentType_);
       }
       if (((bitField0_ & 0x00004000) == 0x00004000)) {
-        output.writeInt32(19, contentLength_);
+        output.writeInt32(18, contentLength_);
       }
       if (((bitField0_ & 0x00008000) == 0x00008000)) {
-        output.writeBytes(20, body_);
+        output.writeBytes(19, body_);
       }
+      com.google.protobuf.GeneratedMessageV3
+        .serializeStringMapTo(
+          output,
+          internalGetTrailers(),
+          TrailersDefaultEntryHolder.defaultEntry,
+          20);
       unknownFields.writeTo(output);
     }
 
@@ -5770,20 +2211,26 @@ public final class web_m {
       if (((bitField0_ & 0x00001000) == 0x00001000)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(16, host_);
       }
-      for (int i = 0; i < cookies_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(17, cookies_.get(i));
-      }
       if (((bitField0_ & 0x00002000) == 0x00002000)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(18, contentType_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(17, contentType_);
       }
       if (((bitField0_ & 0x00004000) == 0x00004000)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(19, contentLength_);
+          .computeInt32Size(18, contentLength_);
       }
       if (((bitField0_ & 0x00008000) == 0x00008000)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(20, body_);
+          .computeBytesSize(19, body_);
+      }
+      for (java.util.Map.Entry<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> entry
+           : internalGetTrailers().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>
+        trailers__ = TrailersDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(20, trailers__);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -5873,8 +2320,6 @@ public final class web_m {
         result = result && getHost()
             .equals(other.getHost());
       }
-      result = result && getCookiesList()
-          .equals(other.getCookiesList());
       result = result && (hasContentType() == other.hasContentType());
       if (hasContentType()) {
         result = result && getContentType()
@@ -5890,6 +2335,8 @@ public final class web_m {
         result = result && getBody()
             .equals(other.getBody());
       }
+      result = result && internalGetTrailers().equals(
+          other.internalGetTrailers());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -5967,10 +2414,6 @@ public final class web_m {
         hash = (37 * hash) + HOST_FIELD_NUMBER;
         hash = (53 * hash) + getHost().hashCode();
       }
-      if (getCookiesCount() > 0) {
-        hash = (37 * hash) + COOKIES_FIELD_NUMBER;
-        hash = (53 * hash) + getCookiesList().hashCode();
-      }
       if (hasContentType()) {
         hash = (37 * hash) + CONTENTTYPE_FIELD_NUMBER;
         hash = (53 * hash) + getContentType().hashCode();
@@ -5982,6 +2425,10 @@ public final class web_m {
       if (hasBody()) {
         hash = (37 * hash) + BODY_FIELD_NUMBER;
         hash = (53 * hash) + getBody().hashCode();
+      }
+      if (!internalGetTrailers().getMap().isEmpty()) {
+        hash = (37 * hash) + TRAILERS_FIELD_NUMBER;
+        hash = (53 * hash) + internalGetTrailers().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -6101,6 +2548,8 @@ public final class web_m {
             return internalGetParameters();
           case 15:
             return internalGetHeaders();
+          case 20:
+            return internalGetTrailers();
           default:
             throw new RuntimeException(
                 "Invalid map field number: " + number);
@@ -6114,6 +2563,8 @@ public final class web_m {
             return internalGetMutableParameters();
           case 15:
             return internalGetMutableHeaders();
+          case 20:
+            return internalGetMutableTrailers();
           default:
             throw new RuntimeException(
                 "Invalid map field number: " + number);
@@ -6140,7 +2591,6 @@ public final class web_m {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
           getProtocolFieldBuilder();
-          getCookiesFieldBuilder();
         }
       }
       public Builder clear() {
@@ -6179,18 +2629,13 @@ public final class web_m {
         internalGetMutableHeaders().clear();
         host_ = "";
         bitField0_ = (bitField0_ & ~0x00008000);
-        if (cookiesBuilder_ == null) {
-          cookies_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00010000);
-        } else {
-          cookiesBuilder_.clear();
-        }
         contentType_ = "";
-        bitField0_ = (bitField0_ & ~0x00020000);
+        bitField0_ = (bitField0_ & ~0x00010000);
         contentLength_ = 0;
-        bitField0_ = (bitField0_ & ~0x00040000);
+        bitField0_ = (bitField0_ & ~0x00020000);
         body_ = com.google.protobuf.ByteString.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00080000);
+        bitField0_ = (bitField0_ & ~0x00040000);
+        internalGetMutableTrailers().clear();
         return this;
       }
 
@@ -6280,27 +2725,20 @@ public final class web_m {
           to_bitField0_ |= 0x00001000;
         }
         result.host_ = host_;
-        if (cookiesBuilder_ == null) {
-          if (((bitField0_ & 0x00010000) == 0x00010000)) {
-            cookies_ = java.util.Collections.unmodifiableList(cookies_);
-            bitField0_ = (bitField0_ & ~0x00010000);
-          }
-          result.cookies_ = cookies_;
-        } else {
-          result.cookies_ = cookiesBuilder_.build();
-        }
-        if (((from_bitField0_ & 0x00020000) == 0x00020000)) {
+        if (((from_bitField0_ & 0x00010000) == 0x00010000)) {
           to_bitField0_ |= 0x00002000;
         }
         result.contentType_ = contentType_;
-        if (((from_bitField0_ & 0x00040000) == 0x00040000)) {
+        if (((from_bitField0_ & 0x00020000) == 0x00020000)) {
           to_bitField0_ |= 0x00004000;
         }
         result.contentLength_ = contentLength_;
-        if (((from_bitField0_ & 0x00080000) == 0x00080000)) {
+        if (((from_bitField0_ & 0x00040000) == 0x00040000)) {
           to_bitField0_ |= 0x00008000;
         }
         result.body_ = body_;
+        result.trailers_ = internalGetTrailers();
+        result.trailers_.makeImmutable();
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -6416,34 +2854,8 @@ public final class web_m {
           host_ = other.host_;
           onChanged();
         }
-        if (cookiesBuilder_ == null) {
-          if (!other.cookies_.isEmpty()) {
-            if (cookies_.isEmpty()) {
-              cookies_ = other.cookies_;
-              bitField0_ = (bitField0_ & ~0x00010000);
-            } else {
-              ensureCookiesIsMutable();
-              cookies_.addAll(other.cookies_);
-            }
-            onChanged();
-          }
-        } else {
-          if (!other.cookies_.isEmpty()) {
-            if (cookiesBuilder_.isEmpty()) {
-              cookiesBuilder_.dispose();
-              cookiesBuilder_ = null;
-              cookies_ = other.cookies_;
-              bitField0_ = (bitField0_ & ~0x00010000);
-              cookiesBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getCookiesFieldBuilder() : null;
-            } else {
-              cookiesBuilder_.addAllMessages(other.cookies_);
-            }
-          }
-        }
         if (other.hasContentType()) {
-          bitField0_ |= 0x00020000;
+          bitField0_ |= 0x00010000;
           contentType_ = other.contentType_;
           onChanged();
         }
@@ -6453,6 +2865,8 @@ public final class web_m {
         if (other.hasBody()) {
           setBody(other.getBody());
         }
+        internalGetMutableTrailers().mergeFrom(
+            other.internalGetTrailers());
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -6491,7 +2905,7 @@ public final class web_m {
       /**
        * <pre>
        **
-       * Use this field to attach debugging information.
+       * (optional) Use this field to attach debugging information.
        * </pre>
        *
        * <code>repeated string debug = 1;</code>
@@ -6503,7 +2917,7 @@ public final class web_m {
       /**
        * <pre>
        **
-       * Use this field to attach debugging information.
+       * (optional) Use this field to attach debugging information.
        * </pre>
        *
        * <code>repeated string debug = 1;</code>
@@ -6514,7 +2928,7 @@ public final class web_m {
       /**
        * <pre>
        **
-       * Use this field to attach debugging information.
+       * (optional) Use this field to attach debugging information.
        * </pre>
        *
        * <code>repeated string debug = 1;</code>
@@ -6525,7 +2939,7 @@ public final class web_m {
       /**
        * <pre>
        **
-       * Use this field to attach debugging information.
+       * (optional) Use this field to attach debugging information.
        * </pre>
        *
        * <code>repeated string debug = 1;</code>
@@ -6537,7 +2951,7 @@ public final class web_m {
       /**
        * <pre>
        **
-       * Use this field to attach debugging information.
+       * (optional) Use this field to attach debugging information.
        * </pre>
        *
        * <code>repeated string debug = 1;</code>
@@ -6555,7 +2969,7 @@ public final class web_m {
       /**
        * <pre>
        **
-       * Use this field to attach debugging information.
+       * (optional) Use this field to attach debugging information.
        * </pre>
        *
        * <code>repeated string debug = 1;</code>
@@ -6573,7 +2987,7 @@ public final class web_m {
       /**
        * <pre>
        **
-       * Use this field to attach debugging information.
+       * (optional) Use this field to attach debugging information.
        * </pre>
        *
        * <code>repeated string debug = 1;</code>
@@ -6589,7 +3003,7 @@ public final class web_m {
       /**
        * <pre>
        **
-       * Use this field to attach debugging information.
+       * (optional) Use this field to attach debugging information.
        * </pre>
        *
        * <code>repeated string debug = 1;</code>
@@ -6603,7 +3017,7 @@ public final class web_m {
       /**
        * <pre>
        **
-       * Use this field to attach debugging information.
+       * (optional) Use this field to attach debugging information.
        * </pre>
        *
        * <code>repeated string debug = 1;</code>
@@ -6624,6 +3038,9 @@ public final class web_m {
        * <pre>
        **
        * Human readable name of the server receiving the request.
+       * &lt;p&gt;
+       * This value is assigned by the server itself, not the client.
+       * &lt;/p&gt;
        * </pre>
        *
        * <code>optional string serverName = 2;</code>
@@ -6635,6 +3052,9 @@ public final class web_m {
        * <pre>
        **
        * Human readable name of the server receiving the request.
+       * &lt;p&gt;
+       * This value is assigned by the server itself, not the client.
+       * &lt;/p&gt;
        * </pre>
        *
        * <code>optional string serverName = 2;</code>
@@ -6657,6 +3077,9 @@ public final class web_m {
        * <pre>
        **
        * Human readable name of the server receiving the request.
+       * &lt;p&gt;
+       * This value is assigned by the server itself, not the client.
+       * &lt;/p&gt;
        * </pre>
        *
        * <code>optional string serverName = 2;</code>
@@ -6678,6 +3101,9 @@ public final class web_m {
        * <pre>
        **
        * Human readable name of the server receiving the request.
+       * &lt;p&gt;
+       * This value is assigned by the server itself, not the client.
+       * &lt;/p&gt;
        * </pre>
        *
        * <code>optional string serverName = 2;</code>
@@ -6696,6 +3122,9 @@ public final class web_m {
        * <pre>
        **
        * Human readable name of the server receiving the request.
+       * &lt;p&gt;
+       * This value is assigned by the server itself, not the client.
+       * &lt;/p&gt;
        * </pre>
        *
        * <code>optional string serverName = 2;</code>
@@ -6710,6 +3139,9 @@ public final class web_m {
        * <pre>
        **
        * Human readable name of the server receiving the request.
+       * &lt;p&gt;
+       * This value is assigned by the server itself, not the client.
+       * &lt;/p&gt;
        * </pre>
        *
        * <code>optional string serverName = 2;</code>
@@ -8286,336 +4718,6 @@ public final class web_m {
         return this;
       }
 
-      private java.util.List<com.mackenziehigh.socius.web.messages.web_m.HttpCookie> cookies_ =
-        java.util.Collections.emptyList();
-      private void ensureCookiesIsMutable() {
-        if (!((bitField0_ & 0x00010000) == 0x00010000)) {
-          cookies_ = new java.util.ArrayList<com.mackenziehigh.socius.web.messages.web_m.HttpCookie>(cookies_);
-          bitField0_ |= 0x00010000;
-         }
-      }
-
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.mackenziehigh.socius.web.messages.web_m.HttpCookie, com.mackenziehigh.socius.web.messages.web_m.HttpCookie.Builder, com.mackenziehigh.socius.web.messages.web_m.HttpCookieOrBuilder> cookiesBuilder_;
-
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public java.util.List<com.mackenziehigh.socius.web.messages.web_m.HttpCookie> getCookiesList() {
-        if (cookiesBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(cookies_);
-        } else {
-          return cookiesBuilder_.getMessageList();
-        }
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public int getCookiesCount() {
-        if (cookiesBuilder_ == null) {
-          return cookies_.size();
-        } else {
-          return cookiesBuilder_.getCount();
-        }
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public com.mackenziehigh.socius.web.messages.web_m.HttpCookie getCookies(int index) {
-        if (cookiesBuilder_ == null) {
-          return cookies_.get(index);
-        } else {
-          return cookiesBuilder_.getMessage(index);
-        }
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public Builder setCookies(
-          int index, com.mackenziehigh.socius.web.messages.web_m.HttpCookie value) {
-        if (cookiesBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureCookiesIsMutable();
-          cookies_.set(index, value);
-          onChanged();
-        } else {
-          cookiesBuilder_.setMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public Builder setCookies(
-          int index, com.mackenziehigh.socius.web.messages.web_m.HttpCookie.Builder builderForValue) {
-        if (cookiesBuilder_ == null) {
-          ensureCookiesIsMutable();
-          cookies_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          cookiesBuilder_.setMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public Builder addCookies(com.mackenziehigh.socius.web.messages.web_m.HttpCookie value) {
-        if (cookiesBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureCookiesIsMutable();
-          cookies_.add(value);
-          onChanged();
-        } else {
-          cookiesBuilder_.addMessage(value);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public Builder addCookies(
-          int index, com.mackenziehigh.socius.web.messages.web_m.HttpCookie value) {
-        if (cookiesBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureCookiesIsMutable();
-          cookies_.add(index, value);
-          onChanged();
-        } else {
-          cookiesBuilder_.addMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public Builder addCookies(
-          com.mackenziehigh.socius.web.messages.web_m.HttpCookie.Builder builderForValue) {
-        if (cookiesBuilder_ == null) {
-          ensureCookiesIsMutable();
-          cookies_.add(builderForValue.build());
-          onChanged();
-        } else {
-          cookiesBuilder_.addMessage(builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public Builder addCookies(
-          int index, com.mackenziehigh.socius.web.messages.web_m.HttpCookie.Builder builderForValue) {
-        if (cookiesBuilder_ == null) {
-          ensureCookiesIsMutable();
-          cookies_.add(index, builderForValue.build());
-          onChanged();
-        } else {
-          cookiesBuilder_.addMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public Builder addAllCookies(
-          java.lang.Iterable<? extends com.mackenziehigh.socius.web.messages.web_m.HttpCookie> values) {
-        if (cookiesBuilder_ == null) {
-          ensureCookiesIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, cookies_);
-          onChanged();
-        } else {
-          cookiesBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public Builder clearCookies() {
-        if (cookiesBuilder_ == null) {
-          cookies_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00010000);
-          onChanged();
-        } else {
-          cookiesBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public Builder removeCookies(int index) {
-        if (cookiesBuilder_ == null) {
-          ensureCookiesIsMutable();
-          cookies_.remove(index);
-          onChanged();
-        } else {
-          cookiesBuilder_.remove(index);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public com.mackenziehigh.socius.web.messages.web_m.HttpCookie.Builder getCookiesBuilder(
-          int index) {
-        return getCookiesFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public com.mackenziehigh.socius.web.messages.web_m.HttpCookieOrBuilder getCookiesOrBuilder(
-          int index) {
-        if (cookiesBuilder_ == null) {
-          return cookies_.get(index);  } else {
-          return cookiesBuilder_.getMessageOrBuilder(index);
-        }
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public java.util.List<? extends com.mackenziehigh.socius.web.messages.web_m.HttpCookieOrBuilder> 
-           getCookiesOrBuilderList() {
-        if (cookiesBuilder_ != null) {
-          return cookiesBuilder_.getMessageOrBuilderList();
-        } else {
-          return java.util.Collections.unmodifiableList(cookies_);
-        }
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public com.mackenziehigh.socius.web.messages.web_m.HttpCookie.Builder addCookiesBuilder() {
-        return getCookiesFieldBuilder().addBuilder(
-            com.mackenziehigh.socius.web.messages.web_m.HttpCookie.getDefaultInstance());
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public com.mackenziehigh.socius.web.messages.web_m.HttpCookie.Builder addCookiesBuilder(
-          int index) {
-        return getCookiesFieldBuilder().addBuilder(
-            index, com.mackenziehigh.socius.web.messages.web_m.HttpCookie.getDefaultInstance());
-      }
-      /**
-       * <pre>
-       **
-       * HTTP cookies from the client.
-       * </pre>
-       *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 17;</code>
-       */
-      public java.util.List<com.mackenziehigh.socius.web.messages.web_m.HttpCookie.Builder> 
-           getCookiesBuilderList() {
-        return getCookiesFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.mackenziehigh.socius.web.messages.web_m.HttpCookie, com.mackenziehigh.socius.web.messages.web_m.HttpCookie.Builder, com.mackenziehigh.socius.web.messages.web_m.HttpCookieOrBuilder> 
-          getCookiesFieldBuilder() {
-        if (cookiesBuilder_ == null) {
-          cookiesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              com.mackenziehigh.socius.web.messages.web_m.HttpCookie, com.mackenziehigh.socius.web.messages.web_m.HttpCookie.Builder, com.mackenziehigh.socius.web.messages.web_m.HttpCookieOrBuilder>(
-                  cookies_,
-                  ((bitField0_ & 0x00010000) == 0x00010000),
-                  getParentForChildren(),
-                  isClean());
-          cookies_ = null;
-        }
-        return cookiesBuilder_;
-      }
-
       private java.lang.Object contentType_ = "";
       /**
        * <pre>
@@ -8623,10 +4725,10 @@ public final class web_m {
        * MIME Type of the body.
        * </pre>
        *
-       * <code>optional string contentType = 18;</code>
+       * <code>optional string contentType = 17;</code>
        */
       public boolean hasContentType() {
-        return ((bitField0_ & 0x00020000) == 0x00020000);
+        return ((bitField0_ & 0x00010000) == 0x00010000);
       }
       /**
        * <pre>
@@ -8634,7 +4736,7 @@ public final class web_m {
        * MIME Type of the body.
        * </pre>
        *
-       * <code>optional string contentType = 18;</code>
+       * <code>optional string contentType = 17;</code>
        */
       public java.lang.String getContentType() {
         java.lang.Object ref = contentType_;
@@ -8656,7 +4758,7 @@ public final class web_m {
        * MIME Type of the body.
        * </pre>
        *
-       * <code>optional string contentType = 18;</code>
+       * <code>optional string contentType = 17;</code>
        */
       public com.google.protobuf.ByteString
           getContentTypeBytes() {
@@ -8677,14 +4779,14 @@ public final class web_m {
        * MIME Type of the body.
        * </pre>
        *
-       * <code>optional string contentType = 18;</code>
+       * <code>optional string contentType = 17;</code>
        */
       public Builder setContentType(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00020000;
+  bitField0_ |= 0x00010000;
         contentType_ = value;
         onChanged();
         return this;
@@ -8695,10 +4797,10 @@ public final class web_m {
        * MIME Type of the body.
        * </pre>
        *
-       * <code>optional string contentType = 18;</code>
+       * <code>optional string contentType = 17;</code>
        */
       public Builder clearContentType() {
-        bitField0_ = (bitField0_ & ~0x00020000);
+        bitField0_ = (bitField0_ & ~0x00010000);
         contentType_ = getDefaultInstance().getContentType();
         onChanged();
         return this;
@@ -8709,14 +4811,14 @@ public final class web_m {
        * MIME Type of the body.
        * </pre>
        *
-       * <code>optional string contentType = 18;</code>
+       * <code>optional string contentType = 17;</code>
        */
       public Builder setContentTypeBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00020000;
+  bitField0_ |= 0x00010000;
         contentType_ = value;
         onChanged();
         return this;
@@ -8729,10 +4831,10 @@ public final class web_m {
        * Length of the body.
        * </pre>
        *
-       * <code>optional int32 contentLength = 19;</code>
+       * <code>optional int32 contentLength = 18;</code>
        */
       public boolean hasContentLength() {
-        return ((bitField0_ & 0x00040000) == 0x00040000);
+        return ((bitField0_ & 0x00020000) == 0x00020000);
       }
       /**
        * <pre>
@@ -8740,7 +4842,7 @@ public final class web_m {
        * Length of the body.
        * </pre>
        *
-       * <code>optional int32 contentLength = 19;</code>
+       * <code>optional int32 contentLength = 18;</code>
        */
       public int getContentLength() {
         return contentLength_;
@@ -8751,10 +4853,10 @@ public final class web_m {
        * Length of the body.
        * </pre>
        *
-       * <code>optional int32 contentLength = 19;</code>
+       * <code>optional int32 contentLength = 18;</code>
        */
       public Builder setContentLength(int value) {
-        bitField0_ |= 0x00040000;
+        bitField0_ |= 0x00020000;
         contentLength_ = value;
         onChanged();
         return this;
@@ -8765,10 +4867,10 @@ public final class web_m {
        * Length of the body.
        * </pre>
        *
-       * <code>optional int32 contentLength = 19;</code>
+       * <code>optional int32 contentLength = 18;</code>
        */
       public Builder clearContentLength() {
-        bitField0_ = (bitField0_ & ~0x00040000);
+        bitField0_ = (bitField0_ & ~0x00020000);
         contentLength_ = 0;
         onChanged();
         return this;
@@ -8781,10 +4883,10 @@ public final class web_m {
        * Body of the request.
        * </pre>
        *
-       * <code>optional bytes body = 20;</code>
+       * <code>optional bytes body = 19;</code>
        */
       public boolean hasBody() {
-        return ((bitField0_ & 0x00080000) == 0x00080000);
+        return ((bitField0_ & 0x00040000) == 0x00040000);
       }
       /**
        * <pre>
@@ -8792,7 +4894,7 @@ public final class web_m {
        * Body of the request.
        * </pre>
        *
-       * <code>optional bytes body = 20;</code>
+       * <code>optional bytes body = 19;</code>
        */
       public com.google.protobuf.ByteString getBody() {
         return body_;
@@ -8803,13 +4905,13 @@ public final class web_m {
        * Body of the request.
        * </pre>
        *
-       * <code>optional bytes body = 20;</code>
+       * <code>optional bytes body = 19;</code>
        */
       public Builder setBody(com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00080000;
+  bitField0_ |= 0x00040000;
         body_ = value;
         onChanged();
         return this;
@@ -8820,12 +4922,170 @@ public final class web_m {
        * Body of the request.
        * </pre>
        *
-       * <code>optional bytes body = 20;</code>
+       * <code>optional bytes body = 19;</code>
        */
       public Builder clearBody() {
-        bitField0_ = (bitField0_ & ~0x00080000);
+        bitField0_ = (bitField0_ & ~0x00040000);
         body_ = getDefaultInstance().getBody();
         onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.MapField<
+          java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> trailers_;
+      private com.google.protobuf.MapField<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>
+      internalGetTrailers() {
+        if (trailers_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              TrailersDefaultEntryHolder.defaultEntry);
+        }
+        return trailers_;
+      }
+      private com.google.protobuf.MapField<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>
+      internalGetMutableTrailers() {
+        onChanged();;
+        if (trailers_ == null) {
+          trailers_ = com.google.protobuf.MapField.newMapField(
+              TrailersDefaultEntryHolder.defaultEntry);
+        }
+        if (!trailers_.isMutable()) {
+          trailers_ = trailers_.copy();
+        }
+        return trailers_;
+      }
+
+      public int getTrailersCount() {
+        return internalGetTrailers().getMap().size();
+      }
+      /**
+       * <pre>
+       **
+       * Trailing HTTP Headers.
+       * </pre>
+       *
+       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 20;</code>
+       */
+
+      public boolean containsTrailers(
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        return internalGetTrailers().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getTrailersMap()} instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> getTrailers() {
+        return getTrailersMap();
+      }
+      /**
+       * <pre>
+       **
+       * Trailing HTTP Headers.
+       * </pre>
+       *
+       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 20;</code>
+       */
+
+      public java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> getTrailersMap() {
+        return internalGetTrailers().getMap();
+      }
+      /**
+       * <pre>
+       **
+       * Trailing HTTP Headers.
+       * </pre>
+       *
+       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 20;</code>
+       */
+
+      public com.mackenziehigh.socius.web.messages.web_m.HttpHeader getTrailersOrDefault(
+          java.lang.String key,
+          com.mackenziehigh.socius.web.messages.web_m.HttpHeader defaultValue) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> map =
+            internalGetTrailers().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <pre>
+       **
+       * Trailing HTTP Headers.
+       * </pre>
+       *
+       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 20;</code>
+       */
+
+      public com.mackenziehigh.socius.web.messages.web_m.HttpHeader getTrailersOrThrow(
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> map =
+            internalGetTrailers().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+
+      public Builder clearTrailers() {
+        internalGetMutableTrailers().getMutableMap()
+            .clear();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * Trailing HTTP Headers.
+       * </pre>
+       *
+       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 20;</code>
+       */
+
+      public Builder removeTrailers(
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        internalGetMutableTrailers().getMutableMap()
+            .remove(key);
+        return this;
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>
+      getMutableTrailers() {
+        return internalGetMutableTrailers().getMutableMap();
+      }
+      /**
+       * <pre>
+       **
+       * Trailing HTTP Headers.
+       * </pre>
+       *
+       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 20;</code>
+       */
+      public Builder putTrailers(
+          java.lang.String key,
+          com.mackenziehigh.socius.web.messages.web_m.HttpHeader value) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        if (value == null) { throw new java.lang.NullPointerException(); }
+        internalGetMutableTrailers().getMutableMap()
+            .put(key, value);
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * Trailing HTTP Headers.
+       * </pre>
+       *
+       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 20;</code>
+       */
+
+      public Builder putAllTrailers(
+          java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> values) {
+        internalGetMutableTrailers().getMutableMap()
+            .putAll(values);
         return this;
       }
       public final Builder setUnknownFields(
@@ -8884,7 +5144,7 @@ public final class web_m {
     /**
      * <pre>
      **
-     * Use this field to attach debugging information.
+     * (optional) Use this field to attach debugging information.
      * </pre>
      *
      * <code>repeated string debug = 1;</code>
@@ -8894,7 +5154,7 @@ public final class web_m {
     /**
      * <pre>
      **
-     * Use this field to attach debugging information.
+     * (optional) Use this field to attach debugging information.
      * </pre>
      *
      * <code>repeated string debug = 1;</code>
@@ -8903,7 +5163,7 @@ public final class web_m {
     /**
      * <pre>
      **
-     * Use this field to attach debugging information.
+     * (optional) Use this field to attach debugging information.
      * </pre>
      *
      * <code>repeated string debug = 1;</code>
@@ -8912,7 +5172,7 @@ public final class web_m {
     /**
      * <pre>
      **
-     * Use this field to attach debugging information.
+     * (optional) Use this field to attach debugging information.
      * </pre>
      *
      * <code>repeated string debug = 1;</code>
@@ -9018,136 +5278,86 @@ public final class web_m {
     /**
      * <pre>
      **
-     * Raw HTTP Headers.
+     * HTTP Headers.
      * </pre>
      *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 6;</code>
+     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpHeader headers = 6;</code>
+     */
+    java.util.List<com.mackenziehigh.socius.web.messages.web_m.HttpHeader> 
+        getHeadersList();
+    /**
+     * <pre>
+     **
+     * HTTP Headers.
+     * </pre>
+     *
+     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpHeader headers = 6;</code>
+     */
+    com.mackenziehigh.socius.web.messages.web_m.HttpHeader getHeaders(int index);
+    /**
+     * <pre>
+     **
+     * HTTP Headers.
+     * </pre>
+     *
+     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpHeader headers = 6;</code>
      */
     int getHeadersCount();
     /**
      * <pre>
      **
-     * Raw HTTP Headers.
+     * HTTP Headers.
      * </pre>
      *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 6;</code>
+     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpHeader headers = 6;</code>
      */
-    boolean containsHeaders(
-        java.lang.String key);
-    /**
-     * Use {@link #getHeadersMap()} instead.
-     */
-    @java.lang.Deprecated
-    java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>
-    getHeaders();
+    java.util.List<? extends com.mackenziehigh.socius.web.messages.web_m.HttpHeaderOrBuilder> 
+        getHeadersOrBuilderList();
     /**
      * <pre>
      **
-     * Raw HTTP Headers.
+     * HTTP Headers.
      * </pre>
      *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 6;</code>
+     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpHeader headers = 6;</code>
      */
-    java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>
-    getHeadersMap();
-    /**
-     * <pre>
-     **
-     * Raw HTTP Headers.
-     * </pre>
-     *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 6;</code>
-     */
-
-    com.mackenziehigh.socius.web.messages.web_m.HttpHeader getHeadersOrDefault(
-        java.lang.String key,
-        com.mackenziehigh.socius.web.messages.web_m.HttpHeader defaultValue);
-    /**
-     * <pre>
-     **
-     * Raw HTTP Headers.
-     * </pre>
-     *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 6;</code>
-     */
-
-    com.mackenziehigh.socius.web.messages.web_m.HttpHeader getHeadersOrThrow(
-        java.lang.String key);
-
-    /**
-     * <pre>
-     **
-     * HTTP cookies from the server.
-     * </pre>
-     *
-     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 7;</code>
-     */
-    java.util.List<com.mackenziehigh.socius.web.messages.web_m.HttpCookie> 
-        getCookiesList();
-    /**
-     * <pre>
-     **
-     * HTTP cookies from the server.
-     * </pre>
-     *
-     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 7;</code>
-     */
-    com.mackenziehigh.socius.web.messages.web_m.HttpCookie getCookies(int index);
-    /**
-     * <pre>
-     **
-     * HTTP cookies from the server.
-     * </pre>
-     *
-     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 7;</code>
-     */
-    int getCookiesCount();
-    /**
-     * <pre>
-     **
-     * HTTP cookies from the server.
-     * </pre>
-     *
-     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 7;</code>
-     */
-    java.util.List<? extends com.mackenziehigh.socius.web.messages.web_m.HttpCookieOrBuilder> 
-        getCookiesOrBuilderList();
-    /**
-     * <pre>
-     **
-     * HTTP cookies from the server.
-     * </pre>
-     *
-     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 7;</code>
-     */
-    com.mackenziehigh.socius.web.messages.web_m.HttpCookieOrBuilder getCookiesOrBuilder(
+    com.mackenziehigh.socius.web.messages.web_m.HttpHeaderOrBuilder getHeadersOrBuilder(
         int index);
 
     /**
      * <pre>
      **
      * MIME type of the body.
+     * &lt;p&gt;
+     * If set, the this field will override the Content-Type header.
+     * &lt;/p&gt;
      * </pre>
      *
-     * <code>optional string contentType = 8;</code>
+     * <code>optional string contentType = 7;</code>
      */
     boolean hasContentType();
     /**
      * <pre>
      **
      * MIME type of the body.
+     * &lt;p&gt;
+     * If set, the this field will override the Content-Type header.
+     * &lt;/p&gt;
      * </pre>
      *
-     * <code>optional string contentType = 8;</code>
+     * <code>optional string contentType = 7;</code>
      */
     java.lang.String getContentType();
     /**
      * <pre>
      **
      * MIME type of the body.
+     * &lt;p&gt;
+     * If set, the this field will override the Content-Type header.
+     * &lt;/p&gt;
      * </pre>
      *
-     * <code>optional string contentType = 8;</code>
+     * <code>optional string contentType = 7;</code>
      */
     com.google.protobuf.ByteString
         getContentTypeBytes();
@@ -9158,7 +5368,7 @@ public final class web_m {
      * Body of the response.
      * </pre>
      *
-     * <code>optional bytes body = 9;</code>
+     * <code>optional bytes body = 8;</code>
      */
     boolean hasBody();
     /**
@@ -9167,7 +5377,7 @@ public final class web_m {
      * Body of the response.
      * </pre>
      *
-     * <code>optional bytes body = 9;</code>
+     * <code>optional bytes body = 8;</code>
      */
     com.google.protobuf.ByteString getBody();
   }
@@ -9192,7 +5402,7 @@ public final class web_m {
       correlationId_ = "";
       timestamp_ = 0L;
       status_ = 0;
-      cookies_ = java.util.Collections.emptyList();
+      headers_ = java.util.Collections.emptyList();
       contentType_ = "";
       body_ = com.google.protobuf.ByteString.EMPTY;
     }
@@ -9265,33 +5475,20 @@ public final class web_m {
             }
             case 50: {
               if (!((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
-                headers_ = com.google.protobuf.MapField.newMapField(
-                    HeadersDefaultEntryHolder.defaultEntry);
+                headers_ = new java.util.ArrayList<com.mackenziehigh.socius.web.messages.web_m.HttpHeader>();
                 mutable_bitField0_ |= 0x00000020;
               }
-              com.google.protobuf.MapEntry<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>
-              headers__ = input.readMessage(
-                  HeadersDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
-              headers_.getMutableMap().put(
-                  headers__.getKey(), headers__.getValue());
+              headers_.add(
+                  input.readMessage(com.mackenziehigh.socius.web.messages.web_m.HttpHeader.PARSER, extensionRegistry));
               break;
             }
             case 58: {
-              if (!((mutable_bitField0_ & 0x00000040) == 0x00000040)) {
-                cookies_ = new java.util.ArrayList<com.mackenziehigh.socius.web.messages.web_m.HttpCookie>();
-                mutable_bitField0_ |= 0x00000040;
-              }
-              cookies_.add(
-                  input.readMessage(com.mackenziehigh.socius.web.messages.web_m.HttpCookie.PARSER, extensionRegistry));
-              break;
-            }
-            case 66: {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000010;
               contentType_ = bs;
               break;
             }
-            case 74: {
+            case 66: {
               bitField0_ |= 0x00000020;
               body_ = input.readBytes();
               break;
@@ -9307,8 +5504,8 @@ public final class web_m {
         if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
           debug_ = debug_.getUnmodifiableView();
         }
-        if (((mutable_bitField0_ & 0x00000040) == 0x00000040)) {
-          cookies_ = java.util.Collections.unmodifiableList(cookies_);
+        if (((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
+          headers_ = java.util.Collections.unmodifiableList(headers_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -9319,17 +5516,6 @@ public final class web_m {
       return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_HttpResponse_descriptor;
     }
 
-    @SuppressWarnings({"rawtypes"})
-    protected com.google.protobuf.MapField internalGetMapField(
-        int number) {
-      switch (number) {
-        case 6:
-          return internalGetHeaders();
-        default:
-          throw new RuntimeException(
-              "Invalid map field number: " + number);
-      }
-    }
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_HttpResponse_fieldAccessorTable
@@ -9343,7 +5529,7 @@ public final class web_m {
     /**
      * <pre>
      **
-     * Use this field to attach debugging information.
+     * (optional) Use this field to attach debugging information.
      * </pre>
      *
      * <code>repeated string debug = 1;</code>
@@ -9355,7 +5541,7 @@ public final class web_m {
     /**
      * <pre>
      **
-     * Use this field to attach debugging information.
+     * (optional) Use this field to attach debugging information.
      * </pre>
      *
      * <code>repeated string debug = 1;</code>
@@ -9366,7 +5552,7 @@ public final class web_m {
     /**
      * <pre>
      **
-     * Use this field to attach debugging information.
+     * (optional) Use this field to attach debugging information.
      * </pre>
      *
      * <code>repeated string debug = 1;</code>
@@ -9377,7 +5563,7 @@ public final class web_m {
     /**
      * <pre>
      **
-     * Use this field to attach debugging information.
+     * (optional) Use this field to attach debugging information.
      * </pre>
      *
      * <code>repeated string debug = 1;</code>
@@ -9531,170 +5717,77 @@ public final class web_m {
     }
 
     public static final int HEADERS_FIELD_NUMBER = 6;
-    private static final class HeadersDefaultEntryHolder {
-      static final com.google.protobuf.MapEntry<
-          java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> defaultEntry =
-              com.google.protobuf.MapEntry
-              .<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>newDefaultInstance(
-                  com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_HttpResponse_HeadersEntry_descriptor, 
-                  com.google.protobuf.WireFormat.FieldType.STRING,
-                  "",
-                  com.google.protobuf.WireFormat.FieldType.MESSAGE,
-                  com.mackenziehigh.socius.web.messages.web_m.HttpHeader.getDefaultInstance());
-    }
-    private com.google.protobuf.MapField<
-        java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> headers_;
-    private com.google.protobuf.MapField<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>
-    internalGetHeaders() {
-      if (headers_ == null) {
-        return com.google.protobuf.MapField.emptyMapField(
-            HeadersDefaultEntryHolder.defaultEntry);
-      }
+    private java.util.List<com.mackenziehigh.socius.web.messages.web_m.HttpHeader> headers_;
+    /**
+     * <pre>
+     **
+     * HTTP Headers.
+     * </pre>
+     *
+     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpHeader headers = 6;</code>
+     */
+    public java.util.List<com.mackenziehigh.socius.web.messages.web_m.HttpHeader> getHeadersList() {
       return headers_;
     }
-
+    /**
+     * <pre>
+     **
+     * HTTP Headers.
+     * </pre>
+     *
+     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpHeader headers = 6;</code>
+     */
+    public java.util.List<? extends com.mackenziehigh.socius.web.messages.web_m.HttpHeaderOrBuilder> 
+        getHeadersOrBuilderList() {
+      return headers_;
+    }
+    /**
+     * <pre>
+     **
+     * HTTP Headers.
+     * </pre>
+     *
+     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpHeader headers = 6;</code>
+     */
     public int getHeadersCount() {
-      return internalGetHeaders().getMap().size();
+      return headers_.size();
     }
     /**
      * <pre>
      **
-     * Raw HTTP Headers.
+     * HTTP Headers.
      * </pre>
      *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 6;</code>
+     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpHeader headers = 6;</code>
      */
-
-    public boolean containsHeaders(
-        java.lang.String key) {
-      if (key == null) { throw new java.lang.NullPointerException(); }
-      return internalGetHeaders().getMap().containsKey(key);
-    }
-    /**
-     * Use {@link #getHeadersMap()} instead.
-     */
-    @java.lang.Deprecated
-    public java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> getHeaders() {
-      return getHeadersMap();
+    public com.mackenziehigh.socius.web.messages.web_m.HttpHeader getHeaders(int index) {
+      return headers_.get(index);
     }
     /**
      * <pre>
      **
-     * Raw HTTP Headers.
+     * HTTP Headers.
      * </pre>
      *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 6;</code>
+     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpHeader headers = 6;</code>
      */
-
-    public java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> getHeadersMap() {
-      return internalGetHeaders().getMap();
-    }
-    /**
-     * <pre>
-     **
-     * Raw HTTP Headers.
-     * </pre>
-     *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 6;</code>
-     */
-
-    public com.mackenziehigh.socius.web.messages.web_m.HttpHeader getHeadersOrDefault(
-        java.lang.String key,
-        com.mackenziehigh.socius.web.messages.web_m.HttpHeader defaultValue) {
-      if (key == null) { throw new java.lang.NullPointerException(); }
-      java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> map =
-          internalGetHeaders().getMap();
-      return map.containsKey(key) ? map.get(key) : defaultValue;
-    }
-    /**
-     * <pre>
-     **
-     * Raw HTTP Headers.
-     * </pre>
-     *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 6;</code>
-     */
-
-    public com.mackenziehigh.socius.web.messages.web_m.HttpHeader getHeadersOrThrow(
-        java.lang.String key) {
-      if (key == null) { throw new java.lang.NullPointerException(); }
-      java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> map =
-          internalGetHeaders().getMap();
-      if (!map.containsKey(key)) {
-        throw new java.lang.IllegalArgumentException();
-      }
-      return map.get(key);
-    }
-
-    public static final int COOKIES_FIELD_NUMBER = 7;
-    private java.util.List<com.mackenziehigh.socius.web.messages.web_m.HttpCookie> cookies_;
-    /**
-     * <pre>
-     **
-     * HTTP cookies from the server.
-     * </pre>
-     *
-     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 7;</code>
-     */
-    public java.util.List<com.mackenziehigh.socius.web.messages.web_m.HttpCookie> getCookiesList() {
-      return cookies_;
-    }
-    /**
-     * <pre>
-     **
-     * HTTP cookies from the server.
-     * </pre>
-     *
-     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 7;</code>
-     */
-    public java.util.List<? extends com.mackenziehigh.socius.web.messages.web_m.HttpCookieOrBuilder> 
-        getCookiesOrBuilderList() {
-      return cookies_;
-    }
-    /**
-     * <pre>
-     **
-     * HTTP cookies from the server.
-     * </pre>
-     *
-     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 7;</code>
-     */
-    public int getCookiesCount() {
-      return cookies_.size();
-    }
-    /**
-     * <pre>
-     **
-     * HTTP cookies from the server.
-     * </pre>
-     *
-     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 7;</code>
-     */
-    public com.mackenziehigh.socius.web.messages.web_m.HttpCookie getCookies(int index) {
-      return cookies_.get(index);
-    }
-    /**
-     * <pre>
-     **
-     * HTTP cookies from the server.
-     * </pre>
-     *
-     * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 7;</code>
-     */
-    public com.mackenziehigh.socius.web.messages.web_m.HttpCookieOrBuilder getCookiesOrBuilder(
+    public com.mackenziehigh.socius.web.messages.web_m.HttpHeaderOrBuilder getHeadersOrBuilder(
         int index) {
-      return cookies_.get(index);
+      return headers_.get(index);
     }
 
-    public static final int CONTENTTYPE_FIELD_NUMBER = 8;
+    public static final int CONTENTTYPE_FIELD_NUMBER = 7;
     private volatile java.lang.Object contentType_;
     /**
      * <pre>
      **
      * MIME type of the body.
+     * &lt;p&gt;
+     * If set, the this field will override the Content-Type header.
+     * &lt;/p&gt;
      * </pre>
      *
-     * <code>optional string contentType = 8;</code>
+     * <code>optional string contentType = 7;</code>
      */
     public boolean hasContentType() {
       return ((bitField0_ & 0x00000010) == 0x00000010);
@@ -9703,9 +5796,12 @@ public final class web_m {
      * <pre>
      **
      * MIME type of the body.
+     * &lt;p&gt;
+     * If set, the this field will override the Content-Type header.
+     * &lt;/p&gt;
      * </pre>
      *
-     * <code>optional string contentType = 8;</code>
+     * <code>optional string contentType = 7;</code>
      */
     public java.lang.String getContentType() {
       java.lang.Object ref = contentType_;
@@ -9725,9 +5821,12 @@ public final class web_m {
      * <pre>
      **
      * MIME type of the body.
+     * &lt;p&gt;
+     * If set, the this field will override the Content-Type header.
+     * &lt;/p&gt;
      * </pre>
      *
-     * <code>optional string contentType = 8;</code>
+     * <code>optional string contentType = 7;</code>
      */
     public com.google.protobuf.ByteString
         getContentTypeBytes() {
@@ -9743,7 +5842,7 @@ public final class web_m {
       }
     }
 
-    public static final int BODY_FIELD_NUMBER = 9;
+    public static final int BODY_FIELD_NUMBER = 8;
     private com.google.protobuf.ByteString body_;
     /**
      * <pre>
@@ -9751,7 +5850,7 @@ public final class web_m {
      * Body of the response.
      * </pre>
      *
-     * <code>optional bytes body = 9;</code>
+     * <code>optional bytes body = 8;</code>
      */
     public boolean hasBody() {
       return ((bitField0_ & 0x00000020) == 0x00000020);
@@ -9762,7 +5861,7 @@ public final class web_m {
      * Body of the response.
      * </pre>
      *
-     * <code>optional bytes body = 9;</code>
+     * <code>optional bytes body = 8;</code>
      */
     public com.google.protobuf.ByteString getBody() {
       return body_;
@@ -9795,20 +5894,14 @@ public final class web_m {
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         output.writeInt32(5, status_);
       }
-      com.google.protobuf.GeneratedMessageV3
-        .serializeStringMapTo(
-          output,
-          internalGetHeaders(),
-          HeadersDefaultEntryHolder.defaultEntry,
-          6);
-      for (int i = 0; i < cookies_.size(); i++) {
-        output.writeMessage(7, cookies_.get(i));
+      for (int i = 0; i < headers_.size(); i++) {
+        output.writeMessage(6, headers_.get(i));
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 8, contentType_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 7, contentType_);
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        output.writeBytes(9, body_);
+        output.writeBytes(8, body_);
       }
       unknownFields.writeTo(output);
     }
@@ -9841,26 +5934,16 @@ public final class web_m {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(5, status_);
       }
-      for (java.util.Map.Entry<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> entry
-           : internalGetHeaders().getMap().entrySet()) {
-        com.google.protobuf.MapEntry<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>
-        headers__ = HeadersDefaultEntryHolder.defaultEntry.newBuilderForType()
-            .setKey(entry.getKey())
-            .setValue(entry.getValue())
-            .build();
+      for (int i = 0; i < headers_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(6, headers__);
-      }
-      for (int i = 0; i < cookies_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(7, cookies_.get(i));
+          .computeMessageSize(6, headers_.get(i));
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(8, contentType_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, contentType_);
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(9, body_);
+          .computeBytesSize(8, body_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -9901,10 +5984,8 @@ public final class web_m {
         result = result && (getStatus()
             == other.getStatus());
       }
-      result = result && internalGetHeaders().equals(
-          other.internalGetHeaders());
-      result = result && getCookiesList()
-          .equals(other.getCookiesList());
+      result = result && getHeadersList()
+          .equals(other.getHeadersList());
       result = result && (hasContentType() == other.hasContentType());
       if (hasContentType()) {
         result = result && getContentType()
@@ -9947,13 +6028,9 @@ public final class web_m {
         hash = (37 * hash) + STATUS_FIELD_NUMBER;
         hash = (53 * hash) + getStatus();
       }
-      if (!internalGetHeaders().getMap().isEmpty()) {
+      if (getHeadersCount() > 0) {
         hash = (37 * hash) + HEADERS_FIELD_NUMBER;
-        hash = (53 * hash) + internalGetHeaders().hashCode();
-      }
-      if (getCookiesCount() > 0) {
-        hash = (37 * hash) + COOKIES_FIELD_NUMBER;
-        hash = (53 * hash) + getCookiesList().hashCode();
+        hash = (53 * hash) + getHeadersList().hashCode();
       }
       if (hasContentType()) {
         hash = (37 * hash) + CONTENTTYPE_FIELD_NUMBER;
@@ -10073,28 +6150,6 @@ public final class web_m {
         return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_HttpResponse_descriptor;
       }
 
-      @SuppressWarnings({"rawtypes"})
-      protected com.google.protobuf.MapField internalGetMapField(
-          int number) {
-        switch (number) {
-          case 6:
-            return internalGetHeaders();
-          default:
-            throw new RuntimeException(
-                "Invalid map field number: " + number);
-        }
-      }
-      @SuppressWarnings({"rawtypes"})
-      protected com.google.protobuf.MapField internalGetMutableMapField(
-          int number) {
-        switch (number) {
-          case 6:
-            return internalGetMutableHeaders();
-          default:
-            throw new RuntimeException(
-                "Invalid map field number: " + number);
-        }
-      }
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_HttpResponse_fieldAccessorTable
@@ -10116,7 +6171,7 @@ public final class web_m {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
           getRequestFieldBuilder();
-          getCookiesFieldBuilder();
+          getHeadersFieldBuilder();
         }
       }
       public Builder clear() {
@@ -10135,17 +6190,16 @@ public final class web_m {
         bitField0_ = (bitField0_ & ~0x00000008);
         status_ = 0;
         bitField0_ = (bitField0_ & ~0x00000010);
-        internalGetMutableHeaders().clear();
-        if (cookiesBuilder_ == null) {
-          cookies_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000040);
+        if (headersBuilder_ == null) {
+          headers_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000020);
         } else {
-          cookiesBuilder_.clear();
+          headersBuilder_.clear();
         }
         contentType_ = "";
-        bitField0_ = (bitField0_ & ~0x00000080);
+        bitField0_ = (bitField0_ & ~0x00000040);
         body_ = com.google.protobuf.ByteString.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000100);
+        bitField0_ = (bitField0_ & ~0x00000080);
         return this;
       }
 
@@ -10195,22 +6249,20 @@ public final class web_m {
           to_bitField0_ |= 0x00000008;
         }
         result.status_ = status_;
-        result.headers_ = internalGetHeaders();
-        result.headers_.makeImmutable();
-        if (cookiesBuilder_ == null) {
-          if (((bitField0_ & 0x00000040) == 0x00000040)) {
-            cookies_ = java.util.Collections.unmodifiableList(cookies_);
-            bitField0_ = (bitField0_ & ~0x00000040);
+        if (headersBuilder_ == null) {
+          if (((bitField0_ & 0x00000020) == 0x00000020)) {
+            headers_ = java.util.Collections.unmodifiableList(headers_);
+            bitField0_ = (bitField0_ & ~0x00000020);
           }
-          result.cookies_ = cookies_;
+          result.headers_ = headers_;
         } else {
-          result.cookies_ = cookiesBuilder_.build();
+          result.headers_ = headersBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
+        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
           to_bitField0_ |= 0x00000010;
         }
         result.contentType_ = contentType_;
-        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
+        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
           to_bitField0_ |= 0x00000020;
         }
         result.body_ = body_;
@@ -10280,36 +6332,34 @@ public final class web_m {
         if (other.hasStatus()) {
           setStatus(other.getStatus());
         }
-        internalGetMutableHeaders().mergeFrom(
-            other.internalGetHeaders());
-        if (cookiesBuilder_ == null) {
-          if (!other.cookies_.isEmpty()) {
-            if (cookies_.isEmpty()) {
-              cookies_ = other.cookies_;
-              bitField0_ = (bitField0_ & ~0x00000040);
+        if (headersBuilder_ == null) {
+          if (!other.headers_.isEmpty()) {
+            if (headers_.isEmpty()) {
+              headers_ = other.headers_;
+              bitField0_ = (bitField0_ & ~0x00000020);
             } else {
-              ensureCookiesIsMutable();
-              cookies_.addAll(other.cookies_);
+              ensureHeadersIsMutable();
+              headers_.addAll(other.headers_);
             }
             onChanged();
           }
         } else {
-          if (!other.cookies_.isEmpty()) {
-            if (cookiesBuilder_.isEmpty()) {
-              cookiesBuilder_.dispose();
-              cookiesBuilder_ = null;
-              cookies_ = other.cookies_;
-              bitField0_ = (bitField0_ & ~0x00000040);
-              cookiesBuilder_ = 
+          if (!other.headers_.isEmpty()) {
+            if (headersBuilder_.isEmpty()) {
+              headersBuilder_.dispose();
+              headersBuilder_ = null;
+              headers_ = other.headers_;
+              bitField0_ = (bitField0_ & ~0x00000020);
+              headersBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getCookiesFieldBuilder() : null;
+                   getHeadersFieldBuilder() : null;
             } else {
-              cookiesBuilder_.addAllMessages(other.cookies_);
+              headersBuilder_.addAllMessages(other.headers_);
             }
           }
         }
         if (other.hasContentType()) {
-          bitField0_ |= 0x00000080;
+          bitField0_ |= 0x00000040;
           contentType_ = other.contentType_;
           onChanged();
         }
@@ -10354,7 +6404,7 @@ public final class web_m {
       /**
        * <pre>
        **
-       * Use this field to attach debugging information.
+       * (optional) Use this field to attach debugging information.
        * </pre>
        *
        * <code>repeated string debug = 1;</code>
@@ -10366,7 +6416,7 @@ public final class web_m {
       /**
        * <pre>
        **
-       * Use this field to attach debugging information.
+       * (optional) Use this field to attach debugging information.
        * </pre>
        *
        * <code>repeated string debug = 1;</code>
@@ -10377,7 +6427,7 @@ public final class web_m {
       /**
        * <pre>
        **
-       * Use this field to attach debugging information.
+       * (optional) Use this field to attach debugging information.
        * </pre>
        *
        * <code>repeated string debug = 1;</code>
@@ -10388,7 +6438,7 @@ public final class web_m {
       /**
        * <pre>
        **
-       * Use this field to attach debugging information.
+       * (optional) Use this field to attach debugging information.
        * </pre>
        *
        * <code>repeated string debug = 1;</code>
@@ -10400,7 +6450,7 @@ public final class web_m {
       /**
        * <pre>
        **
-       * Use this field to attach debugging information.
+       * (optional) Use this field to attach debugging information.
        * </pre>
        *
        * <code>repeated string debug = 1;</code>
@@ -10418,7 +6468,7 @@ public final class web_m {
       /**
        * <pre>
        **
-       * Use this field to attach debugging information.
+       * (optional) Use this field to attach debugging information.
        * </pre>
        *
        * <code>repeated string debug = 1;</code>
@@ -10436,7 +6486,7 @@ public final class web_m {
       /**
        * <pre>
        **
-       * Use this field to attach debugging information.
+       * (optional) Use this field to attach debugging information.
        * </pre>
        *
        * <code>repeated string debug = 1;</code>
@@ -10452,7 +6502,7 @@ public final class web_m {
       /**
        * <pre>
        **
-       * Use this field to attach debugging information.
+       * (optional) Use this field to attach debugging information.
        * </pre>
        *
        * <code>repeated string debug = 1;</code>
@@ -10466,7 +6516,7 @@ public final class web_m {
       /**
        * <pre>
        **
-       * Use this field to attach debugging information.
+       * (optional) Use this field to attach debugging information.
        * </pre>
        *
        * <code>repeated string debug = 1;</code>
@@ -10855,492 +6905,334 @@ public final class web_m {
         return this;
       }
 
-      private com.google.protobuf.MapField<
-          java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> headers_;
-      private com.google.protobuf.MapField<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>
-      internalGetHeaders() {
-        if (headers_ == null) {
-          return com.google.protobuf.MapField.emptyMapField(
-              HeadersDefaultEntryHolder.defaultEntry);
-        }
-        return headers_;
-      }
-      private com.google.protobuf.MapField<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>
-      internalGetMutableHeaders() {
-        onChanged();;
-        if (headers_ == null) {
-          headers_ = com.google.protobuf.MapField.newMapField(
-              HeadersDefaultEntryHolder.defaultEntry);
-        }
-        if (!headers_.isMutable()) {
-          headers_ = headers_.copy();
-        }
-        return headers_;
-      }
-
-      public int getHeadersCount() {
-        return internalGetHeaders().getMap().size();
-      }
-      /**
-       * <pre>
-       **
-       * Raw HTTP Headers.
-       * </pre>
-       *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 6;</code>
-       */
-
-      public boolean containsHeaders(
-          java.lang.String key) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
-        return internalGetHeaders().getMap().containsKey(key);
-      }
-      /**
-       * Use {@link #getHeadersMap()} instead.
-       */
-      @java.lang.Deprecated
-      public java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> getHeaders() {
-        return getHeadersMap();
-      }
-      /**
-       * <pre>
-       **
-       * Raw HTTP Headers.
-       * </pre>
-       *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 6;</code>
-       */
-
-      public java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> getHeadersMap() {
-        return internalGetHeaders().getMap();
-      }
-      /**
-       * <pre>
-       **
-       * Raw HTTP Headers.
-       * </pre>
-       *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 6;</code>
-       */
-
-      public com.mackenziehigh.socius.web.messages.web_m.HttpHeader getHeadersOrDefault(
-          java.lang.String key,
-          com.mackenziehigh.socius.web.messages.web_m.HttpHeader defaultValue) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
-        java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> map =
-            internalGetHeaders().getMap();
-        return map.containsKey(key) ? map.get(key) : defaultValue;
-      }
-      /**
-       * <pre>
-       **
-       * Raw HTTP Headers.
-       * </pre>
-       *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 6;</code>
-       */
-
-      public com.mackenziehigh.socius.web.messages.web_m.HttpHeader getHeadersOrThrow(
-          java.lang.String key) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
-        java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> map =
-            internalGetHeaders().getMap();
-        if (!map.containsKey(key)) {
-          throw new java.lang.IllegalArgumentException();
-        }
-        return map.get(key);
-      }
-
-      public Builder clearHeaders() {
-        internalGetMutableHeaders().getMutableMap()
-            .clear();
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * Raw HTTP Headers.
-       * </pre>
-       *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 6;</code>
-       */
-
-      public Builder removeHeaders(
-          java.lang.String key) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
-        internalGetMutableHeaders().getMutableMap()
-            .remove(key);
-        return this;
-      }
-      /**
-       * Use alternate mutation accessors instead.
-       */
-      @java.lang.Deprecated
-      public java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>
-      getMutableHeaders() {
-        return internalGetMutableHeaders().getMutableMap();
-      }
-      /**
-       * <pre>
-       **
-       * Raw HTTP Headers.
-       * </pre>
-       *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 6;</code>
-       */
-      public Builder putHeaders(
-          java.lang.String key,
-          com.mackenziehigh.socius.web.messages.web_m.HttpHeader value) {
-        if (key == null) { throw new java.lang.NullPointerException(); }
-        if (value == null) { throw new java.lang.NullPointerException(); }
-        internalGetMutableHeaders().getMutableMap()
-            .put(key, value);
-        return this;
-      }
-      /**
-       * <pre>
-       **
-       * Raw HTTP Headers.
-       * </pre>
-       *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 6;</code>
-       */
-
-      public Builder putAllHeaders(
-          java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> values) {
-        internalGetMutableHeaders().getMutableMap()
-            .putAll(values);
-        return this;
-      }
-
-      private java.util.List<com.mackenziehigh.socius.web.messages.web_m.HttpCookie> cookies_ =
+      private java.util.List<com.mackenziehigh.socius.web.messages.web_m.HttpHeader> headers_ =
         java.util.Collections.emptyList();
-      private void ensureCookiesIsMutable() {
-        if (!((bitField0_ & 0x00000040) == 0x00000040)) {
-          cookies_ = new java.util.ArrayList<com.mackenziehigh.socius.web.messages.web_m.HttpCookie>(cookies_);
-          bitField0_ |= 0x00000040;
+      private void ensureHeadersIsMutable() {
+        if (!((bitField0_ & 0x00000020) == 0x00000020)) {
+          headers_ = new java.util.ArrayList<com.mackenziehigh.socius.web.messages.web_m.HttpHeader>(headers_);
+          bitField0_ |= 0x00000020;
          }
       }
 
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.mackenziehigh.socius.web.messages.web_m.HttpCookie, com.mackenziehigh.socius.web.messages.web_m.HttpCookie.Builder, com.mackenziehigh.socius.web.messages.web_m.HttpCookieOrBuilder> cookiesBuilder_;
+          com.mackenziehigh.socius.web.messages.web_m.HttpHeader, com.mackenziehigh.socius.web.messages.web_m.HttpHeader.Builder, com.mackenziehigh.socius.web.messages.web_m.HttpHeaderOrBuilder> headersBuilder_;
 
       /**
        * <pre>
        **
-       * HTTP cookies from the server.
+       * HTTP Headers.
        * </pre>
        *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 7;</code>
+       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpHeader headers = 6;</code>
        */
-      public java.util.List<com.mackenziehigh.socius.web.messages.web_m.HttpCookie> getCookiesList() {
-        if (cookiesBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(cookies_);
+      public java.util.List<com.mackenziehigh.socius.web.messages.web_m.HttpHeader> getHeadersList() {
+        if (headersBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(headers_);
         } else {
-          return cookiesBuilder_.getMessageList();
+          return headersBuilder_.getMessageList();
         }
       }
       /**
        * <pre>
        **
-       * HTTP cookies from the server.
+       * HTTP Headers.
        * </pre>
        *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 7;</code>
+       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpHeader headers = 6;</code>
        */
-      public int getCookiesCount() {
-        if (cookiesBuilder_ == null) {
-          return cookies_.size();
+      public int getHeadersCount() {
+        if (headersBuilder_ == null) {
+          return headers_.size();
         } else {
-          return cookiesBuilder_.getCount();
+          return headersBuilder_.getCount();
         }
       }
       /**
        * <pre>
        **
-       * HTTP cookies from the server.
+       * HTTP Headers.
        * </pre>
        *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 7;</code>
+       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpHeader headers = 6;</code>
        */
-      public com.mackenziehigh.socius.web.messages.web_m.HttpCookie getCookies(int index) {
-        if (cookiesBuilder_ == null) {
-          return cookies_.get(index);
+      public com.mackenziehigh.socius.web.messages.web_m.HttpHeader getHeaders(int index) {
+        if (headersBuilder_ == null) {
+          return headers_.get(index);
         } else {
-          return cookiesBuilder_.getMessage(index);
+          return headersBuilder_.getMessage(index);
         }
       }
       /**
        * <pre>
        **
-       * HTTP cookies from the server.
+       * HTTP Headers.
        * </pre>
        *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 7;</code>
+       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpHeader headers = 6;</code>
        */
-      public Builder setCookies(
-          int index, com.mackenziehigh.socius.web.messages.web_m.HttpCookie value) {
-        if (cookiesBuilder_ == null) {
+      public Builder setHeaders(
+          int index, com.mackenziehigh.socius.web.messages.web_m.HttpHeader value) {
+        if (headersBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensureCookiesIsMutable();
-          cookies_.set(index, value);
+          ensureHeadersIsMutable();
+          headers_.set(index, value);
           onChanged();
         } else {
-          cookiesBuilder_.setMessage(index, value);
+          headersBuilder_.setMessage(index, value);
         }
         return this;
       }
       /**
        * <pre>
        **
-       * HTTP cookies from the server.
+       * HTTP Headers.
        * </pre>
        *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 7;</code>
+       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpHeader headers = 6;</code>
        */
-      public Builder setCookies(
-          int index, com.mackenziehigh.socius.web.messages.web_m.HttpCookie.Builder builderForValue) {
-        if (cookiesBuilder_ == null) {
-          ensureCookiesIsMutable();
-          cookies_.set(index, builderForValue.build());
+      public Builder setHeaders(
+          int index, com.mackenziehigh.socius.web.messages.web_m.HttpHeader.Builder builderForValue) {
+        if (headersBuilder_ == null) {
+          ensureHeadersIsMutable();
+          headers_.set(index, builderForValue.build());
           onChanged();
         } else {
-          cookiesBuilder_.setMessage(index, builderForValue.build());
+          headersBuilder_.setMessage(index, builderForValue.build());
         }
         return this;
       }
       /**
        * <pre>
        **
-       * HTTP cookies from the server.
+       * HTTP Headers.
        * </pre>
        *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 7;</code>
+       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpHeader headers = 6;</code>
        */
-      public Builder addCookies(com.mackenziehigh.socius.web.messages.web_m.HttpCookie value) {
-        if (cookiesBuilder_ == null) {
+      public Builder addHeaders(com.mackenziehigh.socius.web.messages.web_m.HttpHeader value) {
+        if (headersBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensureCookiesIsMutable();
-          cookies_.add(value);
+          ensureHeadersIsMutable();
+          headers_.add(value);
           onChanged();
         } else {
-          cookiesBuilder_.addMessage(value);
+          headersBuilder_.addMessage(value);
         }
         return this;
       }
       /**
        * <pre>
        **
-       * HTTP cookies from the server.
+       * HTTP Headers.
        * </pre>
        *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 7;</code>
+       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpHeader headers = 6;</code>
        */
-      public Builder addCookies(
-          int index, com.mackenziehigh.socius.web.messages.web_m.HttpCookie value) {
-        if (cookiesBuilder_ == null) {
+      public Builder addHeaders(
+          int index, com.mackenziehigh.socius.web.messages.web_m.HttpHeader value) {
+        if (headersBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensureCookiesIsMutable();
-          cookies_.add(index, value);
+          ensureHeadersIsMutable();
+          headers_.add(index, value);
           onChanged();
         } else {
-          cookiesBuilder_.addMessage(index, value);
+          headersBuilder_.addMessage(index, value);
         }
         return this;
       }
       /**
        * <pre>
        **
-       * HTTP cookies from the server.
+       * HTTP Headers.
        * </pre>
        *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 7;</code>
+       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpHeader headers = 6;</code>
        */
-      public Builder addCookies(
-          com.mackenziehigh.socius.web.messages.web_m.HttpCookie.Builder builderForValue) {
-        if (cookiesBuilder_ == null) {
-          ensureCookiesIsMutable();
-          cookies_.add(builderForValue.build());
+      public Builder addHeaders(
+          com.mackenziehigh.socius.web.messages.web_m.HttpHeader.Builder builderForValue) {
+        if (headersBuilder_ == null) {
+          ensureHeadersIsMutable();
+          headers_.add(builderForValue.build());
           onChanged();
         } else {
-          cookiesBuilder_.addMessage(builderForValue.build());
+          headersBuilder_.addMessage(builderForValue.build());
         }
         return this;
       }
       /**
        * <pre>
        **
-       * HTTP cookies from the server.
+       * HTTP Headers.
        * </pre>
        *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 7;</code>
+       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpHeader headers = 6;</code>
        */
-      public Builder addCookies(
-          int index, com.mackenziehigh.socius.web.messages.web_m.HttpCookie.Builder builderForValue) {
-        if (cookiesBuilder_ == null) {
-          ensureCookiesIsMutable();
-          cookies_.add(index, builderForValue.build());
+      public Builder addHeaders(
+          int index, com.mackenziehigh.socius.web.messages.web_m.HttpHeader.Builder builderForValue) {
+        if (headersBuilder_ == null) {
+          ensureHeadersIsMutable();
+          headers_.add(index, builderForValue.build());
           onChanged();
         } else {
-          cookiesBuilder_.addMessage(index, builderForValue.build());
+          headersBuilder_.addMessage(index, builderForValue.build());
         }
         return this;
       }
       /**
        * <pre>
        **
-       * HTTP cookies from the server.
+       * HTTP Headers.
        * </pre>
        *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 7;</code>
+       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpHeader headers = 6;</code>
        */
-      public Builder addAllCookies(
-          java.lang.Iterable<? extends com.mackenziehigh.socius.web.messages.web_m.HttpCookie> values) {
-        if (cookiesBuilder_ == null) {
-          ensureCookiesIsMutable();
+      public Builder addAllHeaders(
+          java.lang.Iterable<? extends com.mackenziehigh.socius.web.messages.web_m.HttpHeader> values) {
+        if (headersBuilder_ == null) {
+          ensureHeadersIsMutable();
           com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, cookies_);
+              values, headers_);
           onChanged();
         } else {
-          cookiesBuilder_.addAllMessages(values);
+          headersBuilder_.addAllMessages(values);
         }
         return this;
       }
       /**
        * <pre>
        **
-       * HTTP cookies from the server.
+       * HTTP Headers.
        * </pre>
        *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 7;</code>
+       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpHeader headers = 6;</code>
        */
-      public Builder clearCookies() {
-        if (cookiesBuilder_ == null) {
-          cookies_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000040);
+      public Builder clearHeaders() {
+        if (headersBuilder_ == null) {
+          headers_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000020);
           onChanged();
         } else {
-          cookiesBuilder_.clear();
+          headersBuilder_.clear();
         }
         return this;
       }
       /**
        * <pre>
        **
-       * HTTP cookies from the server.
+       * HTTP Headers.
        * </pre>
        *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 7;</code>
+       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpHeader headers = 6;</code>
        */
-      public Builder removeCookies(int index) {
-        if (cookiesBuilder_ == null) {
-          ensureCookiesIsMutable();
-          cookies_.remove(index);
+      public Builder removeHeaders(int index) {
+        if (headersBuilder_ == null) {
+          ensureHeadersIsMutable();
+          headers_.remove(index);
           onChanged();
         } else {
-          cookiesBuilder_.remove(index);
+          headersBuilder_.remove(index);
         }
         return this;
       }
       /**
        * <pre>
        **
-       * HTTP cookies from the server.
+       * HTTP Headers.
        * </pre>
        *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 7;</code>
+       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpHeader headers = 6;</code>
        */
-      public com.mackenziehigh.socius.web.messages.web_m.HttpCookie.Builder getCookiesBuilder(
+      public com.mackenziehigh.socius.web.messages.web_m.HttpHeader.Builder getHeadersBuilder(
           int index) {
-        return getCookiesFieldBuilder().getBuilder(index);
+        return getHeadersFieldBuilder().getBuilder(index);
       }
       /**
        * <pre>
        **
-       * HTTP cookies from the server.
+       * HTTP Headers.
        * </pre>
        *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 7;</code>
+       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpHeader headers = 6;</code>
        */
-      public com.mackenziehigh.socius.web.messages.web_m.HttpCookieOrBuilder getCookiesOrBuilder(
+      public com.mackenziehigh.socius.web.messages.web_m.HttpHeaderOrBuilder getHeadersOrBuilder(
           int index) {
-        if (cookiesBuilder_ == null) {
-          return cookies_.get(index);  } else {
-          return cookiesBuilder_.getMessageOrBuilder(index);
+        if (headersBuilder_ == null) {
+          return headers_.get(index);  } else {
+          return headersBuilder_.getMessageOrBuilder(index);
         }
       }
       /**
        * <pre>
        **
-       * HTTP cookies from the server.
+       * HTTP Headers.
        * </pre>
        *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 7;</code>
+       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpHeader headers = 6;</code>
        */
-      public java.util.List<? extends com.mackenziehigh.socius.web.messages.web_m.HttpCookieOrBuilder> 
-           getCookiesOrBuilderList() {
-        if (cookiesBuilder_ != null) {
-          return cookiesBuilder_.getMessageOrBuilderList();
+      public java.util.List<? extends com.mackenziehigh.socius.web.messages.web_m.HttpHeaderOrBuilder> 
+           getHeadersOrBuilderList() {
+        if (headersBuilder_ != null) {
+          return headersBuilder_.getMessageOrBuilderList();
         } else {
-          return java.util.Collections.unmodifiableList(cookies_);
+          return java.util.Collections.unmodifiableList(headers_);
         }
       }
       /**
        * <pre>
        **
-       * HTTP cookies from the server.
+       * HTTP Headers.
        * </pre>
        *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 7;</code>
+       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpHeader headers = 6;</code>
        */
-      public com.mackenziehigh.socius.web.messages.web_m.HttpCookie.Builder addCookiesBuilder() {
-        return getCookiesFieldBuilder().addBuilder(
-            com.mackenziehigh.socius.web.messages.web_m.HttpCookie.getDefaultInstance());
+      public com.mackenziehigh.socius.web.messages.web_m.HttpHeader.Builder addHeadersBuilder() {
+        return getHeadersFieldBuilder().addBuilder(
+            com.mackenziehigh.socius.web.messages.web_m.HttpHeader.getDefaultInstance());
       }
       /**
        * <pre>
        **
-       * HTTP cookies from the server.
+       * HTTP Headers.
        * </pre>
        *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 7;</code>
+       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpHeader headers = 6;</code>
        */
-      public com.mackenziehigh.socius.web.messages.web_m.HttpCookie.Builder addCookiesBuilder(
+      public com.mackenziehigh.socius.web.messages.web_m.HttpHeader.Builder addHeadersBuilder(
           int index) {
-        return getCookiesFieldBuilder().addBuilder(
-            index, com.mackenziehigh.socius.web.messages.web_m.HttpCookie.getDefaultInstance());
+        return getHeadersFieldBuilder().addBuilder(
+            index, com.mackenziehigh.socius.web.messages.web_m.HttpHeader.getDefaultInstance());
       }
       /**
        * <pre>
        **
-       * HTTP cookies from the server.
+       * HTTP Headers.
        * </pre>
        *
-       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpCookie cookies = 7;</code>
+       * <code>repeated .com.mackenziehigh.socius.web.messages.HttpHeader headers = 6;</code>
        */
-      public java.util.List<com.mackenziehigh.socius.web.messages.web_m.HttpCookie.Builder> 
-           getCookiesBuilderList() {
-        return getCookiesFieldBuilder().getBuilderList();
+      public java.util.List<com.mackenziehigh.socius.web.messages.web_m.HttpHeader.Builder> 
+           getHeadersBuilderList() {
+        return getHeadersFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.mackenziehigh.socius.web.messages.web_m.HttpCookie, com.mackenziehigh.socius.web.messages.web_m.HttpCookie.Builder, com.mackenziehigh.socius.web.messages.web_m.HttpCookieOrBuilder> 
-          getCookiesFieldBuilder() {
-        if (cookiesBuilder_ == null) {
-          cookiesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              com.mackenziehigh.socius.web.messages.web_m.HttpCookie, com.mackenziehigh.socius.web.messages.web_m.HttpCookie.Builder, com.mackenziehigh.socius.web.messages.web_m.HttpCookieOrBuilder>(
-                  cookies_,
-                  ((bitField0_ & 0x00000040) == 0x00000040),
+          com.mackenziehigh.socius.web.messages.web_m.HttpHeader, com.mackenziehigh.socius.web.messages.web_m.HttpHeader.Builder, com.mackenziehigh.socius.web.messages.web_m.HttpHeaderOrBuilder> 
+          getHeadersFieldBuilder() {
+        if (headersBuilder_ == null) {
+          headersBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              com.mackenziehigh.socius.web.messages.web_m.HttpHeader, com.mackenziehigh.socius.web.messages.web_m.HttpHeader.Builder, com.mackenziehigh.socius.web.messages.web_m.HttpHeaderOrBuilder>(
+                  headers_,
+                  ((bitField0_ & 0x00000020) == 0x00000020),
                   getParentForChildren(),
                   isClean());
-          cookies_ = null;
+          headers_ = null;
         }
-        return cookiesBuilder_;
+        return headersBuilder_;
       }
 
       private java.lang.Object contentType_ = "";
@@ -11348,20 +7240,26 @@ public final class web_m {
        * <pre>
        **
        * MIME type of the body.
+       * &lt;p&gt;
+       * If set, the this field will override the Content-Type header.
+       * &lt;/p&gt;
        * </pre>
        *
-       * <code>optional string contentType = 8;</code>
+       * <code>optional string contentType = 7;</code>
        */
       public boolean hasContentType() {
-        return ((bitField0_ & 0x00000080) == 0x00000080);
+        return ((bitField0_ & 0x00000040) == 0x00000040);
       }
       /**
        * <pre>
        **
        * MIME type of the body.
+       * &lt;p&gt;
+       * If set, the this field will override the Content-Type header.
+       * &lt;/p&gt;
        * </pre>
        *
-       * <code>optional string contentType = 8;</code>
+       * <code>optional string contentType = 7;</code>
        */
       public java.lang.String getContentType() {
         java.lang.Object ref = contentType_;
@@ -11381,9 +7279,12 @@ public final class web_m {
        * <pre>
        **
        * MIME type of the body.
+       * &lt;p&gt;
+       * If set, the this field will override the Content-Type header.
+       * &lt;/p&gt;
        * </pre>
        *
-       * <code>optional string contentType = 8;</code>
+       * <code>optional string contentType = 7;</code>
        */
       public com.google.protobuf.ByteString
           getContentTypeBytes() {
@@ -11402,16 +7303,19 @@ public final class web_m {
        * <pre>
        **
        * MIME type of the body.
+       * &lt;p&gt;
+       * If set, the this field will override the Content-Type header.
+       * &lt;/p&gt;
        * </pre>
        *
-       * <code>optional string contentType = 8;</code>
+       * <code>optional string contentType = 7;</code>
        */
       public Builder setContentType(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000080;
+  bitField0_ |= 0x00000040;
         contentType_ = value;
         onChanged();
         return this;
@@ -11420,12 +7324,15 @@ public final class web_m {
        * <pre>
        **
        * MIME type of the body.
+       * &lt;p&gt;
+       * If set, the this field will override the Content-Type header.
+       * &lt;/p&gt;
        * </pre>
        *
-       * <code>optional string contentType = 8;</code>
+       * <code>optional string contentType = 7;</code>
        */
       public Builder clearContentType() {
-        bitField0_ = (bitField0_ & ~0x00000080);
+        bitField0_ = (bitField0_ & ~0x00000040);
         contentType_ = getDefaultInstance().getContentType();
         onChanged();
         return this;
@@ -11434,16 +7341,19 @@ public final class web_m {
        * <pre>
        **
        * MIME type of the body.
+       * &lt;p&gt;
+       * If set, the this field will override the Content-Type header.
+       * &lt;/p&gt;
        * </pre>
        *
-       * <code>optional string contentType = 8;</code>
+       * <code>optional string contentType = 7;</code>
        */
       public Builder setContentTypeBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000080;
+  bitField0_ |= 0x00000040;
         contentType_ = value;
         onChanged();
         return this;
@@ -11456,10 +7366,10 @@ public final class web_m {
        * Body of the response.
        * </pre>
        *
-       * <code>optional bytes body = 9;</code>
+       * <code>optional bytes body = 8;</code>
        */
       public boolean hasBody() {
-        return ((bitField0_ & 0x00000100) == 0x00000100);
+        return ((bitField0_ & 0x00000080) == 0x00000080);
       }
       /**
        * <pre>
@@ -11467,7 +7377,7 @@ public final class web_m {
        * Body of the response.
        * </pre>
        *
-       * <code>optional bytes body = 9;</code>
+       * <code>optional bytes body = 8;</code>
        */
       public com.google.protobuf.ByteString getBody() {
         return body_;
@@ -11478,13 +7388,13 @@ public final class web_m {
        * Body of the response.
        * </pre>
        *
-       * <code>optional bytes body = 9;</code>
+       * <code>optional bytes body = 8;</code>
        */
       public Builder setBody(com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000100;
+  bitField0_ |= 0x00000080;
         body_ = value;
         onChanged();
         return this;
@@ -11495,10 +7405,10 @@ public final class web_m {
        * Body of the response.
        * </pre>
        *
-       * <code>optional bytes body = 9;</code>
+       * <code>optional bytes body = 8;</code>
        */
       public Builder clearBody() {
-        bitField0_ = (bitField0_ & ~0x00000100);
+        bitField0_ = (bitField0_ & ~0x00000080);
         body_ = getDefaultInstance().getBody();
         onChanged();
         return this;
@@ -14113,1351 +10023,6 @@ public final class web_m {
 
   }
 
-  public interface HttpCookieOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:com.mackenziehigh.socius.web.messages.HttpCookie)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>optional string domain = 1;</code>
-     */
-    boolean hasDomain();
-    /**
-     * <code>optional string domain = 1;</code>
-     */
-    java.lang.String getDomain();
-    /**
-     * <code>optional string domain = 1;</code>
-     */
-    com.google.protobuf.ByteString
-        getDomainBytes();
-
-    /**
-     * <code>optional bool httpOnly = 2;</code>
-     */
-    boolean hasHttpOnly();
-    /**
-     * <code>optional bool httpOnly = 2;</code>
-     */
-    boolean getHttpOnly();
-
-    /**
-     * <code>optional int64 maxAge = 3;</code>
-     */
-    boolean hasMaxAge();
-    /**
-     * <code>optional int64 maxAge = 3;</code>
-     */
-    long getMaxAge();
-
-    /**
-     * <code>optional string path = 4;</code>
-     */
-    boolean hasPath();
-    /**
-     * <code>optional string path = 4;</code>
-     */
-    java.lang.String getPath();
-    /**
-     * <code>optional string path = 4;</code>
-     */
-    com.google.protobuf.ByteString
-        getPathBytes();
-
-    /**
-     * <code>optional bool secure = 5;</code>
-     */
-    boolean hasSecure();
-    /**
-     * <code>optional bool secure = 5;</code>
-     */
-    boolean getSecure();
-
-    /**
-     * <code>optional string value = 6;</code>
-     */
-    boolean hasValue();
-    /**
-     * <code>optional string value = 6;</code>
-     */
-    java.lang.String getValue();
-    /**
-     * <code>optional string value = 6;</code>
-     */
-    com.google.protobuf.ByteString
-        getValueBytes();
-
-    /**
-     * <code>optional string wrap = 7;</code>
-     */
-    boolean hasWrap();
-    /**
-     * <code>optional string wrap = 7;</code>
-     */
-    java.lang.String getWrap();
-    /**
-     * <code>optional string wrap = 7;</code>
-     */
-    com.google.protobuf.ByteString
-        getWrapBytes();
-  }
-  /**
-   * <pre>
-   **
-   * HTTP Cookie.
-   * &lt;p&gt;
-   * See Also: https://netty.io/4.1/api/io/netty/handler/codec/http/cookie/Cookie.html
-   * &lt;/p&gt;
-   * </pre>
-   *
-   * Protobuf type {@code com.mackenziehigh.socius.web.messages.HttpCookie}
-   */
-  public  static final class HttpCookie extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:com.mackenziehigh.socius.web.messages.HttpCookie)
-      HttpCookieOrBuilder {
-    // Use HttpCookie.newBuilder() to construct.
-    private HttpCookie(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private HttpCookie() {
-      domain_ = "";
-      httpOnly_ = false;
-      maxAge_ = 0L;
-      path_ = "";
-      secure_ = false;
-      value_ = "";
-      wrap_ = "";
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private HttpCookie(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-            case 10: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000001;
-              domain_ = bs;
-              break;
-            }
-            case 16: {
-              bitField0_ |= 0x00000002;
-              httpOnly_ = input.readBool();
-              break;
-            }
-            case 24: {
-              bitField0_ |= 0x00000004;
-              maxAge_ = input.readInt64();
-              break;
-            }
-            case 34: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000008;
-              path_ = bs;
-              break;
-            }
-            case 40: {
-              bitField0_ |= 0x00000010;
-              secure_ = input.readBool();
-              break;
-            }
-            case 50: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000020;
-              value_ = bs;
-              break;
-            }
-            case 58: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000040;
-              wrap_ = bs;
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_HttpCookie_descriptor;
-    }
-
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_HttpCookie_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              com.mackenziehigh.socius.web.messages.web_m.HttpCookie.class, com.mackenziehigh.socius.web.messages.web_m.HttpCookie.Builder.class);
-    }
-
-    private int bitField0_;
-    public static final int DOMAIN_FIELD_NUMBER = 1;
-    private volatile java.lang.Object domain_;
-    /**
-     * <code>optional string domain = 1;</code>
-     */
-    public boolean hasDomain() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>optional string domain = 1;</code>
-     */
-    public java.lang.String getDomain() {
-      java.lang.Object ref = domain_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          domain_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>optional string domain = 1;</code>
-     */
-    public com.google.protobuf.ByteString
-        getDomainBytes() {
-      java.lang.Object ref = domain_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        domain_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int HTTPONLY_FIELD_NUMBER = 2;
-    private boolean httpOnly_;
-    /**
-     * <code>optional bool httpOnly = 2;</code>
-     */
-    public boolean hasHttpOnly() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    /**
-     * <code>optional bool httpOnly = 2;</code>
-     */
-    public boolean getHttpOnly() {
-      return httpOnly_;
-    }
-
-    public static final int MAXAGE_FIELD_NUMBER = 3;
-    private long maxAge_;
-    /**
-     * <code>optional int64 maxAge = 3;</code>
-     */
-    public boolean hasMaxAge() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    /**
-     * <code>optional int64 maxAge = 3;</code>
-     */
-    public long getMaxAge() {
-      return maxAge_;
-    }
-
-    public static final int PATH_FIELD_NUMBER = 4;
-    private volatile java.lang.Object path_;
-    /**
-     * <code>optional string path = 4;</code>
-     */
-    public boolean hasPath() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
-    /**
-     * <code>optional string path = 4;</code>
-     */
-    public java.lang.String getPath() {
-      java.lang.Object ref = path_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          path_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>optional string path = 4;</code>
-     */
-    public com.google.protobuf.ByteString
-        getPathBytes() {
-      java.lang.Object ref = path_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        path_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int SECURE_FIELD_NUMBER = 5;
-    private boolean secure_;
-    /**
-     * <code>optional bool secure = 5;</code>
-     */
-    public boolean hasSecure() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
-    }
-    /**
-     * <code>optional bool secure = 5;</code>
-     */
-    public boolean getSecure() {
-      return secure_;
-    }
-
-    public static final int VALUE_FIELD_NUMBER = 6;
-    private volatile java.lang.Object value_;
-    /**
-     * <code>optional string value = 6;</code>
-     */
-    public boolean hasValue() {
-      return ((bitField0_ & 0x00000020) == 0x00000020);
-    }
-    /**
-     * <code>optional string value = 6;</code>
-     */
-    public java.lang.String getValue() {
-      java.lang.Object ref = value_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          value_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>optional string value = 6;</code>
-     */
-    public com.google.protobuf.ByteString
-        getValueBytes() {
-      java.lang.Object ref = value_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        value_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int WRAP_FIELD_NUMBER = 7;
-    private volatile java.lang.Object wrap_;
-    /**
-     * <code>optional string wrap = 7;</code>
-     */
-    public boolean hasWrap() {
-      return ((bitField0_ & 0x00000040) == 0x00000040);
-    }
-    /**
-     * <code>optional string wrap = 7;</code>
-     */
-    public java.lang.String getWrap() {
-      java.lang.Object ref = wrap_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          wrap_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>optional string wrap = 7;</code>
-     */
-    public com.google.protobuf.ByteString
-        getWrapBytes() {
-      java.lang.Object ref = wrap_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        wrap_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, domain_);
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeBool(2, httpOnly_);
-      }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeInt64(3, maxAge_);
-      }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, path_);
-      }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        output.writeBool(5, secure_);
-      }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 6, value_);
-      }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 7, wrap_);
-      }
-      unknownFields.writeTo(output);
-    }
-
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, domain_);
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(2, httpOnly_);
-      }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(3, maxAge_);
-      }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, path_);
-      }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(5, secure_);
-      }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, value_);
-      }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, wrap_);
-      }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof com.mackenziehigh.socius.web.messages.web_m.HttpCookie)) {
-        return super.equals(obj);
-      }
-      com.mackenziehigh.socius.web.messages.web_m.HttpCookie other = (com.mackenziehigh.socius.web.messages.web_m.HttpCookie) obj;
-
-      boolean result = true;
-      result = result && (hasDomain() == other.hasDomain());
-      if (hasDomain()) {
-        result = result && getDomain()
-            .equals(other.getDomain());
-      }
-      result = result && (hasHttpOnly() == other.hasHttpOnly());
-      if (hasHttpOnly()) {
-        result = result && (getHttpOnly()
-            == other.getHttpOnly());
-      }
-      result = result && (hasMaxAge() == other.hasMaxAge());
-      if (hasMaxAge()) {
-        result = result && (getMaxAge()
-            == other.getMaxAge());
-      }
-      result = result && (hasPath() == other.hasPath());
-      if (hasPath()) {
-        result = result && getPath()
-            .equals(other.getPath());
-      }
-      result = result && (hasSecure() == other.hasSecure());
-      if (hasSecure()) {
-        result = result && (getSecure()
-            == other.getSecure());
-      }
-      result = result && (hasValue() == other.hasValue());
-      if (hasValue()) {
-        result = result && getValue()
-            .equals(other.getValue());
-      }
-      result = result && (hasWrap() == other.hasWrap());
-      if (hasWrap()) {
-        result = result && getWrap()
-            .equals(other.getWrap());
-      }
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      if (hasDomain()) {
-        hash = (37 * hash) + DOMAIN_FIELD_NUMBER;
-        hash = (53 * hash) + getDomain().hashCode();
-      }
-      if (hasHttpOnly()) {
-        hash = (37 * hash) + HTTPONLY_FIELD_NUMBER;
-        hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-            getHttpOnly());
-      }
-      if (hasMaxAge()) {
-        hash = (37 * hash) + MAXAGE_FIELD_NUMBER;
-        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-            getMaxAge());
-      }
-      if (hasPath()) {
-        hash = (37 * hash) + PATH_FIELD_NUMBER;
-        hash = (53 * hash) + getPath().hashCode();
-      }
-      if (hasSecure()) {
-        hash = (37 * hash) + SECURE_FIELD_NUMBER;
-        hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-            getSecure());
-      }
-      if (hasValue()) {
-        hash = (37 * hash) + VALUE_FIELD_NUMBER;
-        hash = (53 * hash) + getValue().hashCode();
-      }
-      if (hasWrap()) {
-        hash = (37 * hash) + WRAP_FIELD_NUMBER;
-        hash = (53 * hash) + getWrap().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpCookie parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpCookie parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpCookie parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpCookie parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpCookie parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpCookie parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpCookie parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpCookie parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpCookie parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpCookie parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpCookie parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpCookie parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(com.mackenziehigh.socius.web.messages.web_m.HttpCookie prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * <pre>
-     **
-     * HTTP Cookie.
-     * &lt;p&gt;
-     * See Also: https://netty.io/4.1/api/io/netty/handler/codec/http/cookie/Cookie.html
-     * &lt;/p&gt;
-     * </pre>
-     *
-     * Protobuf type {@code com.mackenziehigh.socius.web.messages.HttpCookie}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:com.mackenziehigh.socius.web.messages.HttpCookie)
-        com.mackenziehigh.socius.web.messages.web_m.HttpCookieOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_HttpCookie_descriptor;
-      }
-
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_HttpCookie_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                com.mackenziehigh.socius.web.messages.web_m.HttpCookie.class, com.mackenziehigh.socius.web.messages.web_m.HttpCookie.Builder.class);
-      }
-
-      // Construct using com.mackenziehigh.socius.web.messages.web_m.HttpCookie.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      public Builder clear() {
-        super.clear();
-        domain_ = "";
-        bitField0_ = (bitField0_ & ~0x00000001);
-        httpOnly_ = false;
-        bitField0_ = (bitField0_ & ~0x00000002);
-        maxAge_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000004);
-        path_ = "";
-        bitField0_ = (bitField0_ & ~0x00000008);
-        secure_ = false;
-        bitField0_ = (bitField0_ & ~0x00000010);
-        value_ = "";
-        bitField0_ = (bitField0_ & ~0x00000020);
-        wrap_ = "";
-        bitField0_ = (bitField0_ & ~0x00000040);
-        return this;
-      }
-
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_HttpCookie_descriptor;
-      }
-
-      public com.mackenziehigh.socius.web.messages.web_m.HttpCookie getDefaultInstanceForType() {
-        return com.mackenziehigh.socius.web.messages.web_m.HttpCookie.getDefaultInstance();
-      }
-
-      public com.mackenziehigh.socius.web.messages.web_m.HttpCookie build() {
-        com.mackenziehigh.socius.web.messages.web_m.HttpCookie result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      public com.mackenziehigh.socius.web.messages.web_m.HttpCookie buildPartial() {
-        com.mackenziehigh.socius.web.messages.web_m.HttpCookie result = new com.mackenziehigh.socius.web.messages.web_m.HttpCookie(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
-        result.domain_ = domain_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
-        result.httpOnly_ = httpOnly_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
-        result.maxAge_ = maxAge_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
-        }
-        result.path_ = path_;
-        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-          to_bitField0_ |= 0x00000010;
-        }
-        result.secure_ = secure_;
-        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
-          to_bitField0_ |= 0x00000020;
-        }
-        result.value_ = value_;
-        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
-          to_bitField0_ |= 0x00000040;
-        }
-        result.wrap_ = wrap_;
-        result.bitField0_ = to_bitField0_;
-        onBuilt();
-        return result;
-      }
-
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.mackenziehigh.socius.web.messages.web_m.HttpCookie) {
-          return mergeFrom((com.mackenziehigh.socius.web.messages.web_m.HttpCookie)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(com.mackenziehigh.socius.web.messages.web_m.HttpCookie other) {
-        if (other == com.mackenziehigh.socius.web.messages.web_m.HttpCookie.getDefaultInstance()) return this;
-        if (other.hasDomain()) {
-          bitField0_ |= 0x00000001;
-          domain_ = other.domain_;
-          onChanged();
-        }
-        if (other.hasHttpOnly()) {
-          setHttpOnly(other.getHttpOnly());
-        }
-        if (other.hasMaxAge()) {
-          setMaxAge(other.getMaxAge());
-        }
-        if (other.hasPath()) {
-          bitField0_ |= 0x00000008;
-          path_ = other.path_;
-          onChanged();
-        }
-        if (other.hasSecure()) {
-          setSecure(other.getSecure());
-        }
-        if (other.hasValue()) {
-          bitField0_ |= 0x00000020;
-          value_ = other.value_;
-          onChanged();
-        }
-        if (other.hasWrap()) {
-          bitField0_ |= 0x00000040;
-          wrap_ = other.wrap_;
-          onChanged();
-        }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        com.mackenziehigh.socius.web.messages.web_m.HttpCookie parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.mackenziehigh.socius.web.messages.web_m.HttpCookie) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-      private int bitField0_;
-
-      private java.lang.Object domain_ = "";
-      /**
-       * <code>optional string domain = 1;</code>
-       */
-      public boolean hasDomain() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>optional string domain = 1;</code>
-       */
-      public java.lang.String getDomain() {
-        java.lang.Object ref = domain_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            domain_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>optional string domain = 1;</code>
-       */
-      public com.google.protobuf.ByteString
-          getDomainBytes() {
-        java.lang.Object ref = domain_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          domain_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string domain = 1;</code>
-       */
-      public Builder setDomain(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-        domain_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string domain = 1;</code>
-       */
-      public Builder clearDomain() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        domain_ = getDefaultInstance().getDomain();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string domain = 1;</code>
-       */
-      public Builder setDomainBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-        domain_ = value;
-        onChanged();
-        return this;
-      }
-
-      private boolean httpOnly_ ;
-      /**
-       * <code>optional bool httpOnly = 2;</code>
-       */
-      public boolean hasHttpOnly() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>optional bool httpOnly = 2;</code>
-       */
-      public boolean getHttpOnly() {
-        return httpOnly_;
-      }
-      /**
-       * <code>optional bool httpOnly = 2;</code>
-       */
-      public Builder setHttpOnly(boolean value) {
-        bitField0_ |= 0x00000002;
-        httpOnly_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional bool httpOnly = 2;</code>
-       */
-      public Builder clearHttpOnly() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        httpOnly_ = false;
-        onChanged();
-        return this;
-      }
-
-      private long maxAge_ ;
-      /**
-       * <code>optional int64 maxAge = 3;</code>
-       */
-      public boolean hasMaxAge() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>optional int64 maxAge = 3;</code>
-       */
-      public long getMaxAge() {
-        return maxAge_;
-      }
-      /**
-       * <code>optional int64 maxAge = 3;</code>
-       */
-      public Builder setMaxAge(long value) {
-        bitField0_ |= 0x00000004;
-        maxAge_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int64 maxAge = 3;</code>
-       */
-      public Builder clearMaxAge() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        maxAge_ = 0L;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object path_ = "";
-      /**
-       * <code>optional string path = 4;</code>
-       */
-      public boolean hasPath() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      /**
-       * <code>optional string path = 4;</code>
-       */
-      public java.lang.String getPath() {
-        java.lang.Object ref = path_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            path_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>optional string path = 4;</code>
-       */
-      public com.google.protobuf.ByteString
-          getPathBytes() {
-        java.lang.Object ref = path_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          path_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string path = 4;</code>
-       */
-      public Builder setPath(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000008;
-        path_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string path = 4;</code>
-       */
-      public Builder clearPath() {
-        bitField0_ = (bitField0_ & ~0x00000008);
-        path_ = getDefaultInstance().getPath();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string path = 4;</code>
-       */
-      public Builder setPathBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000008;
-        path_ = value;
-        onChanged();
-        return this;
-      }
-
-      private boolean secure_ ;
-      /**
-       * <code>optional bool secure = 5;</code>
-       */
-      public boolean hasSecure() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
-      }
-      /**
-       * <code>optional bool secure = 5;</code>
-       */
-      public boolean getSecure() {
-        return secure_;
-      }
-      /**
-       * <code>optional bool secure = 5;</code>
-       */
-      public Builder setSecure(boolean value) {
-        bitField0_ |= 0x00000010;
-        secure_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional bool secure = 5;</code>
-       */
-      public Builder clearSecure() {
-        bitField0_ = (bitField0_ & ~0x00000010);
-        secure_ = false;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object value_ = "";
-      /**
-       * <code>optional string value = 6;</code>
-       */
-      public boolean hasValue() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
-      }
-      /**
-       * <code>optional string value = 6;</code>
-       */
-      public java.lang.String getValue() {
-        java.lang.Object ref = value_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            value_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>optional string value = 6;</code>
-       */
-      public com.google.protobuf.ByteString
-          getValueBytes() {
-        java.lang.Object ref = value_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          value_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string value = 6;</code>
-       */
-      public Builder setValue(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000020;
-        value_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string value = 6;</code>
-       */
-      public Builder clearValue() {
-        bitField0_ = (bitField0_ & ~0x00000020);
-        value_ = getDefaultInstance().getValue();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string value = 6;</code>
-       */
-      public Builder setValueBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000020;
-        value_ = value;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object wrap_ = "";
-      /**
-       * <code>optional string wrap = 7;</code>
-       */
-      public boolean hasWrap() {
-        return ((bitField0_ & 0x00000040) == 0x00000040);
-      }
-      /**
-       * <code>optional string wrap = 7;</code>
-       */
-      public java.lang.String getWrap() {
-        java.lang.Object ref = wrap_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            wrap_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>optional string wrap = 7;</code>
-       */
-      public com.google.protobuf.ByteString
-          getWrapBytes() {
-        java.lang.Object ref = wrap_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          wrap_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string wrap = 7;</code>
-       */
-      public Builder setWrap(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000040;
-        wrap_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string wrap = 7;</code>
-       */
-      public Builder clearWrap() {
-        bitField0_ = (bitField0_ & ~0x00000040);
-        wrap_ = getDefaultInstance().getWrap();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string wrap = 7;</code>
-       */
-      public Builder setWrapBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000040;
-        wrap_ = value;
-        onChanged();
-        return this;
-      }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:com.mackenziehigh.socius.web.messages.HttpCookie)
-    }
-
-    // @@protoc_insertion_point(class_scope:com.mackenziehigh.socius.web.messages.HttpCookie)
-    private static final com.mackenziehigh.socius.web.messages.web_m.HttpCookie DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new com.mackenziehigh.socius.web.messages.web_m.HttpCookie();
-    }
-
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpCookie getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<HttpCookie>
-        PARSER = new com.google.protobuf.AbstractParser<HttpCookie>() {
-      public HttpCookie parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-          return new HttpCookie(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<HttpCookie> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<HttpCookie> getParserForType() {
-      return PARSER;
-    }
-
-    public com.mackenziehigh.socius.web.messages.web_m.HttpCookie getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_mackenziehigh_socius_web_messages_HttpPrefix_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_mackenziehigh_socius_web_messages_HttpPrefix_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_mackenziehigh_socius_web_messages_HttpPrefix_ParametersEntry_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_mackenziehigh_socius_web_messages_HttpPrefix_ParametersEntry_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_mackenziehigh_socius_web_messages_HttpPrefix_HeadersEntry_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_mackenziehigh_socius_web_messages_HttpPrefix_HeadersEntry_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_descriptor;
   private static final 
@@ -15474,15 +10039,15 @@ public final class web_m {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_HeadersEntry_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_TrailersEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_TrailersEntry_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_com_mackenziehigh_socius_web_messages_HttpResponse_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_com_mackenziehigh_socius_web_messages_HttpResponse_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_mackenziehigh_socius_web_messages_HttpResponse_HeadersEntry_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_mackenziehigh_socius_web_messages_HttpResponse_HeadersEntry_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_com_mackenziehigh_socius_web_messages_HttpProtocol_descriptor;
   private static final 
@@ -15498,11 +10063,6 @@ public final class web_m {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_com_mackenziehigh_socius_web_messages_HttpHeader_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_mackenziehigh_socius_web_messages_HttpCookie_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_mackenziehigh_socius_web_messages_HttpCookie_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -15514,64 +10074,43 @@ public final class web_m {
     java.lang.String[] descriptorData = {
       "\n?src/main/java/com/mackenziehigh/socius" +
       "/web/messages/web_m.proto\022%com.mackenzie" +
-      "high.socius.web.messages\"\230\005\n\nHttpPrefix\022" +
-      "E\n\010protocol\030\010 \001(\01323.com.mackenziehigh.so" +
-      "cius.web.messages.HttpProtocol\022\016\n\006method" +
-      "\030\t \001(\t\022\013\n\003uri\030\n \001(\t\022\014\n\004path\030\013 \001(\t\022\017\n\007raw" +
-      "Path\030\014 \001(\t\022\020\n\010rawQuery\030\r \001(\t\022U\n\nparamete" +
-      "rs\030\016 \003(\0132A.com.mackenziehigh.socius.web." +
-      "messages.HttpPrefix.ParametersEntry\022O\n\007h" +
-      "eaders\030\017 \003(\0132>.com.mackenziehigh.socius.",
-      "web.messages.HttpPrefix.HeadersEntry\022\014\n\004" +
-      "host\030\020 \001(\t\022B\n\007cookies\030\021 \003(\01321.com.macken" +
-      "ziehigh.socius.web.messages.HttpCookie\022\023" +
-      "\n\013contentType\030\022 \001(\t\022\025\n\rcontentLength\030\023 \001" +
-      "(\005\032l\n\017ParametersEntry\022\013\n\003key\030\001 \001(\t\022H\n\005va" +
-      "lue\030\002 \001(\01329.com.mackenziehigh.socius.web" +
-      ".messages.HttpQueryParameter:\0028\001\032a\n\014Head" +
-      "ersEntry\022\013\n\003key\030\001 \001(\t\022@\n\005value\030\002 \001(\01321.c" +
-      "om.mackenziehigh.socius.web.messages.Htt" +
-      "pHeader:\0028\001\"\261\006\n\013HttpRequest\022\r\n\005debug\030\001 \003",
-      "(\t\022\022\n\nserverName\030\002 \001(\t\022\020\n\010serverId\030\003 \001(\t" +
-      "\022\017\n\007replyTo\030\004 \001(\t\022\025\n\rcorrelationId\030\005 \001(\t" +
-      "\022\026\n\016sequenceNumber\030\006 \001(\003\022\021\n\ttimestamp\030\007 " +
-      "\001(\004\022E\n\010protocol\030\010 \001(\01323.com.mackenziehig" +
-      "h.socius.web.messages.HttpProtocol\022\016\n\006me" +
-      "thod\030\t \001(\t\022\013\n\003uri\030\n \001(\t\022\014\n\004path\030\013 \001(\t\022\017\n" +
-      "\007rawPath\030\014 \001(\t\022\020\n\010rawQuery\030\r \001(\t\022V\n\npara" +
-      "meters\030\016 \003(\0132B.com.mackenziehigh.socius." +
-      "web.messages.HttpRequest.ParametersEntry" +
-      "\022P\n\007headers\030\017 \003(\0132?.com.mackenziehigh.so",
-      "cius.web.messages.HttpRequest.HeadersEnt" +
-      "ry\022\014\n\004host\030\020 \001(\t\022B\n\007cookies\030\021 \003(\01321.com." +
-      "mackenziehigh.socius.web.messages.HttpCo" +
-      "okie\022\023\n\013contentType\030\022 \001(\t\022\025\n\rcontentLeng" +
-      "th\030\023 \001(\005\022\014\n\004body\030\024 \001(\014\032l\n\017ParametersEntr" +
-      "y\022\013\n\003key\030\001 \001(\t\022H\n\005value\030\002 \001(\01329.com.mack" +
-      "enziehigh.socius.web.messages.HttpQueryP" +
-      "arameter:\0028\001\032a\n\014HeadersEntry\022\013\n\003key\030\001 \001(" +
-      "\t\022@\n\005value\030\002 \001(\01321.com.mackenziehigh.soc" +
-      "ius.web.messages.HttpHeader:\0028\001\"\271\003\n\014Http",
-      "Response\022\r\n\005debug\030\001 \003(\t\022C\n\007request\030\002 \001(\013" +
-      "22.com.mackenziehigh.socius.web.messages" +
-      ".HttpRequest\022\025\n\rcorrelationId\030\003 \001(\t\022\021\n\tt" +
-      "imestamp\030\004 \001(\004\022\016\n\006status\030\005 \001(\005\022Q\n\007header" +
-      "s\030\006 \003(\0132@.com.mackenziehigh.socius.web.m" +
-      "essages.HttpResponse.HeadersEntry\022B\n\007coo" +
-      "kies\030\007 \003(\01321.com.mackenziehigh.socius.we" +
-      "b.messages.HttpCookie\022\023\n\013contentType\030\010 \001" +
-      "(\t\022\014\n\004body\030\t \001(\014\032a\n\014HeadersEntry\022\013\n\003key\030" +
-      "\001 \001(\t\022@\n\005value\030\002 \001(\01321.com.mackenziehigh",
-      ".socius.web.messages.HttpHeader:\0028\001\"V\n\014H" +
-      "ttpProtocol\022\014\n\004text\030\001 \001(\t\022\014\n\004name\030\002 \001(\t\022" +
-      "\024\n\014majorVersion\030\003 \001(\005\022\024\n\014minorVersion\030\004 " +
-      "\001(\005\"1\n\022HttpQueryParameter\022\013\n\003key\030\001 \001(\t\022\016" +
-      "\n\006values\030\002 \003(\t\")\n\nHttpHeader\022\013\n\003key\030\001 \001(" +
-      "\t\022\016\n\006values\030\002 \003(\t\"y\n\nHttpCookie\022\016\n\006domai" +
-      "n\030\001 \001(\t\022\020\n\010httpOnly\030\002 \001(\010\022\016\n\006maxAge\030\003 \001(" +
-      "\003\022\014\n\004path\030\004 \001(\t\022\016\n\006secure\030\005 \001(\010\022\r\n\005value" +
-      "\030\006 \001(\t\022\014\n\004wrap\030\007 \001(\tB.\n%com.mackenziehig" +
-      "h.socius.web.messagesB\005web_m"
+      "high.socius.web.messages\"\245\007\n\013HttpRequest" +
+      "\022\r\n\005debug\030\001 \003(\t\022\022\n\nserverName\030\002 \001(\t\022\020\n\010s" +
+      "erverId\030\003 \001(\t\022\017\n\007replyTo\030\004 \001(\t\022\025\n\rcorrel" +
+      "ationId\030\005 \001(\t\022\026\n\016sequenceNumber\030\006 \001(\003\022\021\n" +
+      "\ttimestamp\030\007 \001(\004\022E\n\010protocol\030\010 \001(\01323.com" +
+      ".mackenziehigh.socius.web.messages.HttpP" +
+      "rotocol\022\016\n\006method\030\t \001(\t\022\013\n\003uri\030\n \001(\t\022\014\n\004" +
+      "path\030\013 \001(\t\022\017\n\007rawPath\030\014 \001(\t\022\020\n\010rawQuery\030",
+      "\r \001(\t\022V\n\nparameters\030\016 \003(\0132B.com.mackenzi" +
+      "ehigh.socius.web.messages.HttpRequest.Pa" +
+      "rametersEntry\022P\n\007headers\030\017 \003(\0132?.com.mac" +
+      "kenziehigh.socius.web.messages.HttpReque" +
+      "st.HeadersEntry\022\014\n\004host\030\020 \001(\t\022\023\n\013content" +
+      "Type\030\021 \001(\t\022\025\n\rcontentLength\030\022 \001(\005\022\014\n\004bod" +
+      "y\030\023 \001(\014\022R\n\010trailers\030\024 \003(\0132@.com.mackenzi" +
+      "ehigh.socius.web.messages.HttpRequest.Tr" +
+      "ailersEntry\032l\n\017ParametersEntry\022\013\n\003key\030\001 " +
+      "\001(\t\022H\n\005value\030\002 \001(\01329.com.mackenziehigh.s",
+      "ocius.web.messages.HttpQueryParameter:\0028" +
+      "\001\032a\n\014HeadersEntry\022\013\n\003key\030\001 \001(\t\022@\n\005value\030" +
+      "\002 \001(\01321.com.mackenziehigh.socius.web.mes" +
+      "sages.HttpHeader:\0028\001\032b\n\rTrailersEntry\022\013\n" +
+      "\003key\030\001 \001(\t\022@\n\005value\030\002 \001(\01321.com.mackenzi" +
+      "ehigh.socius.web.messages.HttpHeader:\0028\001" +
+      "\"\203\002\n\014HttpResponse\022\r\n\005debug\030\001 \003(\t\022C\n\007requ" +
+      "est\030\002 \001(\01322.com.mackenziehigh.socius.web" +
+      ".messages.HttpRequest\022\025\n\rcorrelationId\030\003" +
+      " \001(\t\022\021\n\ttimestamp\030\004 \001(\004\022\016\n\006status\030\005 \001(\005\022",
+      "B\n\007headers\030\006 \003(\01321.com.mackenziehigh.soc" +
+      "ius.web.messages.HttpHeader\022\023\n\013contentTy" +
+      "pe\030\007 \001(\t\022\014\n\004body\030\010 \001(\014\"V\n\014HttpProtocol\022\014" +
+      "\n\004text\030\001 \001(\t\022\014\n\004name\030\002 \001(\t\022\024\n\014majorVersi" +
+      "on\030\003 \001(\005\022\024\n\014minorVersion\030\004 \001(\005\"1\n\022HttpQu" +
+      "eryParameter\022\013\n\003key\030\001 \001(\t\022\016\n\006values\030\002 \003(" +
+      "\t\")\n\nHttpHeader\022\013\n\003key\030\001 \001(\t\022\016\n\006values\030\002" +
+      " \003(\tB.\n%com.mackenziehigh.socius.web.mes" +
+      "sagesB\005web_m"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -15585,30 +10124,12 @@ public final class web_m {
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         }, assigner);
-    internal_static_com_mackenziehigh_socius_web_messages_HttpPrefix_descriptor =
-      getDescriptor().getMessageTypes().get(0);
-    internal_static_com_mackenziehigh_socius_web_messages_HttpPrefix_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_mackenziehigh_socius_web_messages_HttpPrefix_descriptor,
-        new java.lang.String[] { "Protocol", "Method", "Uri", "Path", "RawPath", "RawQuery", "Parameters", "Headers", "Host", "Cookies", "ContentType", "ContentLength", });
-    internal_static_com_mackenziehigh_socius_web_messages_HttpPrefix_ParametersEntry_descriptor =
-      internal_static_com_mackenziehigh_socius_web_messages_HttpPrefix_descriptor.getNestedTypes().get(0);
-    internal_static_com_mackenziehigh_socius_web_messages_HttpPrefix_ParametersEntry_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_mackenziehigh_socius_web_messages_HttpPrefix_ParametersEntry_descriptor,
-        new java.lang.String[] { "Key", "Value", });
-    internal_static_com_mackenziehigh_socius_web_messages_HttpPrefix_HeadersEntry_descriptor =
-      internal_static_com_mackenziehigh_socius_web_messages_HttpPrefix_descriptor.getNestedTypes().get(1);
-    internal_static_com_mackenziehigh_socius_web_messages_HttpPrefix_HeadersEntry_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_mackenziehigh_socius_web_messages_HttpPrefix_HeadersEntry_descriptor,
-        new java.lang.String[] { "Key", "Value", });
     internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_descriptor =
-      getDescriptor().getMessageTypes().get(1);
+      getDescriptor().getMessageTypes().get(0);
     internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_descriptor,
-        new java.lang.String[] { "Debug", "ServerName", "ServerId", "ReplyTo", "CorrelationId", "SequenceNumber", "Timestamp", "Protocol", "Method", "Uri", "Path", "RawPath", "RawQuery", "Parameters", "Headers", "Host", "Cookies", "ContentType", "ContentLength", "Body", });
+        new java.lang.String[] { "Debug", "ServerName", "ServerId", "ReplyTo", "CorrelationId", "SequenceNumber", "Timestamp", "Protocol", "Method", "Uri", "Path", "RawPath", "RawQuery", "Parameters", "Headers", "Host", "ContentType", "ContentLength", "Body", "Trailers", });
     internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_ParametersEntry_descriptor =
       internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_descriptor.getNestedTypes().get(0);
     internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_ParametersEntry_fieldAccessorTable = new
@@ -15621,42 +10142,36 @@ public final class web_m {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_HeadersEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
+    internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_TrailersEntry_descriptor =
+      internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_descriptor.getNestedTypes().get(2);
+    internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_TrailersEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_TrailersEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
     internal_static_com_mackenziehigh_socius_web_messages_HttpResponse_descriptor =
-      getDescriptor().getMessageTypes().get(2);
+      getDescriptor().getMessageTypes().get(1);
     internal_static_com_mackenziehigh_socius_web_messages_HttpResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_mackenziehigh_socius_web_messages_HttpResponse_descriptor,
-        new java.lang.String[] { "Debug", "Request", "CorrelationId", "Timestamp", "Status", "Headers", "Cookies", "ContentType", "Body", });
-    internal_static_com_mackenziehigh_socius_web_messages_HttpResponse_HeadersEntry_descriptor =
-      internal_static_com_mackenziehigh_socius_web_messages_HttpResponse_descriptor.getNestedTypes().get(0);
-    internal_static_com_mackenziehigh_socius_web_messages_HttpResponse_HeadersEntry_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_mackenziehigh_socius_web_messages_HttpResponse_HeadersEntry_descriptor,
-        new java.lang.String[] { "Key", "Value", });
+        new java.lang.String[] { "Debug", "Request", "CorrelationId", "Timestamp", "Status", "Headers", "ContentType", "Body", });
     internal_static_com_mackenziehigh_socius_web_messages_HttpProtocol_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(2);
     internal_static_com_mackenziehigh_socius_web_messages_HttpProtocol_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_mackenziehigh_socius_web_messages_HttpProtocol_descriptor,
         new java.lang.String[] { "Text", "Name", "MajorVersion", "MinorVersion", });
     internal_static_com_mackenziehigh_socius_web_messages_HttpQueryParameter_descriptor =
-      getDescriptor().getMessageTypes().get(4);
+      getDescriptor().getMessageTypes().get(3);
     internal_static_com_mackenziehigh_socius_web_messages_HttpQueryParameter_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_mackenziehigh_socius_web_messages_HttpQueryParameter_descriptor,
         new java.lang.String[] { "Key", "Values", });
     internal_static_com_mackenziehigh_socius_web_messages_HttpHeader_descriptor =
-      getDescriptor().getMessageTypes().get(5);
+      getDescriptor().getMessageTypes().get(4);
     internal_static_com_mackenziehigh_socius_web_messages_HttpHeader_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_mackenziehigh_socius_web_messages_HttpHeader_descriptor,
         new java.lang.String[] { "Key", "Values", });
-    internal_static_com_mackenziehigh_socius_web_messages_HttpCookie_descriptor =
-      getDescriptor().getMessageTypes().get(6);
-    internal_static_com_mackenziehigh_socius_web_messages_HttpCookie_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_mackenziehigh_socius_web_messages_HttpCookie_descriptor,
-        new java.lang.String[] { "Domain", "HttpOnly", "MaxAge", "Path", "Secure", "Value", "Wrap", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)
