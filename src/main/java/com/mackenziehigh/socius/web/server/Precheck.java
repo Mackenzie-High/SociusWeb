@@ -18,8 +18,7 @@ package com.mackenziehigh.socius.web.server;
 import com.mackenziehigh.socius.web.messages.web_m;
 
 /**
- *
- * @author mackenzie
+ * Checks a partial HTTP message for authorization, relevance, etc.
  */
 interface Precheck
 {

@@ -17,28 +17,25 @@ package com.mackenziehigh.socius.web.server;
 
 import com.google.common.collect.ImmutableList;
 import com.mackenziehigh.socius.web.messages.web_m;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
-import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
-import static io.netty.handler.codec.http.HttpResponseStatus.BAD_REQUEST;
-import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import java.util.List;
 
 /**
- * Checks a partial HTTP message for authorization, connection limits, etc.
+ * Performs a pre-check on an inbound Netty-based HTTP request.
  */
-final class PrecheckHandler
+final class Prechecker
         extends MessageToMessageDecoder<HttpRequest>
 {
     private final Translator translator;
 
     private final ImmutableList<Precheck> chain;
 
-    public PrecheckHandler (final Translator translator,
+    public Prechecker (final Translator translator,
                             final ImmutableList<Precheck> chain)
     {
         this.translator = translator;
@@ -52,8 +49,22 @@ final class PrecheckHandler
     {
         try
         {
+            /**
+             * Convert the Netty-based request to a GPB-based request.
+             * Some parts of the request will be omitted,
+             * as they are not needed at this stage.
+             */
             final web_m.HttpRequest prefix = translator.prefixOf(msg);
 
+            /**
+             * Iterate over the ordered list of rules.
+             * If a rule is willing to accept the request,
+             * then the request will be accepted without further ado.
+             * If a rule is willing to reject the request,
+             * then the request will be rejected without further ado.
+             * If none of the rules either to accept or reject,
+             * then play it safe and reject the request.
+             */
             for (Precheck check : chain)
             {
                 final Precheck.Result result = check.check(prefix);
@@ -70,10 +81,18 @@ final class PrecheckHandler
                 }
             }
 
+            /**
+             * None of the rules accepted or rejected the request,
+             * so play it safe and reject the request.
+             */
             closeConnection(ctx);
         }
         catch (Throwable ex)
         {
+            /**
+             * The request was not explicitly accepted,
+             * so play it safe and reject the request.
+             */
             closeConnection(ctx);
         }
     }
@@ -84,9 +103,7 @@ final class PrecheckHandler
         /**
          * Notify the client of the error, but do not tell them exactly why (for security).
          */
-        final FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, BAD_REQUEST, Unpooled.EMPTY_BUFFER);
-        response.headers().add("connection", "close");
-        response.headers().add("content-length", "0");
+        final FullHttpResponse response = Translator.newErrorResponse(HttpResponseStatus.FORBIDDEN);
 
         /**
          * Send the response to the client.

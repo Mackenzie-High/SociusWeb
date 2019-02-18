@@ -165,7 +165,7 @@ final class Translator
         /**
          * HTTP Method.
          */
-        builder.setMethod(request.method().name());
+        builder.setMethod(request.method().name().toUpperCase());
 
         /**
          * URI, etc.

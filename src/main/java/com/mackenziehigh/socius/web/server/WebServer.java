@@ -269,8 +269,8 @@ public final class WebServer
      */
     private void run ()
     {
-        final EventLoopGroup bossGroup = new NioEventLoopGroup(2);
-        final EventLoopGroup workerGroup = new NioEventLoopGroup(2);
+        final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
+        final EventLoopGroup workerGroup = new NioEventLoopGroup(1);
         try
         {
             Runtime.getRuntime().addShutdownHook(new Thread(this::onShutdown));
@@ -326,7 +326,7 @@ public final class WebServer
                                                               shared.maxHeaderSize,
                                                               shared.maxChunkSize,
                                                               shared.validateHeaders));
-            channel.pipeline().addLast(new PrecheckHandler(translator, prechecks));
+            channel.pipeline().addLast(new Prechecker(translator, prechecks));
             channel.pipeline().addLast(new HttpObjectAggregator(shared.aggregationCapacity, true));
             channel.pipeline().addLast(new TranslationEncoder(translator));
             channel.pipeline().addLast(new TranslationDecoder(translator));
