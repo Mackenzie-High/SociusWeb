@@ -74,7 +74,7 @@ final class Prechecker
                     out.add(msg);
                     return;
                 }
-                else if (Precheck.Result.DENY == result)
+                else if (Precheck.Result.REJECT == result)
                 {
                     closeConnection(ctx);
                     return;

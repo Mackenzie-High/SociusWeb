@@ -15,13 +15,17 @@
  */
 package com.mackenziehigh.socius.web.server;
 
-import com.google.common.base.Verify;
 import com.google.common.collect.Maps;
+import com.mackenziehigh.cascade.Cascade.Stage;
 import com.mackenziehigh.cascade.Cascade.Stage.Actor;
 import com.mackenziehigh.socius.web.messages.web_m.HttpRequest;
 import com.mackenziehigh.socius.web.messages.web_m.HttpResponse;
-import java.net.URISyntaxException;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import java.time.Instant;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -35,16 +39,21 @@ final class Router
      * that will be used to process the corresponding responses.
      *
      * <p>
-     * Entries are added to this map whenever an HTTP request is processed.
-     * Entries are lazily removed from this map, if they have been there too long.
+     * Entries are added to this map whenever an HTTP request begins.
+     * </p>
+     *
+     * <p>
+     * Entries are periodically removed from this map, if they have been there too long.
+     * In such cases, the an HTTP response will be sent to the client,
+     * which will indicate that the connection timed-out.
      * </p>
      */
     private final Map<String, Conversation> connections = Maps.newConcurrentMap();
 
     /**
-     * This queue is used to remove connections from the map of connections.
+     * This queue is used to remove stale connections from the map of connections.
      */
-    private final Queue<Conversation> responseTimeoutQueue = new PriorityQueue<>();
+    private final Queue<Conversation> responseTimeoutQueue = new PriorityQueue<>(Conversation.COMPARATOR);
 
     /**
      * This processor will be used to send HTTP requests out of the server,
@@ -58,33 +67,68 @@ final class Router
      */
     public final Actor<HttpResponse, HttpResponse> responsesIn;
 
-    public Router (final SharedState shared)
+    public Router (final Stage stage)
     {
-//        this.shared = shared;
-        this.requestsOut = shared.stage.newActor().withScript(this::onRequest).create();
-        this.responsesIn = shared.stage.newActor().withScript(this::onResponse).create();
+        this.requestsOut = stage.newActor().withScript(this::onRequest).create();
+        this.responsesIn = stage.newActor().withScript(this::onResponse).create();
     }
 
-    public void open (final HttpRequest request,
-                      final Consumer<HttpResponse> callback)
-            throws URISyntaxException
+    public SimpleChannelInboundHandler<HttpRequest> newHandler ()
     {
-        final String correlationId = request.getCorrelationId();
+        final AtomicBoolean firstRequest = new AtomicBoolean();
 
-        /**
-         * Create the response handler that will be used to route
-         * the corresponding HTTP Response, if and when it occurs.
-         */
-        Verify.verify(connections.containsKey(correlationId) == false);
-        final Conversation connection = new Conversation(correlationId, callback);
-        responseTimeoutQueue.add(connection);
-        connections.put(correlationId, connection);
+        return new SimpleChannelInboundHandler<HttpRequest>()
+        {
+            @Override
+            protected void channelRead0 (final ChannelHandlerContext ctx,
+                                         final HttpRequest msg)
+            {
+                if (firstRequest.compareAndSet(false, true))
+                {
+                    open(msg, response -> reply(ctx, response));
+                }
+            }
 
-        /**
-         * Send the HTTP Request to the external actors,
-         * so they can form an HTTP Response.
-         */
-        requestsOut.input().send(request);
+            private void reply (final ChannelHandlerContext ctx,
+                                final HttpResponse response)
+            {
+                ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
+            }
+        };
+    }
+
+    /**
+     * Begin managing a request-response exchange.
+     *
+     * @param request will be sent to the external actors, who will generate a response.
+     * @param callback will be used to transmit the response to the client.
+     */
+    private void open (final HttpRequest request,
+                       final Consumer<HttpResponse> callback)
+    {
+        synchronized (this)
+        {
+            final String correlationId = request.getCorrelationId();
+
+            if (connections.containsKey(correlationId))
+            {
+                return;
+            }
+
+            /**
+             * Create the response handler that will be used to route
+             * the corresponding HTTP Response, if and when it occurs.
+             */
+            final Conversation connection = new Conversation(correlationId, callback);
+            responseTimeoutQueue.add(connection);
+            connections.put(correlationId, connection);
+
+            /**
+             * Send the HTTP Request to the external actors,
+             * so they can form an HTTP Response.
+             */
+            requestsOut.input().send(request);
+        }
     }
 
     private HttpRequest onRequest (final HttpRequest request)
@@ -136,51 +180,60 @@ final class Router
          */
         final Conversation connection = connections.get(correlationId);
 
+        /**
+         * If a response was already transmitted, then the connection was already closed.
+         * Alternatively, the external handlers may be broadcasting responses to multiple
+         * servers in a publish-subscribe like manner. Consequently, we may have been
+         * given a response that does not correlate to one of our connections.
+         * In either case, just silently drop the response.
+         */
         if (connection == null)
         {
             return;
         }
 
         /**
-         * Send the HTTP Response to the client, if they are still connected.
+         * Send the HTTP Response to the client.
          */
         connection.respondWith(response);
     }
 
-    private void prunePendingResponses ()
+    /**
+     * Close any open connections that were created before the given limit.
+     *
+     * @param limit specifies the maximum age of any open connections.
+     */
+    public void closeStaleConnections (final Instant limit)
     {
-        final Instant now = Instant.now();
+        while (responseTimeoutQueue.isEmpty() == false)
+        {
+            final Conversation conn = responseTimeoutQueue.peek();
 
-//        while (responseTimeoutQueue.isEmpty() == false)
-//        {
-//            final Connection conn = responseTimeoutQueue.peek();
-//
-//            if (conn.timeout.isBefore(now.minus(responseTimeout)))
-//            {
-//                conn.close();
-//            }
-//            else
-//            {
-//                break;
-//            }
-//        }
+            if (conn.creationTime.isBefore(limit))
+            {
+
+            }
+            else
+            {
+                break;
+            }
+        }
     }
 
     /**
      * Representation of client-server connection.
      */
-    private final class Conversation
-            implements Comparable<Conversation>
+    private static final class Conversation
     {
-        public final Instant timeout = Instant.now();
+        public static final Comparator<Conversation> COMPARATOR = (x, y) -> x.creationTime.compareTo(y.creationTime);
+
+        public final Instant creationTime = Instant.now();
 
         public final Consumer<HttpResponse> output;
 
         public final String correlationId;
 
         private final AtomicBoolean sent = new AtomicBoolean();
-
-        private final AtomicBoolean closed = new AtomicBoolean();
 
         public Conversation (final String correlationId,
                              final Consumer<HttpResponse> onResponse)
@@ -190,27 +243,22 @@ final class Router
             this.output = onResponse;
         }
 
-        @Override
-        public int compareTo (final Conversation other)
-        {
-            return timeout.compareTo(other.timeout);
-        }
-
         public void respondWith (final HttpResponse response)
         {
             /**
              * Sending a response is a one-shot operation.
              * Do not allow duplicate responses.
              */
-            if (sent.compareAndSet(false, true) == false)
+            if (sent.compareAndSet(false, true))
             {
-                return;
+                output.accept(response);
             }
+        }
 
-            /**
-             * Send the response to the client and close the connection.
-             */
-            output.accept(response);
+        public void closeStaleConnection ()
+        {
+            final HttpResponse response = Translator.newErrorResponseGPB(HttpResponseStatus.REQUEST_TIMEOUT);
+            respondWith(response);
         }
     }
 }

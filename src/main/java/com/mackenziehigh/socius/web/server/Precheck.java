@@ -31,7 +31,7 @@ interface Precheck
         /**
          * Meaning: Reject the HTTP request, unconditionally.
          */
-        DENY,
+        REJECT,
         /**
          * Meaning: Forward the HTTP request to the next pre-check,
          * because this pre-check was unable to accept or deny the HTTP request.

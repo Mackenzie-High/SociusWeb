@@ -340,12 +340,37 @@ final class Translator
      */
     public static FullHttpResponse newErrorResponse (final HttpResponseStatus status)
     {
-        final String message = "<head> <meta http-equiv=\"refresh\" content=\"0; URL=\"/" + status.code() + ".html\" /> </head>";
+        final String message = "<head> <meta http-equiv=\"refresh\" content=\"5; URL=\"/" + status.code() + ".html\" /> </head>\r\n";
         final ByteBuf content = Unpooled.copiedBuffer(message.getBytes(StandardCharsets.US_ASCII));
         final FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_0, status, content);
         response.headers().set("connection", "close");
-        response.headers().set("content-length", "0");
         response.headers().set("content-type", "text/html");
+        return response;
+    }
+
+    /**
+     * Static utility method for creating common error-responses.
+     *
+     * <p>
+     * The response will redirect the client to an HTML page
+     * under the web-root, whose name is the numeric error-code.
+     * </p>
+     *
+     * @param status is the HTTP error-code.
+     * @return the Netty-based response object.
+     */
+    public static web_m.HttpResponse newErrorResponseGPB (final HttpResponseStatus status)
+    {
+        final String message = "<head> <meta http-equiv=\"refresh\" content=\"5; URL=\"/" + status.code() + ".html\" /> </head>\r\n";
+
+        final web_m.HttpResponse response = web_m.HttpResponse.newBuilder()
+                .addHeaders(web_m.HttpHeader.newBuilder().setKey("connection").addValues("close"))
+                .setContentType("text/html")
+                .setTimestamp(System.currentTimeMillis())
+                .setStatus(status.code())
+                .setBody(ByteString.copyFromUtf8(message))
+                .build();
+
         return response;
     }
 }

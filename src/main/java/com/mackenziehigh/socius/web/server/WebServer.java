@@ -15,18 +15,19 @@
  */
 package com.mackenziehigh.socius.web.server;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.ByteString;
 import com.mackenziehigh.cascade.Cascade;
+import com.mackenziehigh.cascade.Cascade.Stage;
 import com.mackenziehigh.cascade.Cascade.Stage.Actor.Input;
 import com.mackenziehigh.cascade.Cascade.Stage.Actor.Output;
 import com.mackenziehigh.socius.web.messages.web_m;
 import com.mackenziehigh.socius.web.messages.web_m.HttpRequest;
 import com.mackenziehigh.socius.web.messages.web_m.HttpResponse;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.AdaptiveRecvByteBufAllocator;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
@@ -34,33 +35,80 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
+import java.io.Closeable;
+import java.io.IOException;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
- * A experimental non-blocking HTTP server based on the Netty framework.
+ * A non-blocking HTTP server based on the Netty framework,
+ * for creating RESTful APIs using the Cascade framework.
  */
 public final class WebServer
+        implements Closeable
 {
-    private static final Logger logger = LogManager.getLogger(WebServer.class);
+    private static final int BOSS_THREAD_COUNT = 1;
 
-    private final SharedState shared;
+    private static final int WORKER_THREAD_COUNT = 1;
+
+    private final String serverId = UUID.randomUUID().toString();
+
+    private final String serverName;
+
+    private final String replyTo;
+
+    private final String bindAddress;
+
+    private final int port;
+
+    private final int maxMessagesPerRead;
+
+    private final int recvAllocatorMin;
+
+    private final int recvAllocatorInitial;
+
+    private final int recvAllocatorMax;
+
+    private final int softConnectionLimit;
+
+    private final int hardConnectionLimit;
+
+    private final int maxRequestSize;
+
+    private final int maxInitialLineSize;
+
+    private final int maxHeaderSize;
+
+    private final Duration slowReadTimeout;
+
+    private final Duration responseTimeout;
+
+    private final Duration connectionTimeout;
 
     private final ImmutableList<Precheck> prechecks;
 
+    private final ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+
+    private final Stage stage = Cascade.newExecutorStage(service);
+
+    private final AdaptiveRecvByteBufAllocator recvBufferAllocator;
+
     /**
-     * TODO: Make the sequence-numbers increment.
+     * TODO: Make the sequence-numbers increment monotonically.
      */
     private final Translator translator;
 
-    private final Router router;
+    private final Router router = new Router(stage);
 
     /**
      * This flag will be set to true, when start() is called.
@@ -84,17 +132,28 @@ public final class WebServer
      */
     private WebServer (final Builder builder)
     {
-        this.shared = new SharedState(Executors.newScheduledThreadPool(1),
-                                      builder.serverName,
-                                      builder.replyTo,
-                                      builder.host,
-                                      builder.port,
-                                      builder.responseTimeout,
-                                      builder.aggregationCapacity);
-        this.prechecks = ImmutableList.copyOf(builder.checks);
+        this.serverName = builder.builderServerName;
+        this.replyTo = builder.builderReplyTo;
+        this.bindAddress = builder.builderBindAddress;
+        this.port = builder.builderPort;
+        this.maxMessagesPerRead = builder.builderMaxMessagesPerRead;
+        this.recvAllocatorMin = builder.builderRecvAllocatorMin;
+        this.recvAllocatorInitial = builder.builderRecvAllocatorInitial;
+        this.recvAllocatorMax = builder.builderRecvAllocatorMax;
+        this.softConnectionLimit = builder.builderSoftConnectionLimit;
+        this.hardConnectionLimit = builder.builderHardConnectionLimit;
+        this.maxRequestSize = builder.builderMaxRequestSize;
+        this.maxInitialLineSize = builder.builderMaxInitialLineSize;
+        this.maxHeaderSize = builder.builderMaxHeaderSize;
+        this.slowReadTimeout = builder.builderSlowReadTimeout;
+        this.responseTimeout = builder.builderResponseTimeout;
+        this.connectionTimeout = builder.builderConnectionTimeout;
+        this.prechecks = ImmutableList.copyOf(new CopyOnWriteArrayList<>(builder.builderPrechecks));
 
-        this.translator = new Translator(shared.serverName, shared.serverId, shared.replyTo);
-        this.router = new Router(shared);
+        this.recvBufferAllocator = new AdaptiveRecvByteBufAllocator(recvAllocatorMin, recvAllocatorInitial, recvAllocatorMax);
+        this.recvBufferAllocator.maxMessagesPerRead(maxMessagesPerRead);
+
+        this.translator = new Translator(serverName, serverId, replyTo);
     }
 
     /**
@@ -104,78 +163,8 @@ public final class WebServer
      */
     public long getSequenceCount ()
     {
-        return shared.sequenceNumber.get();
-    }
-
-    /**
-     * Get the human-readable name of this server.
-     *
-     * @return the server name.
-     */
-    public String getServerName ()
-    {
-        return shared.serverName;
-    }
-
-    /**
-     * Get the universally-unique-identifier of this server instance.
-     *
-     * @return the server identifier.
-     */
-    public String getServerId ()
-    {
-        return shared.serverId;
-    }
-
-    /**
-     * Get the (Reply-To) property embedded in each outgoing request.
-     *
-     * @return the reply-to address.
-     */
-    public String getReplyTo ()
-    {
-        return shared.replyTo;
-    }
-
-    /**
-     * Get the name of the host that the server is listening on.
-     *
-     * @return the server host.
-     */
-    public String getHost ()
-    {
-        return shared.host;
-    }
-
-    /**
-     * Get the port that the server is listening on.
-     *
-     * @return the server port.
-     */
-    public int getPort ()
-    {
-        return shared.port;
-    }
-
-    /**
-     * Get the maximum amount of time the server will wait for a response,
-     * before the connection is closed without sending a response.
-     *
-     * @return the connection timeout.
-     */
-    public Duration getResponseTimeout ()
-    {
-        return shared.responseTimeout;
-    }
-
-    /**
-     * Get the size of the buffer used to join chunked messages into one.
-     *
-     * @return the approximate maximum size of a request.
-     */
-    public int getAggregationCapacity ()
-    {
-        return shared.aggregationCapacity;
+        // TODO
+        return 0;
     }
 
     /**
@@ -187,6 +176,188 @@ public final class WebServer
     {
 //        return connections.size();
         return 0; // TODO
+    }
+
+    /**
+     * Get the human-readable name of this server.
+     *
+     * @return the server name.
+     */
+    public String getServerName ()
+    {
+        return serverName;
+    }
+
+    /**
+     * Get the universally-unique-identifier of this server instance.
+     *
+     * @return the server identifier.
+     */
+    public String getServerId ()
+    {
+        return serverId;
+    }
+
+    /**
+     * Get the (Reply-To) property embedded in each outgoing request.
+     *
+     * @return the reply-to address.
+     */
+    public String getReplyTo ()
+    {
+        return replyTo;
+    }
+
+    /**
+     * Get the name of the host that the server is listening on.
+     *
+     * @return the server host.
+     */
+    public String getBindAddress ()
+    {
+        return bindAddress;
+    }
+
+    /**
+     * Get the port that the server is listening on.
+     *
+     * @return the server port.
+     */
+    public int getPort ()
+    {
+        return port;
+    }
+
+    /**
+     * Get the maximum amount of time the server will wait for a request
+     * to be read off of the socket into a full message object.
+     *
+     * @return the read timeout.
+     */
+    public Duration getSlowReadTimeout ()
+    {
+        return slowReadTimeout;
+    }
+
+    /**
+     * Get the maximum amount of time the server will wait for a response,
+     * before sending a default error response and closing the connection.
+     *
+     * @return the connection timeout.
+     */
+    public Duration getResponseTimeout ()
+    {
+        return responseTimeout;
+    }
+
+    /**
+     * Get the maximum amount of time the server will wait for a response,
+     * before the connection is closed without sending a response at all.
+     *
+     * @return the connection timeout.
+     */
+    public Duration getConnectionTimeout ()
+    {
+        return connectionTimeout;
+    }
+
+    /**
+     * Get the the maximum allowed overall size of HTTP requests.
+     *
+     * @return the maximum size of each request.
+     */
+    public int getMaxRequestSize ()
+    {
+        return maxRequestSize;
+    }
+
+    /**
+     * Get the the maximum allowed size of the request-line in an HTTP request.
+     *
+     * @return the maximum size of the first line of an HTTP request.
+     */
+    public int getMaxInitialLineSize ()
+    {
+        return maxInitialLineSize;
+    }
+
+    /**
+     * Get the the maximum allowed size of the headers in an HTTP request.
+     *
+     * @return the maximum combined size of the headers in an HTTP request.
+     */
+    public int getMaxHeaderSize ()
+    {
+        return maxHeaderSize;
+    }
+
+    /**
+     * Get the maximum number of allowed concurrent connections before
+     * new connections are rejected by sending an automatic response.
+     *
+     * @return the connection limit.
+     */
+    public int getSoftConnectionLimit ()
+    {
+        return softConnectionLimit;
+    }
+
+    /**
+     * Get the maximum number of allowed concurrent connections before
+     * new connections are rejected by closing the connection without
+     * sending any response to the client.
+     *
+     * @return the connection limit.
+     */
+    public int getHardConnectionLimit ()
+    {
+        return hardConnectionLimit;
+    }
+
+    /**
+     * Get the maximum number of reads that will be performed per read loop.
+     *
+     * @return the read loop iteration limit.
+     */
+    public int getMaxMessagesPerRead ()
+    {
+        return maxMessagesPerRead;
+    }
+
+    /**
+     * Get the minimum size that will be used to allocate a new
+     * byte buffer when reading from the server socket,
+     * after the adaptive algorithm makes adjustments.
+     *
+     * @return the inclusive minimum buffer size.
+     */
+    public int getRecvBufferMinSize ()
+    {
+        return recvAllocatorMin;
+    }
+
+    /**
+     * Get the maximum size that will be used to allocate a new
+     * byte buffer when reading from the server socket,
+     * after the adaptive algorithm makes adjustments.
+     *
+     * @return the inclusive maximum buffer size.
+     */
+    public int getRecvBufferMaxSize ()
+    {
+        return recvAllocatorMax;
+    }
+
+    /**
+     * Get the initial size that will be used to allocate a new
+     * byte buffer when reading from the server socket,
+     * before the adaptive algorithm makes adjustments.
+     *
+     * @return the initial buffer size.
+     */
+    public int getRecvBufferInitialSize ()
+    {
+        return recvAllocatorInitial;
     }
 
     /**
@@ -232,7 +403,6 @@ public final class WebServer
     {
         if (started.compareAndSet(false, true))
         {
-            logger.info("Starting Server");
             final Thread thread = new Thread(this::run);
             thread.start();
         }
@@ -254,8 +424,6 @@ public final class WebServer
     {
         if (stopped.compareAndSet(false, true))
         {
-            logger.info("Stopping Server");
-
             if (shutdownHook != null)
             {
                 shutdownHook.channel().close().sync();
@@ -264,33 +432,44 @@ public final class WebServer
         return this;
     }
 
+    @Override
+    public void close ()
+            throws IOException
+    {
+        // stop();
+    }
+
     /**
      * Server Main.
      */
     private void run ()
     {
-        final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
-        final EventLoopGroup workerGroup = new NioEventLoopGroup(1);
+        final EventLoopGroup bossGroup = new NioEventLoopGroup(BOSS_THREAD_COUNT);
+        final EventLoopGroup workerGroup = new NioEventLoopGroup(WORKER_THREAD_COUNT);
         try
         {
             Runtime.getRuntime().addShutdownHook(new Thread(this::onShutdown));
 
-            final ServerBootstrap b = new ServerBootstrap();
-            b.group(bossGroup, workerGroup)
-                    .channel(NioServerSocketChannel.class)
-                    .childHandler(new Initializer());
+            final ServerBootstrap bootstrap = new ServerBootstrap();
+            bootstrap.group(bossGroup, workerGroup);
+            bootstrap.channel(NioServerSocketChannel.class);
+            bootstrap.childHandler(new Initializer());
+            bootstrap.option(ChannelOption.RCVBUF_ALLOCATOR, recvBufferAllocator);
 
-            shutdownHook = b.bind(shared.host, shared.port).sync();
+            shutdownHook = bootstrap.bind(bindAddress, port).sync();
             shutdownHook.channel().closeFuture().sync();
         }
         catch (InterruptedException ex)
         {
-            logger.catching(ex);
+            // TODO:
+            ex.printStackTrace();
+            // logger.catching(ex);
         }
         finally
         {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
+            service.shutdown();
         }
     }
 
@@ -302,7 +481,9 @@ public final class WebServer
         }
         catch (InterruptedException ex)
         {
-            logger.error(ex);
+            // TODO:
+            ex.printStackTrace();
+            // logger.catching(ex);
         }
     }
 
@@ -319,18 +500,61 @@ public final class WebServer
         @Override
         protected void initChannel (final SocketChannel channel)
         {
-            HardTimeout.enforce(shared.service, channel, Duration.ofSeconds(5));
+            /**
+             * The maximum chunk size, which is required by the HttpRequestDecoder,
+             * is always equal to the maximum request size, because the chunk
+             * size does not actually limit the client.
+             * Rather, if the max-chunk-size is smaller than a received chunk,
+             * then the decoder will break the chunk into smaller chunks.
+             * Since we aggregate all of the chunks into a single message,
+             * we do not need chunks broken down into smaller chunks,
+             * because it is pointless and wastes resources.
+             */
+            final int maxChunkSize = maxRequestSize;
+
+            final boolean validateHeaders = true;
+
+            /**
+             * If the client attempts to upload a chunked request
+             * that is larger than we are willing to accept,
+             * then automatically close the connection with
+             * an HTTP (417) (Expectation Failed) response.
+             */
+            final boolean closeOnExpectationFailed = true;
+
+            HardTimeout.enforce(service, channel, connectionTimeout);
 
             channel.pipeline().addLast(new HttpResponseEncoder());
-            channel.pipeline().addLast(new HttpRequestDecoder(shared.maxInitialLineLength,
-                                                              shared.maxHeaderSize,
-                                                              shared.maxChunkSize,
-                                                              shared.validateHeaders));
+            channel.pipeline().addLast(new HttpRequestDecoder(maxInitialLineSize,
+                                                              maxHeaderSize,
+                                                              maxChunkSize,
+                                                              validateHeaders));
             channel.pipeline().addLast(new Prechecker(translator, prechecks));
-            channel.pipeline().addLast(new HttpObjectAggregator(shared.aggregationCapacity, true));
+            channel.pipeline().addLast(new HttpObjectAggregator(maxRequestSize, closeOnExpectationFailed));
+            channel.pipeline().addLast(SlowReadTimeout.newHandler(channel, service, slowReadTimeout));
             channel.pipeline().addLast(new TranslationEncoder(translator));
             channel.pipeline().addLast(new TranslationDecoder(translator));
-            channel.pipeline().addLast(new RoutingHandler(router));
+            channel.pipeline().addLast(router.newHandler());
+
+            /**
+             * If a response is not sent back to the client within the given time limit,
+             * then close the connection upon sending an appropriate default response.
+             * Technically, this timer task will always execute; however,
+             * the task is harmless, if the response was already sent.
+             */
+            service.schedule(WebServer.this::closeStaleConnections, responseTimeout.toMillis(), TimeUnit.MILLISECONDS);
+        }
+    }
+
+    private void closeStaleConnections ()
+    {
+        try
+        {
+            router.closeStaleConnections(Instant.MIN);
+        }
+        catch (Throwable ex)
+        {
+            // TODO
         }
     }
 
@@ -349,19 +573,39 @@ public final class WebServer
      */
     public static final class Builder
     {
-        private String serverName = "";
+        private String builderServerName = "";
 
-        private String replyTo = "";
+        private String builderReplyTo = "";
 
-        private String host = "localhost";
+        private String builderBindAddress;
 
-        private int port = 8080;
+        private Integer builderPort;
 
-        private int aggregationCapacity = 65536;
+        private Integer builderMaxMessagesPerRead;
 
-        private Duration responseTimeout = Duration.ofSeconds(60);
+        private Integer builderRecvAllocatorMin;
 
-        private final List<Precheck> checks = new LinkedList<>();
+        private Integer builderRecvAllocatorInitial;
+
+        private Integer builderRecvAllocatorMax;
+
+        private Integer builderSoftConnectionLimit;
+
+        private Integer builderHardConnectionLimit;
+
+        private Integer builderMaxRequestSize;
+
+        private Integer builderMaxInitialLineSize;
+
+        private Integer builderMaxHeaderSize;
+
+        private Duration builderSlowReadTimeout;
+
+        private Duration builderResponseTimeout;
+
+        private Duration builderConnectionTimeout;
+
+        private final List<Precheck> builderPrechecks = new LinkedList<>();
 
         private Builder ()
         {
@@ -369,131 +613,430 @@ public final class WebServer
         }
 
         /**
-         * Set the reply-to field to embed inside of all requests.
-         *
-         * @param value will be embedded in all requests.
-         * @return this.
-         */
-        public Builder withReplyTo (final String value)
-        {
-            this.replyTo = value;
-            return this;
-        }
-
-        /**
-         * Set the human-readable name of the new web-server.
-         *
-         * @param value will be embedded in all requests.
-         * @return this.
-         */
-        public Builder withServerName (final String value)
-        {
-            this.serverName = value;
-            return this;
-        }
-
-        /**
-         * Set the maximum allowed size of any HTTP message.
+         * Set the server-name field to embed inside of all requests.
          *
          * <p>
-         * For chunked messages, this is the maximum allowed
+         * The web-server will embed this name in all outgoing requests,
+         * which can be useful, when multiple web-servers interface
+         * with a set of shared backend application-servers.
+         * </p>
+         *
+         * <p>
+         * No restrictions are placed on the server-name.
+         * You can set this to anything that you desire.
+         * Generally though, different servers should have different names.
+         * The server-name should be meaningful to a human, for debugging.
+         * </p>
+         *
+         * <p>
+         * If you do not specify a specify a server-name,
+         * then default is an empty-string.
+         * </p>
+         *
+         * @param name will be embedded in all requests.
+         * @return this.
+         */
+        public Builder withServerName (final String name)
+        {
+            builderServerName = Objects.requireNonNull(name, "ServerName");
+            return this;
+        }
+
+        /**
+         * Set the reply-to field to embed inside of all requests.
+         *
+         * <p>
+         * The web-server will embed this address in all outgoing requests,
+         * which can be useful, when multiple web-servers interface
+         * with a set of shared backend application-servers.
+         * </p>
+         *
+         * <p>
+         * No restrictions are placed on the reply-to address.
+         * You can set this to anything that you desire.
+         * </p>
+         *
+         * <p>
+         * If you do not specify a specify a reply-to address,
+         * then default is an empty-string.
+         * </p>
+         *
+         * @param address will be embedded in all requests.
+         * @return this.
+         */
+        public Builder withReplyTo (final String address)
+        {
+            builderReplyTo = Objects.requireNonNull(address, "ReplyTo");
+            return this;
+        }
+
+        /**
+         * Specify the maximum number of reads from the socket per read loop.
+         *
+         * @param limit is the maximum number of read() calls per poll.
+         * @return this.
+         * @see <a href="https://netty.io/4.1/api/io/netty/channel/MaxMessagesRecvByteBufAllocator.html">MaxMessagesRecvByteBufAllocator</a>
+         */
+        public Builder withMaxMessagesPerRead (final int limit)
+        {
+            if (limit < 1)
+            {
+                throw new IllegalArgumentException("MaxMessagesPerRead < 1");
+            }
+            else
+            {
+                builderMaxMessagesPerRead = limit;
+                return this;
+            }
+        }
+
+        /**
+         * Specify how byte buffers are allocated when reading from the server socket.
+         *
+         * @param minimum is the inclusive minimum buffer size.
+         * @param initial is the initial buffer size before adaptation.
+         * @param maximum is the inclusive maximum buffer size.
+         * @return this.
+         * @see <a href="https://netty.io/4.1/api/io/netty/channel/AdaptiveRecvByteBufAllocator.html">AdaptiveRecvByteBufAllocator</a>
+         */
+        public Builder withRecvBufferAllocator (final int minimum,
+                                                final int initial,
+                                                final int maximum)
+        {
+            if (minimum < 0)
+            {
+                throw new IllegalArgumentException("RecvByteBufAllocator (minimum) < 0");
+            }
+            else if (initial < minimum)
+            {
+                throw new IllegalArgumentException("RecvByteBufAllocator (initial) < (minimum)");
+            }
+            else if (maximum < initial)
+            {
+                throw new IllegalArgumentException("RecvByteBufAllocator (maximum) < (initial)");
+            }
+            else
+            {
+                builderRecvAllocatorMin = minimum;
+                builderRecvAllocatorInitial = initial;
+                builderRecvAllocatorMax = maximum;
+                return this;
+            }
+        }
+
+        /**
+         * Specify the maximum number of concurrent connections.
+         *
+         * <p>
+         * Once this limit is reached, any additional new connections
+         * will be sent an HTTP (503) (Service Unavailable) response,
+         * unless the hard connection limit is also reached.
+         * </p>
+         *
+         * <p>
+         * This limit is intended to allow graceful degradation
+         * of the server in cases where the server is overloaded.
+         * </p>
+         *
+         * <p>
+         * <b>Warning:</b> Setting this limit too low can make Denial-of-Service
+         * attacks easier for the attacker to implement.
+         * </p>
+         *
+         * @param limit is the maximum number of concurrent connections.
+         * @return this.
+         */
+        public Builder withSoftConnectionLimit (final int limit)
+        {
+            if (limit < 0)
+            {
+                throw new IllegalArgumentException("SoftConnectionLimit < 0");
+            }
+            else
+            {
+                builderSoftConnectionLimit = limit;
+                return this;
+            }
+        }
+
+        /**
+         * Specify the maximum number of concurrent connections.
+         *
+         * <p>
+         * Once this limit is reached, any additional new connections
+         * will simply be closed without sending any response.
+         * </p>
+         *
+         * <p>
+         * <b>Warning:</b> Setting this limit too low can make Denial-of-Service
+         * attacks easier for the attacker to implement.
+         * </p>
+         *
+         * @param limit is the maximum number of concurrent connections.
+         * @return this.
+         */
+        public Builder withHardConnectionLimit (final int limit)
+        {
+            if (limit < 0)
+            {
+                throw new IllegalArgumentException("HardConnectionLimit < 0");
+            }
+            else
+            {
+                builderHardConnectionLimit = limit;
+                return this;
+            }
+        }
+
+        /**
+         * Specify the maximum allowed length of any HTTP request.
+         *
+         * <p>
+         * For HTTP 1.1 chunked messages, this is the maximum allowed
          * size of the overall combined message, rather than
-         * the individual chunks.
+         * the maximum size of the individual chunks.
+         * </p>
+         *
+         * <p>
+         * If this limit is exceeded, then an HTTP (413) (Request Entity Too Large)
+         * response will be sent to the client automatically.
          * </p>
          *
          * @param limit will limit the size of incoming messages.
          * @return this.
          */
-        public Builder withMaxHttpMessageSize (final int limit)
+        public Builder withMaxRequestSize (final int limit)
         {
-            Preconditions.checkArgument(limit >= 0, "limit < 0");
-            this.aggregationCapacity = limit;
-            return this;
-        }
-
-        public Builder withMaxConnectionCount (final int soft,
-                                               final int hard)
-        {
-            return this;
-        }
-
-        public Builder withMaxConnectionRate (final int hertz)
-        {
-            return this;
-        }
-
-        public Builder withPrecheckAccept ()
-        {
-            return withPrecheckAccept(x -> true);
-        }
-
-        public Builder withPrecheckAccept (final Predicate<web_m.HttpRequest> condition)
-        {
-            final Precheck check = msg ->
+            if (limit < 0)
             {
-                return condition.test(msg) ? Precheck.Result.ACCEPT : Precheck.Result.FORWARD;
-            };
-
-            checks.add(check);
-
-            return this;
-        }
-
-        public Builder withPrecheckDeny ()
-        {
-            return withPrecheckDeny(x -> true);
-        }
-
-        public Builder withPrecheckDeny (final Predicate<web_m.HttpRequest> condition)
-        {
-            final Precheck check = msg ->
+                throw new IllegalArgumentException("MaxRequestSize < 0");
+            }
+            else
             {
-                return condition.test(msg) ? Precheck.Result.DENY : Precheck.Result.FORWARD;
-            };
-
-            checks.add(check);
-
-            return this;
+                builderMaxRequestSize = limit;
+                return this;
+            }
         }
 
-        public Builder withHttpReadTimeout (final Duration timeout)
+        /**
+         * Specify the maximum allowed length of the request-line of an HTTP request.
+         *
+         * <p>
+         * If this limit is exceeded, then an HTTP (400) (Bad Request)
+         * response will be sent to the client automatically.
+         * </p>
+         *
+         * @param limit will limit the size of the initial line of each HTTP request.
+         * @return this.
+         */
+        public Builder withMaxInitialLineSize (final int limit)
         {
-            return this;
+            if (limit < 0)
+            {
+                throw new IllegalArgumentException("MaxInitialLineSize < 0");
+            }
+            else
+            {
+                builderMaxInitialLineSize = limit;
+                return this;
+            }
+        }
+
+        /**
+         * Specify the maximum allowed length of the HTTP headers of an HTTP request.
+         *
+         * <p>
+         * If this limit is exceeded, then an HTTP (400) (Bad Request)
+         * response will be sent to the client automatically.
+         * </p>
+         *
+         * @param limit will prevent HTTP requests with excessive headers from being accepted.
+         * @return this.
+         */
+        public Builder withMaxHeaderSize (final int limit)
+        {
+            if (limit < 0)
+            {
+                throw new IllegalArgumentException("MaxHeaderSize < 0");
+            }
+            else
+            {
+                builderMaxHeaderSize = limit;
+                return this;
+            }
+        }
+
+        /**
+         * Specify the maximum amount of time that the web-server
+         * will wait for a HTTP request to be read off the socket.
+         *
+         * <p>
+         * This timeout is intended to help defend against slow upload attacks.
+         * If the client maliciously sends an HTTP request at a slow data-rate,
+         * then this timeout will cause the connection to be closed automatically.
+         * No response will be sent to the client, as they are deemed malicious.
+         * </p>
+         *
+         * @param timeout will limit how long the server spends reading a request.
+         * @return this.
+         */
+        public Builder withSlowReadTimeout (final Duration timeout)
+        {
+            if (timeout == null)
+            {
+                throw new NullPointerException("SlowReadTimeout");
+            }
+            else
+            {
+                builderSlowReadTimeout = timeout;
+                return this;
+            }
         }
 
         /**
          * Connections will be closed automatically, if a response exceeds this timeout.
          *
+         * <p>
+         * If this limit is exceeded, then an HTTP (504) (Gateway Timeout)
+         * response will be sent to the client automatically.
+         * </p>
+         *
          * @param timeout is the maximum amount of time allowed for a response.
          * @return this.
          */
-        public Builder withHttpResponseTimeout (final Duration timeout)
+        public Builder withResponseTimeout (final Duration timeout)
         {
-            responseTimeout = Objects.requireNonNull(timeout, "timeout");
-            return this;
+            if (timeout == null)
+            {
+                throw new NullPointerException("ResponseTimeout");
+            }
+            else
+            {
+                builderResponseTimeout = timeout;
+                return this;
+            }
+        }
+
+        /**
+         * Connections will be closed automatically, if a response exceeds this timeout.
+         *
+         * <p>
+         * If this limit is exceeded, then the connection will
+         * be closed without sending any response to the client.
+         * </p>
+         *
+         * @param timeout is the maximum amount of time allowed for a response.
+         * @return this.
+         */
+        public Builder withConnectionTimeout (final Duration timeout)
+        {
+            if (timeout == null)
+            {
+                throw new NullPointerException("ConnectionTimeout");
+            }
+            else
+            {
+                builderConnectionTimeout = timeout;
+                return this;
+            }
+        }
+
+        /**
+         * Unconditionally accept any HTTP requests that reach this predicate.
+         *
+         * <p>
+         * Equivalent: <code>withPredicateAccept(x -> true)</code>
+         * </p>
+         *
+         * @return this.
+         */
+        public Builder withPredicateAccept ()
+        {
+            return withPredicateAccept(x -> true);
+        }
+
+        /**
+         * Conditionally accept HTTP requests that reach this predicate,
+         * forwarding any non-matching requests to the next predicate in the rule chain.
+         *
+         * @param condition may cause the HTTP request to be accepted.
+         * @return this.
+         */
+        public Builder withPredicateAccept (final Predicate<web_m.HttpRequest> condition)
+        {
+            if (condition == null)
+            {
+                throw new NullPointerException("condition");
+            }
+            else
+            {
+                final Precheck check = msg -> condition.test(msg) ? Precheck.Result.ACCEPT : Precheck.Result.FORWARD;
+                builderPrechecks.add(check);
+                return this;
+            }
+        }
+
+        /**
+         * Unconditionally reject any HTTP requests that reach this predicate.
+         *
+         * <p>
+         * Equivalent: <code>withPredicateReject(x -> true)</code>
+         * </p>
+         *
+         * @return this.
+         */
+        public Builder withPredicateReject ()
+        {
+            return withPredicateReject(x -> true);
+        }
+
+        /**
+         * Conditionally reject HTTP requests that reach this predicate,
+         * forwarding any non-matching requests to the next predicate in the rule chain.
+         *
+         * <p>
+         * If this limit is exceeded, then an HTTP (403) (Forbidden)
+         * response will be sent to the client automatically.
+         * </p>
+         *
+         * @param condition may cause the HTTP request to be rejected.
+         * @return this.
+         */
+        public Builder withPredicateReject (final Predicate<web_m.HttpRequest> condition)
+        {
+            if (condition == null)
+            {
+                throw new NullPointerException("condition");
+            }
+            else
+            {
+                final Precheck check = msg -> condition.test(msg) ? Precheck.Result.REJECT : Precheck.Result.FORWARD;
+                builderPrechecks.add(check);
+                return this;
+            }
         }
 
         /**
          * Specify the host that the server will listen on.
          *
-         * @param host is a host-name or IP address.
+         * @param address is a host-name or IP address.
          * @return this.
          */
-        public Builder withHost (final String host)
+        public Builder withBindAddress (final String address)
         {
-            this.host = Objects.requireNonNull(host, "host");
+            this.builderBindAddress = Objects.requireNonNull(address, "address");
             return this;
         }
 
         /**
-         * Set the port that the server will listen on.
+         * Specify the port that the server will listen on.
          *
          * @param value is the port to use.
          * @return this.
          */
         public Builder withPort (final int value)
         {
-            this.port = value;
+            this.builderPort = value;
             return this;
         }
 
@@ -504,61 +1047,59 @@ public final class WebServer
          */
         public WebServer build ()
         {
-            final WebServer server = new WebServer(this);
-            return server;
-        }
-    }
-
-    public static void main (String[] args)
-            throws InterruptedException
-    {
-        final Cascade.Stage stage = Cascade.newStage();
-
-        final WebServer server = WebServer
-                .newWebServer()
-                .withHttpResponseTimeout(Duration.ofSeconds(1))
-                .withHost("127.0.0.1")
-                .withPort(8089)
-                .withReplyTo("Mars")
-                .withServerName("Alien")
-                .withMaxHttpMessageSize(1 * 1024 * 1024)
-                .withPrecheckDeny(x -> x.getMethod().equalsIgnoreCase("GET"))
-                .withPrecheckAccept()
-                .build();
-
-        final Cascade.Stage.Actor<web_m.HttpRequest, web_m.HttpResponse> website = stage.newActor().withScript(WebServer::onRequest).create();
-        server.requestsOut().connect(website.input());
-        server.responsesIn().connect(website.output());
-
-        server.start();
-
-        Thread.sleep(2000);
-    }
-
-    private static HttpResponse onRequest (final web_m.HttpRequest request)
-    {
-        final byte[] bytes = request.toString().getBytes();
-
-        if (request.getPath().contains("/sleep"))
-        {
-            try
+            if (builderBindAddress == null)
             {
-                Thread.sleep(10_000);
+                throw new IllegalStateException("Required: Bind Address");
             }
-            catch (InterruptedException ex)
+            else if (builderPort == null)
             {
-                // Pass
+                throw new IllegalStateException("Required: Port");
+            }
+            else if (builderMaxMessagesPerRead == null)
+            {
+                throw new IllegalStateException("Required: Max Messages Per Second");
+            }
+            else if (builderRecvAllocatorInitial == null)
+            {
+                throw new IllegalStateException("Required: Recv Allocator");
+            }
+            else if (builderSoftConnectionLimit == null)
+            {
+                throw new IllegalStateException("Required: Soft Connection Limit");
+            }
+            else if (builderHardConnectionLimit == null)
+            {
+                throw new IllegalStateException("Required: Hard Connection Limit");
+            }
+            else if (builderMaxRequestSize == null)
+            {
+                throw new IllegalStateException("Required: Max Request Size");
+            }
+            else if (builderMaxInitialLineSize == null)
+            {
+                throw new IllegalStateException("Required: Max Initial Line Size");
+            }
+            else if (builderMaxHeaderSize == null)
+            {
+                throw new IllegalStateException("Required: Max Header Size");
+            }
+            else if (builderSlowReadTimeout == null)
+            {
+                throw new IllegalStateException("Required: Slow Read Timeout");
+            }
+            else if (builderResponseTimeout == null)
+            {
+                throw new IllegalStateException("Required: Response Timeout");
+            }
+            else if (builderConnectionTimeout == null)
+            {
+                throw new IllegalStateException("Required: Connection Timeout");
+            }
+            else
+            {
+                final WebServer server = new WebServer(this);
+                return server;
             }
         }
-
-        final web_m.HttpResponse response = web_m.HttpResponse
-                .newBuilder()
-                .setRequest(request)
-                .setContentType("text/martian")
-                .setStatus(200)
-                .setBody(ByteString.copyFrom(bytes))
-                .build();
-
-        return response;
     }
 }

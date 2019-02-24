@@ -32,7 +32,7 @@ import org.junit.Test;
  */
 public final class PrecheckerTest
 {
-    private final Precheck precheck1 = x -> x.getMethod().equals("POST") ? Precheck.Result.DENY : Precheck.Result.FORWARD;
+    private final Precheck precheck1 = x -> x.getMethod().equals("POST") ? Precheck.Result.REJECT : Precheck.Result.FORWARD;
 
     private final Precheck precheck2 = x -> x.getPath().startsWith("/upload") ? Precheck.Result.ACCEPT : Precheck.Result.FORWARD;
 
