@@ -16,7 +16,6 @@
 package com.mackenziehigh.socius.web.server;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Maps;
 import com.mackenziehigh.cascade.Cascade;
 import com.mackenziehigh.cascade.Cascade.Stage;
 import com.mackenziehigh.cascade.Cascade.Stage.Actor.Input;
@@ -38,10 +37,12 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import io.netty.handler.codec.MessageToMessageEncoder;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpContentCompressor;
 import io.netty.handler.codec.http.HttpContentDecompressor;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
+import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseEncoder;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.traffic.GlobalChannelTrafficShapingHandler;
@@ -50,7 +51,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -737,6 +737,7 @@ public final class WebServer
             extends ChannelInitializer<SocketChannel>
     {
         // TODO: What if the factory throws an exception?
+        // TODO: This field is not channel specific!!!!!
         private final ConnectionLogger channelLogger = ConnectionLoggers.newSafeLogger(connectionLogger.newConnectionLogger());
 
         /**
@@ -768,22 +769,28 @@ public final class WebServer
                     closeWithNoResponse(channel);
                 }
             }
-        };
+        }
 
         /**
          * This object is used to detect when a response is sent to the client.
          */
         private final class SlowDownlinkDetector
-                extends MessageToMessageEncoder<ServerSideHttpResponse>
+                extends MessageToMessageEncoder<HttpResponse>
         {
             @Override
             protected void encode (final ChannelHandlerContext ctx,
-                                   final ServerSideHttpResponse msg,
+                                   final HttpResponse msg,
                                    final List<Object> out)
             {
                 out.add(msg);
 
-                if (false) // TODO
+                if (msg.status() == HttpResponseStatus.CONTINUE)
+                {
+                    // Ignore, because this may occur multiple times,
+                    // as the request is uploaded to the server.
+                    // In other words, this is not a final response to the client.
+                }
+                else
                 {
                     service.schedule(() -> onSlowDownlinkTimeout(ctx.channel()), SlowDownlinkTimeout.toMillis(), TimeUnit.MILLISECONDS);
                 }
@@ -796,7 +803,55 @@ public final class WebServer
                     closeWithNoResponse(channel);
                 }
             }
-        };
+        }
+
+        /**
+         * An decoder that translates Netty-based HTTP requests to GPB-based HTTP requests.
+         */
+        private final class TranslationDecoder
+                extends MessageToMessageDecoder<FullHttpRequest>
+        {
+
+            @Override
+            protected void decode (final ChannelHandlerContext ctx,
+                                   final FullHttpRequest msg,
+                                   final List<Object> out)
+            {
+                try
+                {
+                    final ServerSideHttpRequest request = translator.requestToGPB(msg);
+                    out.add(request);
+                }
+                catch (Throwable e)
+                {
+                    sendErrorAndClose(ctx.channel(), HttpResponseStatus.BAD_REQUEST);
+                }
+            }
+        }
+
+        /**
+         * An encoder that translates GPB-based HTTP responses to Netty-based HTTP responses.
+         */
+        private final class TranslationEncoder
+                extends MessageToMessageEncoder<ServerSideHttpResponse>
+        {
+            @Override
+            protected void encode (final ChannelHandlerContext ctx,
+                                   final ServerSideHttpResponse msg,
+                                   final List<Object> out)
+            {
+                try
+                {
+                    final FullHttpResponse response = translator.responseFromGPB(msg);
+                    response.retain();
+                    out.add(response);
+                }
+                catch (Throwable ex)
+                {
+                    sendErrorAndClose(ctx.channel(), HttpResponseStatus.INTERNAL_SERVER_ERROR);
+                }
+            }
+        }
 
         @Override
         protected void initChannel (final SocketChannel channel)
@@ -1009,7 +1064,7 @@ public final class WebServer
              * Downlink Input: Pass-through.
              * Downlink Output: Pass-through.
              */
-            channel.pipeline().addLast(new TranslationDecoder(translator));
+            channel.pipeline().addLast(new TranslationDecoder());
 
             /**
              * The Translation Encoder converts a Socius GPB-based HTTP Response object
@@ -1021,7 +1076,7 @@ public final class WebServer
              * Downlink Input: (1) Socius GPB-based Full HTTP Response.
              * Downlink Output: (1) Netty-based Full HTTP Response.
              */
-            channel.pipeline().addLast(new TranslationEncoder(translator));
+            channel.pipeline().addLast(new TranslationEncoder());
 
             /**
              * The Router coordinates the transmission of incoming HTTP requests
@@ -1084,7 +1139,7 @@ public final class WebServer
             }
         }
 
-        private void sendErrorAndClose (final SocketChannel channel,
+        private void sendErrorAndClose (final Channel channel,
                                         final HttpResponseStatus status)
         {
             final ServerSideHttpResponse response = Translator.newErrorResponseGPB(status);
@@ -1191,8 +1246,6 @@ public final class WebServer
 
         private final List<Precheck> builderPrechecks = new LinkedList<>();
 
-        private final Map<Integer, ServerSideHttpResponse> defaultResponses = Maps.newTreeMap();
-
         private Builder ()
         {
             // Pass.
@@ -1232,25 +1285,6 @@ public final class WebServer
             this.withResponseTimeout(DEFAULT_RESPONSE_TIMEOUT);
             this.withConnectionTimeout(DEFAULT_CONNECTION_TIMEOUT);
 
-            return this;
-        }
-
-        /**
-         * Specify a default response to use for error messages with a given status code.
-         *
-         * <p>
-         * The response specified here will not override responses generated upstream.
-         * </p>
-         *
-         * @param statusCode is the status code of an error message.
-         * @param response will be used as the response for the given status code.
-         * @return this.
-         */
-        public Builder withDefaultResponse (final int statusCode,
-                                            final ServerSideHttpResponse response)
-        {
-            Objects.requireNonNull(response, "response");
-            defaultResponses.put(statusCode, response);
             return this;
         }
 
