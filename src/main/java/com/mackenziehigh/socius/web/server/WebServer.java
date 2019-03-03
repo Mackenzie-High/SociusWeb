@@ -729,7 +729,8 @@ public final class WebServer
      * Logic to setup the Netty pipeline to handle a <b>single</b> connection.
      *
      * <p>
-     * The logic herein is executed whenever a new connection is established!
+     * The logic herein is executed whenever a new connection is established.
+     * However, only a single Initializer object exists.
      * </p>
      */
     private final class Initializer
@@ -738,16 +739,17 @@ public final class WebServer
         // TODO: What if the factory throws an exception?
         private final ConnectionLogger channelLogger = ConnectionLoggers.newSafeLogger(connectionLogger.newConnectionLogger());
 
-        private final AtomicBoolean slowUplinkTimeoutExpired = new AtomicBoolean(false);
-
         /**
          * If this handler receives a message before the timeout expires,
          * then the message will be forwarded to the rest of the pipeline;
          * otherwise, the message will not be forwarded, because the connection
          * is in the process of being closed due to the timeout.
          */
-        private final MessageToMessageDecoder<FullHttpRequest> slowUplinkDetector = new MessageToMessageDecoder<FullHttpRequest>()
+        private final class SlowUplinkDetector
+                extends MessageToMessageDecoder<FullHttpRequest>
         {
+            private final AtomicBoolean slowUplinkTimeoutExpired = new AtomicBoolean(false);
+
             @Override
             protected void decode (final ChannelHandlerContext ctx,
                                    final FullHttpRequest msg,
@@ -758,20 +760,21 @@ public final class WebServer
                     out.add(msg);
                 }
             }
-        };
 
-        private void onSlowUplinkTimeout (final SocketChannel channel)
-        {
-            if (slowUplinkTimeoutExpired.compareAndSet(false, true))
+            public void onSlowUplinkTimeout (final SocketChannel channel)
             {
-                closeWithNoResponse(channel);
+                if (slowUplinkTimeoutExpired.compareAndSet(false, true))
+                {
+                    closeWithNoResponse(channel);
+                }
             }
-        }
+        };
 
         /**
          * This object is used to detect when a response is sent to the client.
          */
-        private final MessageToMessageEncoder<ServerSideHttpResponse> slowDownlinkDetector = new MessageToMessageEncoder<ServerSideHttpResponse>()
+        private final class SlowDownlinkDetector
+                extends MessageToMessageEncoder<ServerSideHttpResponse>
         {
             @Override
             protected void encode (final ChannelHandlerContext ctx,
@@ -780,20 +783,20 @@ public final class WebServer
             {
                 out.add(msg);
 
-                if (true)
+                if (false) // TODO
                 {
                     service.schedule(() -> onSlowDownlinkTimeout(ctx.channel()), SlowDownlinkTimeout.toMillis(), TimeUnit.MILLISECONDS);
                 }
             }
-        };
 
-        private void onSlowDownlinkTimeout (final Channel channel)
-        {
-            if (channel.isOpen())
+            public void onSlowDownlinkTimeout (final Channel channel)
             {
-                closeWithNoResponse(channel);
+                if (channel.isOpen())
+                {
+                    closeWithNoResponse(channel);
+                }
             }
-        }
+        };
 
         @Override
         protected void initChannel (final SocketChannel channel)
@@ -916,7 +919,7 @@ public final class WebServer
              * Downlink Input: (1) HTTP Response.
              * Downlink Output: (1) HTTP Response.
              */
-            channel.pipeline().addLast(slowDownlinkDetector);
+            channel.pipeline().addLast(new SlowDownlinkDetector());
 
             /**
              * The HTTP Content Decompressor converts incoming HTTP Content objects,
@@ -992,8 +995,9 @@ public final class WebServer
              * Downlink Input: Pass-through.
              * Downlink Output: Pass-through.
              */
+            final SlowUplinkDetector slowUplinkDetector = new SlowUplinkDetector();
             channel.pipeline().addLast(slowUplinkDetector);
-            service.schedule(() -> onSlowUplinkTimeout(channel), SlowUplinkTimeout.toMillis(), TimeUnit.MILLISECONDS);
+            service.schedule(() -> slowUplinkDetector.onSlowUplinkTimeout(channel), SlowUplinkTimeout.toMillis(), TimeUnit.MILLISECONDS);
 
             /**
              * The Translation Decoder converts an incoming Netty-based

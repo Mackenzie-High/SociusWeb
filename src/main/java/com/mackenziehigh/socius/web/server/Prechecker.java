@@ -36,7 +36,7 @@ final class Prechecker
     private final ImmutableList<Precheck> chain;
 
     public Prechecker (final Translator translator,
-                            final ImmutableList<Precheck> chain)
+                       final ImmutableList<Precheck> chain)
     {
         this.translator = translator;
         this.chain = chain;
