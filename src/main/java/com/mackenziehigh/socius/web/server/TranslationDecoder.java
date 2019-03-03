@@ -15,7 +15,7 @@
  */
 package com.mackenziehigh.socius.web.server;
 
-import com.mackenziehigh.socius.web.messages.web_m.HttpRequest;
+import com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
@@ -44,7 +44,7 @@ final class TranslationDecoder
     {
         try
         {
-            final HttpRequest request = translator.requestToGPB(msg);
+            ServerSideHttpRequest request = translator.requestToGPB(msg);
             out.add(request);
         }
         catch (Throwable e)

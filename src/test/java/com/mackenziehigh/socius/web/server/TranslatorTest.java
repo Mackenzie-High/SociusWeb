@@ -97,7 +97,7 @@ public final class TranslatorTest
     public void test20190217102515063425 ()
     {
         final FullHttpRequest netty = newRequest();
-        final web_m.HttpRequest gpb = translator.requestToGPB(netty);
+        final web_m.ServerSideHttpRequest gpb = translator.requestToGPB(netty);
 
         assertTrue(gpb.hasBody());
         assertTrue(gpb.hasSequenceNumber());
@@ -237,9 +237,9 @@ public final class TranslatorTest
     @Test
     public void test20190217125526819834 ()
     {
-        final web_m.HttpRequest request1 = translator.requestToGPB(newRequest());
-        final web_m.HttpRequest request2 = translator.requestToGPB(newRequest());
-        final web_m.HttpRequest request3 = translator.requestToGPB(newRequest());
+        final web_m.ServerSideHttpRequest request1 = translator.requestToGPB(newRequest());
+        final web_m.ServerSideHttpRequest request2 = translator.requestToGPB(newRequest());
+        final web_m.ServerSideHttpRequest request3 = translator.requestToGPB(newRequest());
 
         assertEquals(1, request1.getSequenceNumber());
         assertEquals(2, request2.getSequenceNumber());
@@ -260,8 +260,8 @@ public final class TranslatorTest
     @Test
     public void test20190217125651847530 ()
     {
-        final web_m.HttpRequest request1 = translator.requestToGPB(newRequest());
-        final web_m.HttpRequest request2 = translator.requestToGPB(newRequest());
+        final web_m.ServerSideHttpRequest request1 = translator.requestToGPB(newRequest());
+        final web_m.ServerSideHttpRequest request2 = translator.requestToGPB(newRequest());
 
         assertNotEquals(request1.getCorrelationId(), request2.getCorrelationId());
     }
@@ -283,7 +283,7 @@ public final class TranslatorTest
         final FullHttpRequest netty = newRequest();
         netty.headers().clear();
         netty.content().clear();
-        final web_m.HttpRequest gpb = translator.requestToGPB(netty);
+        final web_m.ServerSideHttpRequest gpb = translator.requestToGPB(netty);
 
         assertEquals(0, gpb.getContentLength());
         assertEquals(0, gpb.getBody().size());
@@ -305,8 +305,8 @@ public final class TranslatorTest
     {
         final FullHttpRequest full = newRequest();
         final HttpRequest partial = full;
-        final web_m.HttpRequest fullGPB = translator.requestToGPB(full);
-        final web_m.HttpRequest partialGPB = translator.prefixOf(partial);
+        final web_m.ServerSideHttpRequest fullGPB = translator.requestToGPB(full);
+        final web_m.ServerSideHttpRequest partialGPB = translator.prefixOf(partial);
 
         /**
          * Debug.
@@ -432,11 +432,11 @@ public final class TranslatorTest
     @Test
     public void test20190217132919161946 ()
     {
-        final web_m.HttpRequest request1 = translator.requestToGPB(newRequest());
+        final web_m.ServerSideHttpRequest request1 = translator.requestToGPB(newRequest());
         translator.prefixOf(newRequest());
-        final web_m.HttpRequest request2 = translator.requestToGPB(newRequest());
+        final web_m.ServerSideHttpRequest request2 = translator.requestToGPB(newRequest());
         translator.prefixOf(newRequest());
-        final web_m.HttpRequest request3 = translator.requestToGPB(newRequest());
+        final web_m.ServerSideHttpRequest request3 = translator.requestToGPB(newRequest());
 
         assertEquals(1, request1.getSequenceNumber());
         assertEquals(2, request2.getSequenceNumber());
@@ -458,7 +458,7 @@ public final class TranslatorTest
     public void test20190217133128304755 ()
     {
         final int status = HttpResponseStatus.USE_PROXY.code();
-        final web_m.HttpResponse gpb = web_m.HttpResponse.newBuilder()
+        final web_m.ServerSideHttpResponse gpb = web_m.ServerSideHttpResponse.newBuilder()
                 .setStatus(status)
                 .setContentType("Text/English")
                 .setBody(ByteString.copyFrom("London", StandardCharsets.US_ASCII))
@@ -484,7 +484,7 @@ public final class TranslatorTest
     @Test
     public void test20190217134711793081 ()
     {
-        final web_m.HttpResponse gpb = web_m.HttpResponse.newBuilder()
+        final web_m.ServerSideHttpResponse gpb = web_m.ServerSideHttpResponse.newBuilder()
                 .setContentType("Text/English")
                 .setBody(ByteString.copyFrom("London", StandardCharsets.US_ASCII))
                 .build();
@@ -513,7 +513,7 @@ public final class TranslatorTest
     public void test20190217134711793155 ()
     {
         final int status = HttpResponseStatus.OK.code();
-        final web_m.HttpResponse gpb = web_m.HttpResponse.newBuilder()
+        final web_m.ServerSideHttpResponse gpb = web_m.ServerSideHttpResponse.newBuilder()
                 .setStatus(status)
                 .setBody(ByteString.copyFrom("London", StandardCharsets.US_ASCII))
                 .build();
@@ -543,7 +543,7 @@ public final class TranslatorTest
     public void test20190217134711793178 ()
     {
         final int status = HttpResponseStatus.OK.code();
-        final web_m.HttpResponse gpb = web_m.HttpResponse.newBuilder()
+        final web_m.ServerSideHttpResponse gpb = web_m.ServerSideHttpResponse.newBuilder()
                 .setStatus(status)
                 .addHeaders(HttpHeader.newBuilder().setKey("Content-Type").addValues("Text/Canadian"))
                 .setBody(ByteString.copyFrom("London", StandardCharsets.US_ASCII))
@@ -574,7 +574,7 @@ public final class TranslatorTest
     public void test20190217134711793199 ()
     {
         final int status = HttpResponseStatus.OK.code();
-        final web_m.HttpResponse gpb = web_m.HttpResponse.newBuilder()
+        final web_m.ServerSideHttpResponse gpb = web_m.ServerSideHttpResponse.newBuilder()
                 .setStatus(status)
                 .setContentType("Text/English")
                 .addHeaders(HttpHeader.newBuilder().setKey("Content-Type").addValues("Text/Canadian"))
@@ -605,7 +605,7 @@ public final class TranslatorTest
     @Test
     public void test20190217135552148148 ()
     {
-        final web_m.HttpResponse gpb = web_m.HttpResponse.newBuilder().build();
+        final web_m.ServerSideHttpResponse gpb = web_m.ServerSideHttpResponse.newBuilder().build();
 
         assertFalse(gpb.hasBody());
 
@@ -629,7 +629,7 @@ public final class TranslatorTest
     @Test
     public void test20190217144750129741 ()
     {
-        final web_m.HttpResponse gpb = web_m.HttpResponse.newBuilder()
+        final web_m.ServerSideHttpResponse gpb = web_m.ServerSideHttpResponse.newBuilder()
                 .setBody(ByteString.copyFrom("London", StandardCharsets.US_ASCII))
                 .build();
 
@@ -655,7 +655,7 @@ public final class TranslatorTest
     @Test
     public void test20190217145247679242 ()
     {
-        final web_m.HttpResponse gpb = web_m.HttpResponse.newBuilder().build();
+        final web_m.ServerSideHttpResponse gpb = web_m.ServerSideHttpResponse.newBuilder().build();
 
         final FullHttpResponse full = translator.responseFromGPB(gpb);
 
@@ -679,7 +679,7 @@ public final class TranslatorTest
     @Test
     public void test20190217145701767499 ()
     {
-        final web_m.HttpResponse gpb = web_m.HttpResponse.newBuilder()
+        final web_m.ServerSideHttpResponse gpb = web_m.ServerSideHttpResponse.newBuilder()
                 .addHeaders(HttpHeader.newBuilder().setKey("Content-Length").addValues("9999"))
                 .setBody(ByteString.copyFrom("London", StandardCharsets.US_ASCII))
                 .build();
@@ -704,7 +704,7 @@ public final class TranslatorTest
     @Test (expected = IllegalArgumentException.class)
     public void test20190217150125185028 ()
     {
-        final web_m.HttpResponse gpb = web_m.HttpResponse.newBuilder()
+        final web_m.ServerSideHttpResponse gpb = web_m.ServerSideHttpResponse.newBuilder()
                 .addHeaders(HttpHeader.newBuilder().addValues("9999"))
                 .build();
 
@@ -725,7 +725,7 @@ public final class TranslatorTest
     @Test
     public void test20190217150125185106 ()
     {
-        final web_m.HttpResponse gpb = web_m.HttpResponse.newBuilder()
+        final web_m.ServerSideHttpResponse gpb = web_m.ServerSideHttpResponse.newBuilder()
                 .addHeaders(HttpHeader.newBuilder().setKey("XX"))
                 .build();
 
@@ -749,7 +749,7 @@ public final class TranslatorTest
     @Test
     public void test20190217151233295516 ()
     {
-        final web_m.HttpResponse gpb = web_m.HttpResponse.newBuilder()
+        final web_m.ServerSideHttpResponse gpb = web_m.ServerSideHttpResponse.newBuilder()
                 .addHeaders(HttpHeader.newBuilder().setKey("Planet").addValues("Venus"))
                 .addHeaders(HttpHeader.newBuilder().setKey("Planet").addValues("Earth"))
                 .addHeaders(HttpHeader.newBuilder().setKey("Planet").addValues("Mars"))

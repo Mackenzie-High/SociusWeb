@@ -54,7 +54,7 @@ final class Prechecker
              * Some parts of the request will be omitted,
              * as they are not needed at this stage.
              */
-            final web_m.HttpRequest prefix = translator.prefixOf(msg);
+            final web_m.ServerSideHttpRequest prefix = translator.prefixOf(msg);
 
             /**
              * Iterate over the ordered list of rules.

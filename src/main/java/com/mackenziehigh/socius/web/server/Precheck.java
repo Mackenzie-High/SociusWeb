@@ -57,5 +57,5 @@ interface Precheck
      * @param http contains the initial header information of the request.
      * @return a result indicating whether to accept or deny the request.
      */
-    public Result check (web_m.HttpRequest http);
+    public Result check (web_m.ServerSideHttpRequest http);
 }

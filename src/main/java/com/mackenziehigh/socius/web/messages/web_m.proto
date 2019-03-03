@@ -22,7 +22,7 @@ option java_outer_classname = "web_m";
 /**
  * HTTP Request.
  */
-message HttpRequest
+message ServerSideHttpRequest
 {
     /**
      * (optional) Use this field to attach debugging information.
@@ -137,7 +137,7 @@ message HttpRequest
 /**
  * HTTP Response.
  */
-message HttpResponse
+message ServerSideHttpResponse
 {
     /**
      * (optional) Use this field to attach debugging information.
@@ -147,7 +147,7 @@ message HttpResponse
     /**
      * (optional) is the HTTP request that precipitated this response.
      */
-    optional HttpRequest request = 2;
+    optional ServerSideHttpRequest request = 2;
 
     /**
      * Universally-Unique-Identifier both the request and the response.

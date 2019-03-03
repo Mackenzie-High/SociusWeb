@@ -15,7 +15,7 @@
  */
 package com.mackenziehigh.socius.web.server;
 
-import com.mackenziehigh.socius.web.messages.web_m.HttpResponse;
+import com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageEncoder;
@@ -27,7 +27,7 @@ import java.util.List;
  * An encoder that translates GPB-based HTTP responses to Netty-based HTTP responses.
  */
 final class TranslationEncoder
-        extends MessageToMessageEncoder<HttpResponse>
+        extends MessageToMessageEncoder<ServerSideHttpResponse>
 {
     private final Translator translator;
 
@@ -38,7 +38,7 @@ final class TranslationEncoder
 
     @Override
     protected void encode (final ChannelHandlerContext ctx,
-                           final HttpResponse msg,
+                           final ServerSideHttpResponse msg,
                            final List<Object> out)
     {
         try

@@ -66,7 +66,7 @@ final class Translator
      * @param request is a Netty-based request.
      * @return the partial GPB-based request.
      */
-    public web_m.HttpRequest prefixOf (final HttpRequest request)
+    public web_m.ServerSideHttpRequest prefixOf (final HttpRequest request)
     {
         Objects.requireNonNull(request, "request");
         return commonPrefix(request).build();
@@ -78,11 +78,11 @@ final class Translator
      * @param request is a Netty-based request.
      * @return the complete GPB-based request.
      */
-    public web_m.HttpRequest requestToGPB (final FullHttpRequest request)
+    public web_m.ServerSideHttpRequest requestToGPB (final FullHttpRequest request)
     {
         Objects.requireNonNull(request, "request");
 
-        final web_m.HttpRequest.Builder builder = commonPrefix(request);
+        final web_m.ServerSideHttpRequest.Builder builder = commonPrefix(request);
 
         /**
          * Sequence Number.
@@ -134,9 +134,9 @@ final class Translator
         return builder.build();
     }
 
-    private web_m.HttpRequest.Builder commonPrefix (final io.netty.handler.codec.http.HttpRequest request)
+    private web_m.ServerSideHttpRequest.Builder commonPrefix (final io.netty.handler.codec.http.HttpRequest request)
     {
-        final web_m.HttpRequest.Builder builder = web_m.HttpRequest.newBuilder();
+        final web_m.ServerSideHttpRequest.Builder builder = web_m.ServerSideHttpRequest.newBuilder();
 
         /**
          * Server Name.
@@ -235,7 +235,7 @@ final class Translator
      * @param response is the GPB-based response to translate.
      * @return the response translated to a Netty-based equivalent.
      */
-    public FullHttpResponse responseFromGPB (final web_m.HttpResponse response)
+    public FullHttpResponse responseFromGPB (final web_m.ServerSideHttpResponse response)
     {
         //Objects.requireNonNull(request, "request");
 
@@ -359,11 +359,11 @@ final class Translator
      * @param status is the HTTP error-code.
      * @return the Netty-based response object.
      */
-    public static web_m.HttpResponse newErrorResponseGPB (final HttpResponseStatus status)
+    public static web_m.ServerSideHttpResponse newErrorResponseGPB (final HttpResponseStatus status)
     {
         final String message = "<head> <meta http-equiv=\"refresh\" content=\"5; URL=\"/" + status.code() + ".html\" /> </head>\r\n";
 
-        final web_m.HttpResponse response = web_m.HttpResponse.newBuilder()
+        final web_m.ServerSideHttpResponse response = web_m.ServerSideHttpResponse.newBuilder()
                 .addHeaders(web_m.HttpHeader.newBuilder().setKey("connection").addValues("close"))
                 .setContentType("text/html")
                 .setTimestamp(System.currentTimeMillis())

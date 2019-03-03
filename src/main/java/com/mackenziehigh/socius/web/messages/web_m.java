@@ -14,8 +14,8 @@ public final class web_m {
     registerAllExtensions(
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
-  public interface HttpRequestOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:com.mackenziehigh.socius.web.messages.HttpRequest)
+  public interface ServerSideHttpRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.mackenziehigh.socius.web.messages.ServerSideHttpRequest)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -684,17 +684,17 @@ public final class web_m {
    * HTTP Request.
    * </pre>
    *
-   * Protobuf type {@code com.mackenziehigh.socius.web.messages.HttpRequest}
+   * Protobuf type {@code com.mackenziehigh.socius.web.messages.ServerSideHttpRequest}
    */
-  public  static final class HttpRequest extends
+  public  static final class ServerSideHttpRequest extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:com.mackenziehigh.socius.web.messages.HttpRequest)
-      HttpRequestOrBuilder {
-    // Use HttpRequest.newBuilder() to construct.
-    private HttpRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      // @@protoc_insertion_point(message_implements:com.mackenziehigh.socius.web.messages.ServerSideHttpRequest)
+      ServerSideHttpRequestOrBuilder {
+    // Use ServerSideHttpRequest.newBuilder() to construct.
+    private ServerSideHttpRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private HttpRequest() {
+    private ServerSideHttpRequest() {
       debug_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       serverName_ = "";
       serverId_ = "";
@@ -718,7 +718,7 @@ public final class web_m {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private HttpRequest(
+    private ServerSideHttpRequest(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -905,7 +905,7 @@ public final class web_m {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_descriptor;
+      return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_descriptor;
     }
 
     @SuppressWarnings({"rawtypes"})
@@ -925,9 +925,9 @@ public final class web_m {
     }
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_fieldAccessorTable
+      return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.mackenziehigh.socius.web.messages.web_m.HttpRequest.class, com.mackenziehigh.socius.web.messages.web_m.HttpRequest.Builder.class);
+              com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest.class, com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest.Builder.class);
     }
 
     private int bitField0_;
@@ -1606,7 +1606,7 @@ public final class web_m {
           java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter> defaultEntry =
               com.google.protobuf.MapEntry
               .<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter>newDefaultInstance(
-                  com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_ParametersEntry_descriptor, 
+                  com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_ParametersEntry_descriptor, 
                   com.google.protobuf.WireFormat.FieldType.STRING,
                   "",
                   com.google.protobuf.WireFormat.FieldType.MESSAGE,
@@ -1702,7 +1702,7 @@ public final class web_m {
           java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> defaultEntry =
               com.google.protobuf.MapEntry
               .<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>newDefaultInstance(
-                  com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_HeadersEntry_descriptor, 
+                  com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_HeadersEntry_descriptor, 
                   com.google.protobuf.WireFormat.FieldType.STRING,
                   "",
                   com.google.protobuf.WireFormat.FieldType.MESSAGE,
@@ -1962,7 +1962,7 @@ public final class web_m {
           java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> defaultEntry =
               com.google.protobuf.MapEntry
               .<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>newDefaultInstance(
-                  com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_TrailersEntry_descriptor, 
+                  com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_TrailersEntry_descriptor, 
                   com.google.protobuf.WireFormat.FieldType.STRING,
                   "",
                   com.google.protobuf.WireFormat.FieldType.MESSAGE,
@@ -2243,10 +2243,10 @@ public final class web_m {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.mackenziehigh.socius.web.messages.web_m.HttpRequest)) {
+      if (!(obj instanceof com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest)) {
         return super.equals(obj);
       }
-      com.mackenziehigh.socius.web.messages.web_m.HttpRequest other = (com.mackenziehigh.socius.web.messages.web_m.HttpRequest) obj;
+      com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest other = (com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest) obj;
 
       boolean result = true;
       result = result && getDebugList()
@@ -2435,69 +2435,69 @@ public final class web_m {
       return hash;
     }
 
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpRequest parseFrom(
+    public static com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpRequest parseFrom(
+    public static com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpRequest parseFrom(
+    public static com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpRequest parseFrom(
+    public static com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpRequest parseFrom(byte[] data)
+    public static com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpRequest parseFrom(
+    public static com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpRequest parseFrom(java.io.InputStream input)
+    public static com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpRequest parseFrom(
+    public static com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpRequest parseDelimitedFrom(java.io.InputStream input)
+    public static com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpRequest parseDelimitedFrom(
+    public static com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpRequest parseFrom(
+    public static com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpRequest parseFrom(
+    public static com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -2509,7 +2509,7 @@ public final class web_m {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.mackenziehigh.socius.web.messages.web_m.HttpRequest prototype) {
+    public static Builder newBuilder(com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -2529,15 +2529,15 @@ public final class web_m {
      * HTTP Request.
      * </pre>
      *
-     * Protobuf type {@code com.mackenziehigh.socius.web.messages.HttpRequest}
+     * Protobuf type {@code com.mackenziehigh.socius.web.messages.ServerSideHttpRequest}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:com.mackenziehigh.socius.web.messages.HttpRequest)
-        com.mackenziehigh.socius.web.messages.web_m.HttpRequestOrBuilder {
+        // @@protoc_insertion_point(builder_implements:com.mackenziehigh.socius.web.messages.ServerSideHttpRequest)
+        com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequestOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_descriptor;
+        return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_descriptor;
       }
 
       @SuppressWarnings({"rawtypes"})
@@ -2572,12 +2572,12 @@ public final class web_m {
       }
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_fieldAccessorTable
+        return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.mackenziehigh.socius.web.messages.web_m.HttpRequest.class, com.mackenziehigh.socius.web.messages.web_m.HttpRequest.Builder.class);
+                com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest.class, com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest.Builder.class);
       }
 
-      // Construct using com.mackenziehigh.socius.web.messages.web_m.HttpRequest.newBuilder()
+      // Construct using com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -2641,23 +2641,23 @@ public final class web_m {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_descriptor;
+        return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_descriptor;
       }
 
-      public com.mackenziehigh.socius.web.messages.web_m.HttpRequest getDefaultInstanceForType() {
-        return com.mackenziehigh.socius.web.messages.web_m.HttpRequest.getDefaultInstance();
+      public com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest getDefaultInstanceForType() {
+        return com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest.getDefaultInstance();
       }
 
-      public com.mackenziehigh.socius.web.messages.web_m.HttpRequest build() {
-        com.mackenziehigh.socius.web.messages.web_m.HttpRequest result = buildPartial();
+      public com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest build() {
+        com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.mackenziehigh.socius.web.messages.web_m.HttpRequest buildPartial() {
-        com.mackenziehigh.socius.web.messages.web_m.HttpRequest result = new com.mackenziehigh.socius.web.messages.web_m.HttpRequest(this);
+      public com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest buildPartial() {
+        com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest result = new com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -2771,16 +2771,16 @@ public final class web_m {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.mackenziehigh.socius.web.messages.web_m.HttpRequest) {
-          return mergeFrom((com.mackenziehigh.socius.web.messages.web_m.HttpRequest)other);
+        if (other instanceof com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest) {
+          return mergeFrom((com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.mackenziehigh.socius.web.messages.web_m.HttpRequest other) {
-        if (other == com.mackenziehigh.socius.web.messages.web_m.HttpRequest.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest other) {
+        if (other == com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest.getDefaultInstance()) return this;
         if (!other.debug_.isEmpty()) {
           if (debug_.isEmpty()) {
             debug_ = other.debug_;
@@ -2880,11 +2880,11 @@ public final class web_m {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.mackenziehigh.socius.web.messages.web_m.HttpRequest parsedMessage = null;
+        com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.mackenziehigh.socius.web.messages.web_m.HttpRequest) e.getUnfinishedMessage();
+          parsedMessage = (com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -5099,46 +5099,46 @@ public final class web_m {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:com.mackenziehigh.socius.web.messages.HttpRequest)
+      // @@protoc_insertion_point(builder_scope:com.mackenziehigh.socius.web.messages.ServerSideHttpRequest)
     }
 
-    // @@protoc_insertion_point(class_scope:com.mackenziehigh.socius.web.messages.HttpRequest)
-    private static final com.mackenziehigh.socius.web.messages.web_m.HttpRequest DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:com.mackenziehigh.socius.web.messages.ServerSideHttpRequest)
+    private static final com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.mackenziehigh.socius.web.messages.web_m.HttpRequest();
+      DEFAULT_INSTANCE = new com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest();
     }
 
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpRequest getDefaultInstance() {
+    public static com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<HttpRequest>
-        PARSER = new com.google.protobuf.AbstractParser<HttpRequest>() {
-      public HttpRequest parsePartialFrom(
+    @java.lang.Deprecated public static final com.google.protobuf.Parser<ServerSideHttpRequest>
+        PARSER = new com.google.protobuf.AbstractParser<ServerSideHttpRequest>() {
+      public ServerSideHttpRequest parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-          return new HttpRequest(input, extensionRegistry);
+          return new ServerSideHttpRequest(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<HttpRequest> parser() {
+    public static com.google.protobuf.Parser<ServerSideHttpRequest> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<HttpRequest> getParserForType() {
+    public com.google.protobuf.Parser<ServerSideHttpRequest> getParserForType() {
       return PARSER;
     }
 
-    public com.mackenziehigh.socius.web.messages.web_m.HttpRequest getDefaultInstanceForType() {
+    public com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
-  public interface HttpResponseOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:com.mackenziehigh.socius.web.messages.HttpResponse)
+  public interface ServerSideHttpResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.mackenziehigh.socius.web.messages.ServerSideHttpResponse)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -5186,7 +5186,7 @@ public final class web_m {
      * (optional) is the HTTP request that precipitated this response.
      * </pre>
      *
-     * <code>optional .com.mackenziehigh.socius.web.messages.HttpRequest request = 2;</code>
+     * <code>optional .com.mackenziehigh.socius.web.messages.ServerSideHttpRequest request = 2;</code>
      */
     boolean hasRequest();
     /**
@@ -5195,18 +5195,18 @@ public final class web_m {
      * (optional) is the HTTP request that precipitated this response.
      * </pre>
      *
-     * <code>optional .com.mackenziehigh.socius.web.messages.HttpRequest request = 2;</code>
+     * <code>optional .com.mackenziehigh.socius.web.messages.ServerSideHttpRequest request = 2;</code>
      */
-    com.mackenziehigh.socius.web.messages.web_m.HttpRequest getRequest();
+    com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest getRequest();
     /**
      * <pre>
      **
      * (optional) is the HTTP request that precipitated this response.
      * </pre>
      *
-     * <code>optional .com.mackenziehigh.socius.web.messages.HttpRequest request = 2;</code>
+     * <code>optional .com.mackenziehigh.socius.web.messages.ServerSideHttpRequest request = 2;</code>
      */
-    com.mackenziehigh.socius.web.messages.web_m.HttpRequestOrBuilder getRequestOrBuilder();
+    com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequestOrBuilder getRequestOrBuilder();
 
     /**
      * <pre>
@@ -5387,17 +5387,17 @@ public final class web_m {
    * HTTP Response.
    * </pre>
    *
-   * Protobuf type {@code com.mackenziehigh.socius.web.messages.HttpResponse}
+   * Protobuf type {@code com.mackenziehigh.socius.web.messages.ServerSideHttpResponse}
    */
-  public  static final class HttpResponse extends
+  public  static final class ServerSideHttpResponse extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:com.mackenziehigh.socius.web.messages.HttpResponse)
-      HttpResponseOrBuilder {
-    // Use HttpResponse.newBuilder() to construct.
-    private HttpResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      // @@protoc_insertion_point(message_implements:com.mackenziehigh.socius.web.messages.ServerSideHttpResponse)
+      ServerSideHttpResponseOrBuilder {
+    // Use ServerSideHttpResponse.newBuilder() to construct.
+    private ServerSideHttpResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private HttpResponse() {
+    private ServerSideHttpResponse() {
       debug_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       correlationId_ = "";
       timestamp_ = 0L;
@@ -5412,7 +5412,7 @@ public final class web_m {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private HttpResponse(
+    private ServerSideHttpResponse(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -5445,11 +5445,11 @@ public final class web_m {
               break;
             }
             case 18: {
-              com.mackenziehigh.socius.web.messages.web_m.HttpRequest.Builder subBuilder = null;
+              com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest.Builder subBuilder = null;
               if (((bitField0_ & 0x00000001) == 0x00000001)) {
                 subBuilder = request_.toBuilder();
               }
-              request_ = input.readMessage(com.mackenziehigh.socius.web.messages.web_m.HttpRequest.PARSER, extensionRegistry);
+              request_ = input.readMessage(com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(request_);
                 request_ = subBuilder.buildPartial();
@@ -5513,14 +5513,14 @@ public final class web_m {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_HttpResponse_descriptor;
+      return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpResponse_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_HttpResponse_fieldAccessorTable
+      return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpResponse_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.mackenziehigh.socius.web.messages.web_m.HttpResponse.class, com.mackenziehigh.socius.web.messages.web_m.HttpResponse.Builder.class);
+              com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse.class, com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse.Builder.class);
     }
 
     private int bitField0_;
@@ -5574,14 +5574,14 @@ public final class web_m {
     }
 
     public static final int REQUEST_FIELD_NUMBER = 2;
-    private com.mackenziehigh.socius.web.messages.web_m.HttpRequest request_;
+    private com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest request_;
     /**
      * <pre>
      **
      * (optional) is the HTTP request that precipitated this response.
      * </pre>
      *
-     * <code>optional .com.mackenziehigh.socius.web.messages.HttpRequest request = 2;</code>
+     * <code>optional .com.mackenziehigh.socius.web.messages.ServerSideHttpRequest request = 2;</code>
      */
     public boolean hasRequest() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
@@ -5592,10 +5592,10 @@ public final class web_m {
      * (optional) is the HTTP request that precipitated this response.
      * </pre>
      *
-     * <code>optional .com.mackenziehigh.socius.web.messages.HttpRequest request = 2;</code>
+     * <code>optional .com.mackenziehigh.socius.web.messages.ServerSideHttpRequest request = 2;</code>
      */
-    public com.mackenziehigh.socius.web.messages.web_m.HttpRequest getRequest() {
-      return request_ == null ? com.mackenziehigh.socius.web.messages.web_m.HttpRequest.getDefaultInstance() : request_;
+    public com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest getRequest() {
+      return request_ == null ? com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest.getDefaultInstance() : request_;
     }
     /**
      * <pre>
@@ -5603,10 +5603,10 @@ public final class web_m {
      * (optional) is the HTTP request that precipitated this response.
      * </pre>
      *
-     * <code>optional .com.mackenziehigh.socius.web.messages.HttpRequest request = 2;</code>
+     * <code>optional .com.mackenziehigh.socius.web.messages.ServerSideHttpRequest request = 2;</code>
      */
-    public com.mackenziehigh.socius.web.messages.web_m.HttpRequestOrBuilder getRequestOrBuilder() {
-      return request_ == null ? com.mackenziehigh.socius.web.messages.web_m.HttpRequest.getDefaultInstance() : request_;
+    public com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequestOrBuilder getRequestOrBuilder() {
+      return request_ == null ? com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest.getDefaultInstance() : request_;
     }
 
     public static final int CORRELATIONID_FIELD_NUMBER = 3;
@@ -5956,10 +5956,10 @@ public final class web_m {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.mackenziehigh.socius.web.messages.web_m.HttpResponse)) {
+      if (!(obj instanceof com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse)) {
         return super.equals(obj);
       }
-      com.mackenziehigh.socius.web.messages.web_m.HttpResponse other = (com.mackenziehigh.socius.web.messages.web_m.HttpResponse) obj;
+      com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse other = (com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse) obj;
 
       boolean result = true;
       result = result && getDebugList()
@@ -6045,69 +6045,69 @@ public final class web_m {
       return hash;
     }
 
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpResponse parseFrom(
+    public static com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpResponse parseFrom(
+    public static com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpResponse parseFrom(
+    public static com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpResponse parseFrom(
+    public static com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpResponse parseFrom(byte[] data)
+    public static com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpResponse parseFrom(
+    public static com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpResponse parseFrom(java.io.InputStream input)
+    public static com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpResponse parseFrom(
+    public static com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpResponse parseDelimitedFrom(java.io.InputStream input)
+    public static com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpResponse parseDelimitedFrom(
+    public static com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpResponse parseFrom(
+    public static com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpResponse parseFrom(
+    public static com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -6119,7 +6119,7 @@ public final class web_m {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.mackenziehigh.socius.web.messages.web_m.HttpResponse prototype) {
+    public static Builder newBuilder(com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -6139,25 +6139,25 @@ public final class web_m {
      * HTTP Response.
      * </pre>
      *
-     * Protobuf type {@code com.mackenziehigh.socius.web.messages.HttpResponse}
+     * Protobuf type {@code com.mackenziehigh.socius.web.messages.ServerSideHttpResponse}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:com.mackenziehigh.socius.web.messages.HttpResponse)
-        com.mackenziehigh.socius.web.messages.web_m.HttpResponseOrBuilder {
+        // @@protoc_insertion_point(builder_implements:com.mackenziehigh.socius.web.messages.ServerSideHttpResponse)
+        com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponseOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_HttpResponse_descriptor;
+        return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpResponse_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_HttpResponse_fieldAccessorTable
+        return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpResponse_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.mackenziehigh.socius.web.messages.web_m.HttpResponse.class, com.mackenziehigh.socius.web.messages.web_m.HttpResponse.Builder.class);
+                com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse.class, com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse.Builder.class);
       }
 
-      // Construct using com.mackenziehigh.socius.web.messages.web_m.HttpResponse.newBuilder()
+      // Construct using com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -6205,23 +6205,23 @@ public final class web_m {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_HttpResponse_descriptor;
+        return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpResponse_descriptor;
       }
 
-      public com.mackenziehigh.socius.web.messages.web_m.HttpResponse getDefaultInstanceForType() {
-        return com.mackenziehigh.socius.web.messages.web_m.HttpResponse.getDefaultInstance();
+      public com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse getDefaultInstanceForType() {
+        return com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse.getDefaultInstance();
       }
 
-      public com.mackenziehigh.socius.web.messages.web_m.HttpResponse build() {
-        com.mackenziehigh.socius.web.messages.web_m.HttpResponse result = buildPartial();
+      public com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse build() {
+        com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.mackenziehigh.socius.web.messages.web_m.HttpResponse buildPartial() {
-        com.mackenziehigh.socius.web.messages.web_m.HttpResponse result = new com.mackenziehigh.socius.web.messages.web_m.HttpResponse(this);
+      public com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse buildPartial() {
+        com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse result = new com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -6298,16 +6298,16 @@ public final class web_m {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.mackenziehigh.socius.web.messages.web_m.HttpResponse) {
-          return mergeFrom((com.mackenziehigh.socius.web.messages.web_m.HttpResponse)other);
+        if (other instanceof com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse) {
+          return mergeFrom((com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.mackenziehigh.socius.web.messages.web_m.HttpResponse other) {
-        if (other == com.mackenziehigh.socius.web.messages.web_m.HttpResponse.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse other) {
+        if (other == com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse.getDefaultInstance()) return this;
         if (!other.debug_.isEmpty()) {
           if (debug_.isEmpty()) {
             debug_ = other.debug_;
@@ -6379,11 +6379,11 @@ public final class web_m {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.mackenziehigh.socius.web.messages.web_m.HttpResponse parsedMessage = null;
+        com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.mackenziehigh.socius.web.messages.web_m.HttpResponse) e.getUnfinishedMessage();
+          parsedMessage = (com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -6532,16 +6532,16 @@ public final class web_m {
         return this;
       }
 
-      private com.mackenziehigh.socius.web.messages.web_m.HttpRequest request_ = null;
+      private com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest request_ = null;
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.mackenziehigh.socius.web.messages.web_m.HttpRequest, com.mackenziehigh.socius.web.messages.web_m.HttpRequest.Builder, com.mackenziehigh.socius.web.messages.web_m.HttpRequestOrBuilder> requestBuilder_;
+          com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest, com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest.Builder, com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequestOrBuilder> requestBuilder_;
       /**
        * <pre>
        **
        * (optional) is the HTTP request that precipitated this response.
        * </pre>
        *
-       * <code>optional .com.mackenziehigh.socius.web.messages.HttpRequest request = 2;</code>
+       * <code>optional .com.mackenziehigh.socius.web.messages.ServerSideHttpRequest request = 2;</code>
        */
       public boolean hasRequest() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
@@ -6552,11 +6552,11 @@ public final class web_m {
        * (optional) is the HTTP request that precipitated this response.
        * </pre>
        *
-       * <code>optional .com.mackenziehigh.socius.web.messages.HttpRequest request = 2;</code>
+       * <code>optional .com.mackenziehigh.socius.web.messages.ServerSideHttpRequest request = 2;</code>
        */
-      public com.mackenziehigh.socius.web.messages.web_m.HttpRequest getRequest() {
+      public com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest getRequest() {
         if (requestBuilder_ == null) {
-          return request_ == null ? com.mackenziehigh.socius.web.messages.web_m.HttpRequest.getDefaultInstance() : request_;
+          return request_ == null ? com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest.getDefaultInstance() : request_;
         } else {
           return requestBuilder_.getMessage();
         }
@@ -6567,9 +6567,9 @@ public final class web_m {
        * (optional) is the HTTP request that precipitated this response.
        * </pre>
        *
-       * <code>optional .com.mackenziehigh.socius.web.messages.HttpRequest request = 2;</code>
+       * <code>optional .com.mackenziehigh.socius.web.messages.ServerSideHttpRequest request = 2;</code>
        */
-      public Builder setRequest(com.mackenziehigh.socius.web.messages.web_m.HttpRequest value) {
+      public Builder setRequest(com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest value) {
         if (requestBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -6588,10 +6588,10 @@ public final class web_m {
        * (optional) is the HTTP request that precipitated this response.
        * </pre>
        *
-       * <code>optional .com.mackenziehigh.socius.web.messages.HttpRequest request = 2;</code>
+       * <code>optional .com.mackenziehigh.socius.web.messages.ServerSideHttpRequest request = 2;</code>
        */
       public Builder setRequest(
-          com.mackenziehigh.socius.web.messages.web_m.HttpRequest.Builder builderForValue) {
+          com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest.Builder builderForValue) {
         if (requestBuilder_ == null) {
           request_ = builderForValue.build();
           onChanged();
@@ -6607,15 +6607,15 @@ public final class web_m {
        * (optional) is the HTTP request that precipitated this response.
        * </pre>
        *
-       * <code>optional .com.mackenziehigh.socius.web.messages.HttpRequest request = 2;</code>
+       * <code>optional .com.mackenziehigh.socius.web.messages.ServerSideHttpRequest request = 2;</code>
        */
-      public Builder mergeRequest(com.mackenziehigh.socius.web.messages.web_m.HttpRequest value) {
+      public Builder mergeRequest(com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest value) {
         if (requestBuilder_ == null) {
           if (((bitField0_ & 0x00000002) == 0x00000002) &&
               request_ != null &&
-              request_ != com.mackenziehigh.socius.web.messages.web_m.HttpRequest.getDefaultInstance()) {
+              request_ != com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest.getDefaultInstance()) {
             request_ =
-              com.mackenziehigh.socius.web.messages.web_m.HttpRequest.newBuilder(request_).mergeFrom(value).buildPartial();
+              com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest.newBuilder(request_).mergeFrom(value).buildPartial();
           } else {
             request_ = value;
           }
@@ -6632,7 +6632,7 @@ public final class web_m {
        * (optional) is the HTTP request that precipitated this response.
        * </pre>
        *
-       * <code>optional .com.mackenziehigh.socius.web.messages.HttpRequest request = 2;</code>
+       * <code>optional .com.mackenziehigh.socius.web.messages.ServerSideHttpRequest request = 2;</code>
        */
       public Builder clearRequest() {
         if (requestBuilder_ == null) {
@@ -6650,9 +6650,9 @@ public final class web_m {
        * (optional) is the HTTP request that precipitated this response.
        * </pre>
        *
-       * <code>optional .com.mackenziehigh.socius.web.messages.HttpRequest request = 2;</code>
+       * <code>optional .com.mackenziehigh.socius.web.messages.ServerSideHttpRequest request = 2;</code>
        */
-      public com.mackenziehigh.socius.web.messages.web_m.HttpRequest.Builder getRequestBuilder() {
+      public com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest.Builder getRequestBuilder() {
         bitField0_ |= 0x00000002;
         onChanged();
         return getRequestFieldBuilder().getBuilder();
@@ -6663,14 +6663,14 @@ public final class web_m {
        * (optional) is the HTTP request that precipitated this response.
        * </pre>
        *
-       * <code>optional .com.mackenziehigh.socius.web.messages.HttpRequest request = 2;</code>
+       * <code>optional .com.mackenziehigh.socius.web.messages.ServerSideHttpRequest request = 2;</code>
        */
-      public com.mackenziehigh.socius.web.messages.web_m.HttpRequestOrBuilder getRequestOrBuilder() {
+      public com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequestOrBuilder getRequestOrBuilder() {
         if (requestBuilder_ != null) {
           return requestBuilder_.getMessageOrBuilder();
         } else {
           return request_ == null ?
-              com.mackenziehigh.socius.web.messages.web_m.HttpRequest.getDefaultInstance() : request_;
+              com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest.getDefaultInstance() : request_;
         }
       }
       /**
@@ -6679,14 +6679,14 @@ public final class web_m {
        * (optional) is the HTTP request that precipitated this response.
        * </pre>
        *
-       * <code>optional .com.mackenziehigh.socius.web.messages.HttpRequest request = 2;</code>
+       * <code>optional .com.mackenziehigh.socius.web.messages.ServerSideHttpRequest request = 2;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.mackenziehigh.socius.web.messages.web_m.HttpRequest, com.mackenziehigh.socius.web.messages.web_m.HttpRequest.Builder, com.mackenziehigh.socius.web.messages.web_m.HttpRequestOrBuilder> 
+          com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest, com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest.Builder, com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequestOrBuilder> 
           getRequestFieldBuilder() {
         if (requestBuilder_ == null) {
           requestBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.mackenziehigh.socius.web.messages.web_m.HttpRequest, com.mackenziehigh.socius.web.messages.web_m.HttpRequest.Builder, com.mackenziehigh.socius.web.messages.web_m.HttpRequestOrBuilder>(
+              com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest, com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest.Builder, com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequestOrBuilder>(
                   getRequest(),
                   getParentForChildren(),
                   isClean());
@@ -7424,39 +7424,39 @@ public final class web_m {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:com.mackenziehigh.socius.web.messages.HttpResponse)
+      // @@protoc_insertion_point(builder_scope:com.mackenziehigh.socius.web.messages.ServerSideHttpResponse)
     }
 
-    // @@protoc_insertion_point(class_scope:com.mackenziehigh.socius.web.messages.HttpResponse)
-    private static final com.mackenziehigh.socius.web.messages.web_m.HttpResponse DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:com.mackenziehigh.socius.web.messages.ServerSideHttpResponse)
+    private static final com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.mackenziehigh.socius.web.messages.web_m.HttpResponse();
+      DEFAULT_INSTANCE = new com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse();
     }
 
-    public static com.mackenziehigh.socius.web.messages.web_m.HttpResponse getDefaultInstance() {
+    public static com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<HttpResponse>
-        PARSER = new com.google.protobuf.AbstractParser<HttpResponse>() {
-      public HttpResponse parsePartialFrom(
+    @java.lang.Deprecated public static final com.google.protobuf.Parser<ServerSideHttpResponse>
+        PARSER = new com.google.protobuf.AbstractParser<ServerSideHttpResponse>() {
+      public ServerSideHttpResponse parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-          return new HttpResponse(input, extensionRegistry);
+          return new ServerSideHttpResponse(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<HttpResponse> parser() {
+    public static com.google.protobuf.Parser<ServerSideHttpResponse> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<HttpResponse> getParserForType() {
+    public com.google.protobuf.Parser<ServerSideHttpResponse> getParserForType() {
       return PARSER;
     }
 
-    public com.mackenziehigh.socius.web.messages.web_m.HttpResponse getDefaultInstanceForType() {
+    public com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -10024,30 +10024,30 @@ public final class web_m {
   }
 
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_descriptor;
+    internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_fieldAccessorTable;
+      internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_ParametersEntry_descriptor;
+    internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_ParametersEntry_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_ParametersEntry_fieldAccessorTable;
+      internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_ParametersEntry_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_HeadersEntry_descriptor;
+    internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_HeadersEntry_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_HeadersEntry_fieldAccessorTable;
+      internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_HeadersEntry_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_TrailersEntry_descriptor;
+    internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_TrailersEntry_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_TrailersEntry_fieldAccessorTable;
+      internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_TrailersEntry_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_mackenziehigh_socius_web_messages_HttpResponse_descriptor;
+    internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpResponse_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_mackenziehigh_socius_web_messages_HttpResponse_fieldAccessorTable;
+      internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpResponse_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_com_mackenziehigh_socius_web_messages_HttpProtocol_descriptor;
   private static final 
@@ -10074,43 +10074,44 @@ public final class web_m {
     java.lang.String[] descriptorData = {
       "\n?src/main/java/com/mackenziehigh/socius" +
       "/web/messages/web_m.proto\022%com.mackenzie" +
-      "high.socius.web.messages\"\245\007\n\013HttpRequest" +
-      "\022\r\n\005debug\030\001 \003(\t\022\022\n\nserverName\030\002 \001(\t\022\020\n\010s" +
-      "erverId\030\003 \001(\t\022\017\n\007replyTo\030\004 \001(\t\022\025\n\rcorrel" +
-      "ationId\030\005 \001(\t\022\026\n\016sequenceNumber\030\006 \001(\003\022\021\n" +
-      "\ttimestamp\030\007 \001(\004\022E\n\010protocol\030\010 \001(\01323.com" +
-      ".mackenziehigh.socius.web.messages.HttpP" +
-      "rotocol\022\016\n\006method\030\t \001(\t\022\013\n\003uri\030\n \001(\t\022\014\n\004" +
-      "path\030\013 \001(\t\022\017\n\007rawPath\030\014 \001(\t\022\020\n\010rawQuery\030",
-      "\r \001(\t\022V\n\nparameters\030\016 \003(\0132B.com.mackenzi" +
-      "ehigh.socius.web.messages.HttpRequest.Pa" +
-      "rametersEntry\022P\n\007headers\030\017 \003(\0132?.com.mac" +
-      "kenziehigh.socius.web.messages.HttpReque" +
-      "st.HeadersEntry\022\014\n\004host\030\020 \001(\t\022\023\n\013content" +
-      "Type\030\021 \001(\t\022\025\n\rcontentLength\030\022 \001(\005\022\014\n\004bod" +
-      "y\030\023 \001(\014\022R\n\010trailers\030\024 \003(\0132@.com.mackenzi" +
-      "ehigh.socius.web.messages.HttpRequest.Tr" +
-      "ailersEntry\032l\n\017ParametersEntry\022\013\n\003key\030\001 " +
-      "\001(\t\022H\n\005value\030\002 \001(\01329.com.mackenziehigh.s",
+      "high.socius.web.messages\"\315\007\n\025ServerSideH" +
+      "ttpRequest\022\r\n\005debug\030\001 \003(\t\022\022\n\nserverName\030" +
+      "\002 \001(\t\022\020\n\010serverId\030\003 \001(\t\022\017\n\007replyTo\030\004 \001(\t" +
+      "\022\025\n\rcorrelationId\030\005 \001(\t\022\026\n\016sequenceNumbe" +
+      "r\030\006 \001(\003\022\021\n\ttimestamp\030\007 \001(\004\022E\n\010protocol\030\010" +
+      " \001(\01323.com.mackenziehigh.socius.web.mess" +
+      "ages.HttpProtocol\022\016\n\006method\030\t \001(\t\022\013\n\003uri" +
+      "\030\n \001(\t\022\014\n\004path\030\013 \001(\t\022\017\n\007rawPath\030\014 \001(\t\022\020\n",
+      "\010rawQuery\030\r \001(\t\022`\n\nparameters\030\016 \003(\0132L.co" +
+      "m.mackenziehigh.socius.web.messages.Serv" +
+      "erSideHttpRequest.ParametersEntry\022Z\n\007hea" +
+      "ders\030\017 \003(\0132I.com.mackenziehigh.socius.we" +
+      "b.messages.ServerSideHttpRequest.Headers" +
+      "Entry\022\014\n\004host\030\020 \001(\t\022\023\n\013contentType\030\021 \001(\t" +
+      "\022\025\n\rcontentLength\030\022 \001(\005\022\014\n\004body\030\023 \001(\014\022\\\n" +
+      "\010trailers\030\024 \003(\0132J.com.mackenziehigh.soci" +
+      "us.web.messages.ServerSideHttpRequest.Tr" +
+      "ailersEntry\032l\n\017ParametersEntry\022\013\n\003key\030\001 ",
+      "\001(\t\022H\n\005value\030\002 \001(\01329.com.mackenziehigh.s" +
       "ocius.web.messages.HttpQueryParameter:\0028" +
       "\001\032a\n\014HeadersEntry\022\013\n\003key\030\001 \001(\t\022@\n\005value\030" +
       "\002 \001(\01321.com.mackenziehigh.socius.web.mes" +
       "sages.HttpHeader:\0028\001\032b\n\rTrailersEntry\022\013\n" +
       "\003key\030\001 \001(\t\022@\n\005value\030\002 \001(\01321.com.mackenzi" +
       "ehigh.socius.web.messages.HttpHeader:\0028\001" +
-      "\"\203\002\n\014HttpResponse\022\r\n\005debug\030\001 \003(\t\022C\n\007requ" +
-      "est\030\002 \001(\01322.com.mackenziehigh.socius.web" +
-      ".messages.HttpRequest\022\025\n\rcorrelationId\030\003" +
-      " \001(\t\022\021\n\ttimestamp\030\004 \001(\004\022\016\n\006status\030\005 \001(\005\022",
-      "B\n\007headers\030\006 \003(\01321.com.mackenziehigh.soc" +
-      "ius.web.messages.HttpHeader\022\023\n\013contentTy" +
-      "pe\030\007 \001(\t\022\014\n\004body\030\010 \001(\014\"V\n\014HttpProtocol\022\014" +
-      "\n\004text\030\001 \001(\t\022\014\n\004name\030\002 \001(\t\022\024\n\014majorVersi" +
-      "on\030\003 \001(\005\022\024\n\014minorVersion\030\004 \001(\005\"1\n\022HttpQu" +
-      "eryParameter\022\013\n\003key\030\001 \001(\t\022\016\n\006values\030\002 \003(" +
-      "\t\")\n\nHttpHeader\022\013\n\003key\030\001 \001(\t\022\016\n\006values\030\002" +
-      " \003(\tB.\n%com.mackenziehigh.socius.web.mes" +
-      "sagesB\005web_m"
+      "\"\227\002\n\026ServerSideHttpResponse\022\r\n\005debug\030\001 \003" +
+      "(\t\022M\n\007request\030\002 \001(\0132<.com.mackenziehigh." +
+      "socius.web.messages.ServerSideHttpReques",
+      "t\022\025\n\rcorrelationId\030\003 \001(\t\022\021\n\ttimestamp\030\004 " +
+      "\001(\004\022\016\n\006status\030\005 \001(\005\022B\n\007headers\030\006 \003(\01321.c" +
+      "om.mackenziehigh.socius.web.messages.Htt" +
+      "pHeader\022\023\n\013contentType\030\007 \001(\t\022\014\n\004body\030\010 \001" +
+      "(\014\"V\n\014HttpProtocol\022\014\n\004text\030\001 \001(\t\022\014\n\004name" +
+      "\030\002 \001(\t\022\024\n\014majorVersion\030\003 \001(\005\022\024\n\014minorVer" +
+      "sion\030\004 \001(\005\"1\n\022HttpQueryParameter\022\013\n\003key\030" +
+      "\001 \001(\t\022\016\n\006values\030\002 \003(\t\")\n\nHttpHeader\022\013\n\003k" +
+      "ey\030\001 \001(\t\022\016\n\006values\030\002 \003(\tB.\n%com.mackenzi" +
+      "ehigh.socius.web.messagesB\005web_m"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -10124,35 +10125,35 @@ public final class web_m {
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         }, assigner);
-    internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_descriptor =
+    internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_descriptor =
       getDescriptor().getMessageTypes().get(0);
-    internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_fieldAccessorTable = new
+    internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_descriptor,
+        internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_descriptor,
         new java.lang.String[] { "Debug", "ServerName", "ServerId", "ReplyTo", "CorrelationId", "SequenceNumber", "Timestamp", "Protocol", "Method", "Uri", "Path", "RawPath", "RawQuery", "Parameters", "Headers", "Host", "ContentType", "ContentLength", "Body", "Trailers", });
-    internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_ParametersEntry_descriptor =
-      internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_descriptor.getNestedTypes().get(0);
-    internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_ParametersEntry_fieldAccessorTable = new
+    internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_ParametersEntry_descriptor =
+      internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_descriptor.getNestedTypes().get(0);
+    internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_ParametersEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_ParametersEntry_descriptor,
+        internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_ParametersEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
-    internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_HeadersEntry_descriptor =
-      internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_descriptor.getNestedTypes().get(1);
-    internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_HeadersEntry_fieldAccessorTable = new
+    internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_HeadersEntry_descriptor =
+      internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_descriptor.getNestedTypes().get(1);
+    internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_HeadersEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_HeadersEntry_descriptor,
+        internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_HeadersEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
-    internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_TrailersEntry_descriptor =
-      internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_descriptor.getNestedTypes().get(2);
-    internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_TrailersEntry_fieldAccessorTable = new
+    internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_TrailersEntry_descriptor =
+      internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_descriptor.getNestedTypes().get(2);
+    internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_TrailersEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_mackenziehigh_socius_web_messages_HttpRequest_TrailersEntry_descriptor,
+        internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_TrailersEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
-    internal_static_com_mackenziehigh_socius_web_messages_HttpResponse_descriptor =
+    internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpResponse_descriptor =
       getDescriptor().getMessageTypes().get(1);
-    internal_static_com_mackenziehigh_socius_web_messages_HttpResponse_fieldAccessorTable = new
+    internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_mackenziehigh_socius_web_messages_HttpResponse_descriptor,
+        internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpResponse_descriptor,
         new java.lang.String[] { "Debug", "Request", "CorrelationId", "Timestamp", "Status", "Headers", "ContentType", "Body", });
     internal_static_com_mackenziehigh_socius_web_messages_HttpProtocol_descriptor =
       getDescriptor().getMessageTypes().get(2);

@@ -22,27 +22,27 @@ public interface ConnectionLogger
         // Pass.
     }
 
-    public default void onReceivedRequest (web_m.HttpRequest message)
+    public default void onReceivedRequest (web_m.ServerSideHttpRequest message)
     {
         // Pass.
     }
 
-    public default void onAcceptedRequest (web_m.HttpRequest message)
+    public default void onAcceptedRequest (web_m.ServerSideHttpRequest message)
     {
         // Pass.
     }
 
-    public default void onRejectedRequest (web_m.HttpRequest message)
+    public default void onRejectedRequest (web_m.ServerSideHttpRequest message)
     {
         // Pass.
     }
 
-    public default void onDeniedRequest (web_m.HttpRequest message)
+    public default void onDeniedRequest (web_m.ServerSideHttpRequest message)
     {
         // Pass.
     }
 
-    public default void onResponse (web_m.HttpResponse message)
+    public default void onResponse (web_m.ServerSideHttpResponse message)
     {
         // Pass.
     }

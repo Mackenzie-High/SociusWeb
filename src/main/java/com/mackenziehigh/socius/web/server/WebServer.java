@@ -22,20 +22,28 @@ import com.mackenziehigh.cascade.Cascade.Stage;
 import com.mackenziehigh.cascade.Cascade.Stage.Actor.Input;
 import com.mackenziehigh.cascade.Cascade.Stage.Actor.Output;
 import com.mackenziehigh.socius.web.messages.web_m;
-import com.mackenziehigh.socius.web.messages.web_m.HttpRequest;
-import com.mackenziehigh.socius.web.messages.web_m.HttpResponse;
+import com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest;
+import com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.AdaptiveRecvByteBufAllocator;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.MessageToMessageDecoder;
+import io.netty.handler.codec.MessageToMessageEncoder;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpContentCompressor;
+import io.netty.handler.codec.http.HttpContentDecompressor;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.traffic.GlobalChannelTrafficShapingHandler;
 import java.io.Closeable;
 import java.time.Duration;
@@ -596,7 +604,7 @@ public final class WebServer
      *
      * @return the connection.
      */
-    public Output<HttpRequest> requestsOut ()
+    public Output<ServerSideHttpRequest> requestsOut ()
     {
         return router.requestsOut.output();
     }
@@ -616,7 +624,7 @@ public final class WebServer
      *
      * @return the connection.
      */
-    public Input<HttpResponse> responsesIn ()
+    public Input<ServerSideHttpResponse> responsesIn ()
     {
         return router.responsesIn.input();
     }
@@ -730,16 +738,96 @@ public final class WebServer
         // TODO: What if the factory throws an exception?
         private final ConnectionLogger channelLogger = ConnectionLoggers.newSafeLogger(connectionLogger.newConnectionLogger());
 
+        private final AtomicBoolean slowUplinkTimeoutExpired = new AtomicBoolean(false);
+
+        /**
+         * If this handler receives a message before the timeout expires,
+         * then the message will be forwarded to the rest of the pipeline;
+         * otherwise, the message will not be forwarded, because the connection
+         * is in the process of being closed due to the timeout.
+         */
+        private final MessageToMessageDecoder<FullHttpRequest> slowUplinkDetector = new MessageToMessageDecoder<FullHttpRequest>()
+        {
+            @Override
+            protected void decode (final ChannelHandlerContext ctx,
+                                   final FullHttpRequest msg,
+                                   final List<Object> out)
+            {
+                if (slowUplinkTimeoutExpired.compareAndSet(false, true))
+                {
+                    out.add(msg);
+                }
+            }
+        };
+
+        private void onSlowUplinkTimeout (final SocketChannel channel)
+        {
+            if (slowUplinkTimeoutExpired.compareAndSet(false, true))
+            {
+                closeWithNoResponse(channel);
+            }
+        }
+
+        /**
+         * This object is used to detect when a response is sent to the client.
+         */
+        private final MessageToMessageEncoder<ServerSideHttpResponse> slowDownlinkDetector = new MessageToMessageEncoder<ServerSideHttpResponse>()
+        {
+            @Override
+            protected void encode (final ChannelHandlerContext ctx,
+                                   final ServerSideHttpResponse msg,
+                                   final List<Object> out)
+            {
+                out.add(msg);
+
+                if (true)
+                {
+                    service.schedule(() -> onSlowDownlinkTimeout(ctx.channel()), SlowDownlinkTimeout.toMillis(), TimeUnit.MILLISECONDS);
+                }
+            }
+        };
+
+        private void onSlowDownlinkTimeout (final Channel channel)
+        {
+            if (channel.isOpen())
+            {
+                closeWithNoResponse(channel);
+            }
+        }
+
         @Override
         protected void initChannel (final SocketChannel channel)
         {
+            /**
+             * Configure the connection-specific logger.
+             */
+            channelLogger.setRemoteAddess(channel.remoteAddress().toString()); // TODO
             channelLogger.onConnect();
 
+            /**
+             * The logger, etc, will need to be notified when the connection closes.
+             */
             channel.closeFuture().addListener(x -> onClose());
 
-            if (connectionCount.incrementAndGet() >= hardConnectionLimit)
+            /**
+             * Keep track of how many connections are open.
+             */
+            // TODO: HAndle more safely
+            final long connectionNumber = connectionCount.incrementAndGet();
+
+            /**
+             * If there are more connections open than the hard-limit allows,
+             * then go ahead and close this new connection without sending
+             * any HTTP response to the client.
+             *
+             * Notice that this check is done before setting up the pipeline.
+             * We want to avoid allocating additional unnecessary resources,
+             * if we are dropping incoming requests due to resource exhaustion.
+             */
+            if (connectionNumber >= hardConnectionLimit)
             {
-                channel.close();
+                // TODO: Log it
+                closeWithNoResponse(channel);
                 return;
             }
 
@@ -765,28 +853,244 @@ public final class WebServer
              */
             final boolean closeOnExpectationFailed = true;
 
-            HardTimeout.enforce(service, channel, connectionTimeout);
+            final boolean strictDecompression = false;
 
+            /**
+             * The Traffic Shaping Handler will rate-limit the bandwidth
+             * of data coming-from and going-to the client on both
+             * a per-channel and per-server basis.
+             *
+             * Uplink Input: (0 .. M) Byte Buffers.
+             * Uplink Output: (0 .. M) Byte Buffers.
+             *
+             * Downlink Input: (0 .. N) Byte Buffers.
+             * Downlink Output: (0 .. N) Byte Buffers.
+             */
             channel.pipeline().addLast(trafficShapingHandler);
-            channel.pipeline().addLast(new HttpResponseEncoder());
+
+            /**
+             * The HTTP Request Decoder converts incoming Byte Buffers into
+             * HTTP Request, HTTP Content, and Last HTTP Content objects,
+             * as data is received through the pipeline from the client.
+             *
+             * Notice that a single request may be broken into an HTTP Request object,
+             * multiple HTTP Content objects thereafter, and finally a Last HTTP Content object,
+             * because of the client sending data using the HTTP 1.1 'chunked' encoding.
+             * The HTTP Object Aggregator, further down the pipeline, will convert
+             * the stream of multiple objects into a single Full HTTP Request object.
+             *
+             * Uplink Input: (0 .. M) Byte Buffers.
+             * Uplink Output: (1) HTTP Request, (0 .. M) HTTP Content, (1) Last HTTP Content.
+             *
+             * Downlink Input: Pass-through.
+             * Downlink Output: Pass-through.
+             */
             channel.pipeline().addLast(new HttpRequestDecoder(maxInitialLineSize,
                                                               maxHeaderSize,
                                                               maxChunkSize,
                                                               validateHeaders));
+
+            /**
+             * The HTTP Response Encoder converts outgoing HTTP responses into Byte Buffers,
+             * so that they can be written to the socket, and sent to the client.
+             *
+             * Uplink Input: Pass-through.
+             * Uplink Output: Pass-through.
+             *
+             * Downlink Input: (1) HTTP Response.
+             * Downlink Output: (0 .. N) Byte Buffers.
+             */
+            channel.pipeline().addLast(new HttpResponseEncoder());
+
+            /**
+             * The Slow Downlink Detector detects when the HTTP response begins
+             * being sent to the client, so that we can force close the connection,
+             * if the client reads the response to slowly.
+             *
+             * This is a defensive mechanism, which is intended to help defend against
+             * slow HTTP attacks that maliciously read a response at a very low data-rate.
+             *
+             * Uplink Input: Pass-through.
+             * Uplink Output: Pass-through.
+             *
+             * Downlink Input: (1) HTTP Response.
+             * Downlink Output: (1) HTTP Response.
+             */
+            channel.pipeline().addLast(slowDownlinkDetector);
+
+            /**
+             * The HTTP Content Decompressor converts incoming HTTP Content objects,
+             * which are compressed according to the Content-Encoding header from the client,
+             * into non-compressed HTTP Content objects.
+             *
+             * Uplink Input: (1) HTTP Request, (0 .. M) HTTP Content, (1) Last HTTP Content.
+             * Uplink Output: (1) HTTP Request, (0 .. M) HTTP Content, (1) Last HTTP Content.
+             *
+             * Downlink Input: Pass-through.
+             * Downlink Output: Pass-through.
+             */
+            channel.pipeline().addLast(new HttpContentDecompressor(strictDecompression));
+
+            /**
+             * The HTTP Content Compressor compresses outgoing HTTP Content objects,
+             * in accordance with the Accept-Encoding header that was received during the HTTP Request,
+             * in order to conserve downlink bandwidth to the client.
+             *
+             * Uplink Input: Pass-through.
+             * Uplink Output: Pass-through.
+             *
+             * Downlink Input: (1) HTTP Content.
+             * Downlink Output: (1) HTTP Content.
+             */
+            channel.pipeline().addLast(new HttpContentCompressor(compressionLevel, compressionWindowBits, compressionMemoryLevel, compressionThreshold));
+
+            /**
+             * The checker applies the user-defined predicate verifications to the incoming HTTP Request object,
+             * translated to a partial GPB representation for API consistency,
+             * and closes the connection (sometimes without an HTTP response), if any verification fails.
+             *
+             * Notice that when the client sends a request using the HTTP 1.1 'chunked' encoding,
+             * the HTTP Content objects, and Last HTTP Content object, are ignored by the checker,
+             * since only the initial HTTP Request object is needed for the verification to occur.
+             *
+             * Uplink Input: (1) HTTP Request, (0 .. M) HTTP Content, (1) Last HTTP Content.
+             * Uplink Output: (1) HTTP Request, (0 .. M) HTTP Content, (1) Last HTTP Content.
+             *
+             * Downlink Input: Pass-through.
+             * Downlink Output: Pass-through.
+             */
             channel.pipeline().addLast(new Prechecker(translator, prechecks));
+
+            /**
+             * The HTTP Object Aggregator will convert a stream of incoming HTTP Request, HTTP Content,
+             * and Last HTTP Content objects into a single Full HTTP Request object.
+             * As part of this process, the HTTP Object Aggregator may send zero
+             * or more (100 Continue) responses back to the client in order to
+             * signal that the client needs to send another chunk.
+             *
+             * Uplink Input: (1) HTTP Request, (0 .. M) HTTP Content, (1) Last HTTP Content.
+             * Uplink Output: (1) Full HTTP Request.
+             *
+             * Downlink Input: Pass-through.
+             * Downlink Output: Pass-through. TODO
+             */
             channel.pipeline().addLast(new HttpObjectAggregator(maxRequestSize, closeOnExpectationFailed));
-//            channel.pipeline().addLast(SlowUplinkTimeout.newHandler(channel, service, SlowUplinkTimeout));
-            channel.pipeline().addLast(new TranslationEncoder(translator));
+
+            /**
+             * The Slow Uplink Detector detects when the Full HTTP Request is received.
+             *
+             * If the Slow Uplink Timeout expires before the detector detects that
+             * the request has been fully received, then the connection will be closed
+             * without sending any HTTP response to the client.
+             *
+             * This is a defensive mechanism, which is intended to help defend against
+             * slow HTTP attacks that maliciously send a request at a very low data-rate.
+             *
+             * Uplink Input: (1) Netty-based Full HTTP Request.
+             * Uplink Output: (1) Netty-based Full HTTP Request.
+             *
+             * Downlink Input: Pass-through.
+             * Downlink Output: Pass-through.
+             */
+            channel.pipeline().addLast(slowUplinkDetector);
+            service.schedule(() -> onSlowUplinkTimeout(channel), SlowUplinkTimeout.toMillis(), TimeUnit.MILLISECONDS);
+
+            /**
+             * The Translation Decoder converts an incoming Netty-based
+             * Full HTTP Request to an Socius GPB-based HTTP Request.
+             *
+             * Uplink Input: (1) Netty-based Full HTTP Request.
+             * Uplink Output: (1) Socius GPB-based Full HTTP Request.
+             *
+             * Downlink Input: Pass-through.
+             * Downlink Output: Pass-through.
+             */
             channel.pipeline().addLast(new TranslationDecoder(translator));
+
+            /**
+             * The Translation Encoder converts a Socius GPB-based HTTP Response object
+             * to an equivalent Netty-based Full HTTP Response object.
+             *
+             * Uplink Input: Pass-through.
+             * Uplink Output: Pass-through.
+             *
+             * Downlink Input: (1) Socius GPB-based Full HTTP Response.
+             * Downlink Output: (1) Netty-based Full HTTP Response.
+             */
+            channel.pipeline().addLast(new TranslationEncoder(translator));
+
+            /**
+             * The Router coordinates the transmission of incoming HTTP requests
+             * to the connected (external) actors, and the reception of responses
+             * from those connected (external) actors.
+             *
+             * Uplink Input: (1) Socius GPB-based Full HTTP Request.
+             * Uplink Output: None.
+             *
+             * Downlink Input: None.
+             * Downlink Output: (1) Socius GPB-based Full HTTP Response.
+             */
             channel.pipeline().addLast(router.newHandler());
 
             /**
-             * If a response is not sent back to the client within the given time limit,
+             * If the connection is open for too long, then go ahead and close
+             * the connection without sending any HTTP response to the client.
+             */
+            final Runnable onConnectionTimeout = () ->
+            {
+                if (channel.isOpen())
+                {
+                    closeWithNoResponse(channel);
+                }
+            };
+
+            /**
+             * The Connection Timeout is a final fail-safe,
+             * which will unconditionally close the connection,
+             * if the given timeout is exceeded.
+             */
+            service.schedule(onConnectionTimeout, connectionTimeout.toMillis(), TimeUnit.MILLISECONDS);
+
+            /**
+             * If a response is not sent back to the client within the given Response Timeout limit,
              * then close the connection upon sending an appropriate default response.
              * Technically, this timer task will always execute; however,
              * the task is harmless, if the response was already sent.
              */
             service.schedule(WebServer.this::closeStaleConnections, responseTimeout.toMillis(), TimeUnit.MILLISECONDS);
+
+            /**
+             * If there are more connections open than the soft-limit allows,
+             * then go ahead and close this new connection,
+             * but send a meaningful HTTP response to the client.
+             *
+             * Notice that this check is done after setting up the pipeline.
+             * We need the HttpEncoder, etc, to be present in the pipeline,
+             * because we are sending an HTTP message that will need to be encoded.
+             *
+             * Notice that this check is done after the timeouts were scheduled.
+             * If the client maliciously reads responses slow, we need to make
+             * sure that the timeout is in-place, so that the channel is not held open.
+             */
+            if (connectionNumber >= softConnectionLimit)
+            {
+                // TODO: log it
+                sendErrorAndClose(channel, HttpResponseStatus.INTERNAL_SERVER_ERROR);
+                return;
+            }
+        }
+
+        private void sendErrorAndClose (final SocketChannel channel,
+                                        final HttpResponseStatus status)
+        {
+            final ServerSideHttpResponse response = Translator.newErrorResponseGPB(status);
+            channel.writeAndFlush(response);
+            channel.close();
+        }
+
+        private void closeWithNoResponse (final Channel channel)
+        {
+            channel.close();
         }
 
         private void onClose ()
@@ -827,9 +1131,9 @@ public final class WebServer
 
         private ConnectionLoggerFactory builderConnectionLogger = () -> ConnectionLoggers.newNullLogger();
 
-        private String builderServerName = "";
+        private String builderServerName = DEFAULT_SERVER_NAME; // Deliberately, set by default.
 
-        private String builderReplyTo = "";
+        private String builderReplyTo = DEFAULT_REPLY_TO; // Deliberately, set by default.
 
         private String builderBindAddress;
 
@@ -883,7 +1187,7 @@ public final class WebServer
 
         private final List<Precheck> builderPrechecks = new LinkedList<>();
 
-        private final Map<Integer, HttpResponse> defaultResponses = Maps.newTreeMap();
+        private final Map<Integer, ServerSideHttpResponse> defaultResponses = Maps.newTreeMap();
 
         private Builder ()
         {
@@ -939,7 +1243,7 @@ public final class WebServer
          * @return this.
          */
         public Builder withDefaultResponse (final int statusCode,
-                                            final HttpResponse response)
+                                            final ServerSideHttpResponse response)
         {
             Objects.requireNonNull(response, "response");
             defaultResponses.put(statusCode, response);
@@ -1435,7 +1739,7 @@ public final class WebServer
          * @param condition may cause the HTTP request to be accepted.
          * @return this.
          */
-        public Builder withPredicateAccept (final Predicate<web_m.HttpRequest> condition)
+        public Builder withPredicateAccept (final Predicate<web_m.ServerSideHttpRequest> condition)
         {
             Objects.requireNonNull(condition, "condition");
             final Precheck check = msg -> condition.test(msg) ? Precheck.Result.ACCEPT : Precheck.Result.FORWARD;
@@ -1473,7 +1777,7 @@ public final class WebServer
          * @return this.
          */
         public Builder withPredicateReject (final int status,
-                                            final Predicate<web_m.HttpRequest> condition)
+                                            final Predicate<web_m.ServerSideHttpRequest> condition)
         {
             Objects.requireNonNull(condition, "condition");
             final Precheck check = msg -> condition.test(msg) ? Precheck.Result.REJECT : Precheck.Result.FORWARD;
@@ -1508,7 +1812,7 @@ public final class WebServer
          * @param condition may cause the HTTP request to be rejected.
          * @return this.
          */
-        public Builder withPredicateDeny (final Predicate<web_m.HttpRequest> condition)
+        public Builder withPredicateDeny (final Predicate<web_m.ServerSideHttpRequest> condition)
         {
             Objects.requireNonNull(condition, "condition");
             final Precheck check = msg -> condition.test(msg) ? Precheck.Result.DENY : Precheck.Result.FORWARD;

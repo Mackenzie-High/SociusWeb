@@ -18,8 +18,8 @@ package com.mackenziehigh.socius.web.server;
 import com.google.common.collect.Maps;
 import com.mackenziehigh.cascade.Cascade.Stage;
 import com.mackenziehigh.cascade.Cascade.Stage.Actor;
-import com.mackenziehigh.socius.web.messages.web_m.HttpRequest;
-import com.mackenziehigh.socius.web.messages.web_m.HttpResponse;
+import com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest;
+import com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -59,13 +59,13 @@ final class Router
      * This processor will be used to send HTTP requests out of the server,
      * so that external handler actors can process the requests.
      */
-    public final Actor<HttpRequest, HttpRequest> requestsOut;
+    public final Actor<ServerSideHttpRequest, ServerSideHttpRequest> requestsOut;
 
     /**
      * This processor will receive the HTTP responses from the external actors
      * and then will route those responses to the originating connection.
      */
-    public final Actor<HttpResponse, HttpResponse> responsesIn;
+    public final Actor<ServerSideHttpResponse, ServerSideHttpResponse> responsesIn;
 
     public Router (final Stage stage)
     {
@@ -73,15 +73,15 @@ final class Router
         this.responsesIn = stage.newActor().withScript(this::onResponse).create();
     }
 
-    public SimpleChannelInboundHandler<HttpRequest> newHandler ()
+    public SimpleChannelInboundHandler<ServerSideHttpRequest> newHandler ()
     {
         final AtomicBoolean firstRequest = new AtomicBoolean();
 
-        return new SimpleChannelInboundHandler<HttpRequest>()
+        return new SimpleChannelInboundHandler<ServerSideHttpRequest>()
         {
             @Override
             protected void channelRead0 (final ChannelHandlerContext ctx,
-                                         final HttpRequest msg)
+                                         final ServerSideHttpRequest msg)
             {
                 if (firstRequest.compareAndSet(false, true))
                 {
@@ -90,7 +90,7 @@ final class Router
             }
 
             private void reply (final ChannelHandlerContext ctx,
-                                final HttpResponse response)
+                                final ServerSideHttpResponse response)
             {
                 ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
             }
@@ -103,8 +103,8 @@ final class Router
      * @param request will be sent to the external actors, who will generate a response.
      * @param callback will be used to transmit the response to the client.
      */
-    private void open (final HttpRequest request,
-                       final Consumer<HttpResponse> callback)
+    private void open (final ServerSideHttpRequest request,
+                       final Consumer<ServerSideHttpResponse> callback)
     {
         synchronized (this)
         {
@@ -131,12 +131,12 @@ final class Router
         }
     }
 
-    private HttpRequest onRequest (final HttpRequest request)
+    private ServerSideHttpRequest onRequest (final ServerSideHttpRequest request)
     {
         return request;
     }
 
-    private void onResponse (final HttpResponse response)
+    private void onResponse (final ServerSideHttpResponse response)
     {
         routeResponse(response);
     }
@@ -147,7 +147,7 @@ final class Router
      *
      * @param response needs to be send to a client.
      */
-    private void routeResponse (final HttpResponse response)
+    private void routeResponse (final ServerSideHttpResponse response)
     {
         /**
          * Get the Correlation-ID that allows us to map responses to requests.
@@ -229,21 +229,21 @@ final class Router
 
         public final Instant creationTime = Instant.now();
 
-        public final Consumer<HttpResponse> output;
+        public final Consumer<ServerSideHttpResponse> output;
 
         public final String correlationId;
 
         private final AtomicBoolean sent = new AtomicBoolean();
 
         public Conversation (final String correlationId,
-                             final Consumer<HttpResponse> onResponse)
+                             final Consumer<ServerSideHttpResponse> onResponse)
         {
 
             this.correlationId = correlationId;
             this.output = onResponse;
         }
 
-        public void respondWith (final HttpResponse response)
+        public void respondWith (final ServerSideHttpResponse response)
         {
             /**
              * Sending a response is a one-shot operation.
@@ -257,7 +257,7 @@ final class Router
 
         public void closeStaleConnection ()
         {
-            final HttpResponse response = Translator.newErrorResponseGPB(HttpResponseStatus.REQUEST_TIMEOUT);
+            final ServerSideHttpResponse response = Translator.newErrorResponseGPB(HttpResponseStatus.REQUEST_TIMEOUT);
             respondWith(response);
         }
     }

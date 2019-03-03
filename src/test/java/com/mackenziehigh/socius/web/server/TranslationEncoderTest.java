@@ -16,7 +16,7 @@
 package com.mackenziehigh.socius.web.server;
 
 import com.google.protobuf.ByteString;
-import com.mackenziehigh.socius.web.messages.web_m.HttpResponse;
+import com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.http.FullHttpResponse;
 import java.nio.charset.StandardCharsets;
@@ -44,7 +44,7 @@ public final class TranslationEncoderTest
 
         final String content = "It's a mad, mad, mad, mad world!";
 
-        final HttpResponse response = HttpResponse
+        final ServerSideHttpResponse response = ServerSideHttpResponse
                 .newBuilder()
                 .setStatus(200)
                 .setBody(ByteString.copyFrom(content, StandardCharsets.US_ASCII))

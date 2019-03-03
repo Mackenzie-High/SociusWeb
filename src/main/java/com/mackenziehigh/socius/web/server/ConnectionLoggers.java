@@ -54,31 +54,31 @@ public final class ConnectionLoggers
             }
 
             @Override
-            public void onReceivedRequest (web_m.HttpRequest message)
+            public void onReceivedRequest (web_m.ServerSideHttpRequest message)
             {
                 ConnectionLogger.super.onReceivedRequest(message);
             }
 
             @Override
-            public void onAcceptedRequest (web_m.HttpRequest message)
+            public void onAcceptedRequest (web_m.ServerSideHttpRequest message)
             {
                 ConnectionLogger.super.onAcceptedRequest(message);
             }
 
             @Override
-            public void onRejectedRequest (web_m.HttpRequest message)
+            public void onRejectedRequest (web_m.ServerSideHttpRequest message)
             {
                 ConnectionLogger.super.onRejectedRequest(message);
             }
 
             @Override
-            public void onDeniedRequest (web_m.HttpRequest message)
+            public void onDeniedRequest (web_m.ServerSideHttpRequest message)
             {
                 ConnectionLogger.super.onDeniedRequest(message);
             }
 
             @Override
-            public void onResponse (web_m.HttpResponse message)
+            public void onResponse (web_m.ServerSideHttpResponse message)
             {
                 final String line = "";
                 final int status = message.getStatus();
@@ -176,7 +176,7 @@ public final class ConnectionLoggers
             }
 
             @Override
-            public void onResponse (web_m.HttpResponse message)
+            public void onResponse (web_m.ServerSideHttpResponse message)
             {
                 try
                 {
@@ -189,7 +189,7 @@ public final class ConnectionLoggers
             }
 
             @Override
-            public void onDeniedRequest (web_m.HttpRequest message)
+            public void onDeniedRequest (web_m.ServerSideHttpRequest message)
             {
                 try
                 {
@@ -202,7 +202,7 @@ public final class ConnectionLoggers
             }
 
             @Override
-            public void onRejectedRequest (web_m.HttpRequest message)
+            public void onRejectedRequest (web_m.ServerSideHttpRequest message)
             {
                 try
                 {
@@ -215,7 +215,7 @@ public final class ConnectionLoggers
             }
 
             @Override
-            public void onAcceptedRequest (web_m.HttpRequest message)
+            public void onAcceptedRequest (web_m.ServerSideHttpRequest message)
             {
                 try
                 {
@@ -228,7 +228,7 @@ public final class ConnectionLoggers
             }
 
             @Override
-            public void onReceivedRequest (web_m.HttpRequest message)
+            public void onReceivedRequest (web_m.ServerSideHttpRequest message)
             {
                 try
                 {

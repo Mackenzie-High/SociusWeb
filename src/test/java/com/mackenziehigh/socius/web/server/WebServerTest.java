@@ -15,6 +15,8 @@
  */
 package com.mackenziehigh.socius.web.server;
 
+import com.mackenziehigh.cascade.Cascade;
+import com.mackenziehigh.cascade.Cascade.Stage;
 import java.time.Duration;
 import static junit.framework.Assert.*;
 import org.junit.Test;
@@ -24,6 +26,20 @@ import org.junit.Test;
  */
 public final class WebServerTest
 {
+    private final Stage stage = Cascade.newStage();
+
+    private void run (final WebServer server,
+                      final String testCase)
+    {
+        server.start();
+
+    }
+
+    private void onEcho ()
+    {
+
+    }
+
     /**
      * Test: 20190303101911066030
      *
@@ -133,4 +149,5 @@ public final class WebServerTest
         assertEquals(Duration.ofSeconds(83), server.getResponseTimeout());
         assertEquals(Duration.ofSeconds(87), server.getConnectionTimeout());
     }
+
 }

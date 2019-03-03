@@ -47,7 +47,7 @@ public final class TranslationDecoderTest
 
         channel.writeOneInbound(request);
 
-        final web_m.HttpRequest gpb = channel.readInbound();
+        final web_m.ServerSideHttpRequest gpb = channel.readInbound();
 
         assertEquals("POST", gpb.getMethod());
         assertEquals("/upload", gpb.getPath());
