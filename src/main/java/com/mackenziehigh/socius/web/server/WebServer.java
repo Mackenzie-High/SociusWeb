@@ -16,6 +16,7 @@
 package com.mackenziehigh.socius.web.server;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Maps;
 import com.mackenziehigh.cascade.Cascade;
 import com.mackenziehigh.cascade.Cascade.Stage;
 import com.mackenziehigh.cascade.Cascade.Stage.Actor.Input;
@@ -35,12 +36,13 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
+import io.netty.handler.traffic.GlobalChannelTrafficShapingHandler;
 import java.io.Closeable;
-import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -48,6 +50,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Predicate;
 
 /**
@@ -57,9 +60,66 @@ import java.util.function.Predicate;
 public final class WebServer
         implements Closeable
 {
-    private static final int BOSS_THREAD_COUNT = 1;
+    public static final String DEFAULT_SERVER_NAME = "";
 
-    private static final int WORKER_THREAD_COUNT = 1;
+    public static final String DEFAULT_REPLY_TO = "";
+
+    public static final String DEFAULT_BIND_ADDRESS = "127.0.0.1";
+
+    public static final int DEFAULT_PORT = 8080;
+
+    public static final int DEFAULT_MAX_MESSAGES_PER_READ = 1;
+
+    public static final int DEFAULT_MAX_REQUEST_SIZE = 64 * 1024;
+
+    public static final int DEFAULT_MAX_INITIAL_LINE_SIZE = 1024;
+
+    public static final int DEFAULT_MAX_HEADER_SIZE = 8 * 1024;
+
+    public static final int DEFAULT_COMPRESSION_LEVEL = 6;
+
+    public static final int DEFAULT_WINDOW_BITS = 15;
+
+    public static final int DEFAULT_MEMORY_LEVEL = 8;
+
+    public static final int DEFAULT_RECV_ALLOCATOR_MIN = 64;
+
+    public static final int DEFAULT_RECV_ALLOCATOR_MAX = 2 * DEFAULT_MAX_REQUEST_SIZE;
+
+    public static final int DEFAULT_RECV_ALLOCATOR_INITIAL = 1024;
+
+    public static final int DEFAULT_SOFT_CONNECTION_LIMIT = 128;
+
+    public static final int DEFAULT_HARD_CONNECTION_LIMIT = 4 * DEFAULT_SOFT_CONNECTION_LIMIT;
+
+    public static final long DEFAULT_SERVER_UPLINK_BANDWIDTH = DEFAULT_SOFT_CONNECTION_LIMIT * DEFAULT_MAX_REQUEST_SIZE;
+
+    public static final long DEFAULT_SERVER_DOWNLINK_BANDWIDTH = DEFAULT_SERVER_UPLINK_BANDWIDTH;
+
+    public static final long DEFAULT_CONNECTION_UPLINK_BANDWIDTH = DEFAULT_SERVER_UPLINK_BANDWIDTH; // In effect, disable the limit.
+
+    public static final long DEFAULT_CONNECTION_DOWNLINK_BANDWIDTH = DEFAULT_CONNECTION_UPLINK_BANDWIDTH;
+
+    public static final Duration DEFAULT_MAX_PAUSE_TIME = Duration.ofSeconds(1);
+
+    public static final Duration DEFAULT_SLOW_UPLINK_TIMEOUT = Duration.ofSeconds(8);
+
+    public static final Duration DEFAULT_SLOW_DOWNLINK_TIMEOUT = Duration.ofSeconds(8);
+
+    public static final Duration DEFAULT_RESPONSE_TIMEOUT = Duration.ofSeconds(32);
+
+    public static final Duration DEFAULT_CONNECTION_TIMEOUT = Duration.ofSeconds(8)
+            .plus(DEFAULT_SLOW_UPLINK_TIMEOUT)
+            .plus(DEFAULT_RESPONSE_TIMEOUT)
+            .plus(DEFAULT_SLOW_DOWNLINK_TIMEOUT);
+
+    public static final int BOSS_THREAD_COUNT = 1;
+
+    public static final int WORKER_THREAD_COUNT = 1;
+
+    private final ServerLogger serverLogger;
+
+    private final ConnectionLoggerFactory connectionLogger;
 
     private final String serverId = UUID.randomUUID().toString();
 
@@ -83,25 +143,49 @@ public final class WebServer
 
     private final int hardConnectionLimit;
 
+    private final long maxServerUplinkBandwidth;
+
+    private final long maxServerDownlinkBandwidth;
+
+    private final long maxConnectionUplinkBandwidth;
+
+    private final long maxConnectionDownlinkBandwidth;
+
+    private final Duration maxPauseTime;
+
     private final int maxRequestSize;
 
     private final int maxInitialLineSize;
 
     private final int maxHeaderSize;
 
-    private final Duration slowReadTimeout;
+    private final int compressionLevel;
+
+    private final int compressionWindowBits;
+
+    private final int compressionMemoryLevel;
+
+    private final Duration SlowUplinkTimeout;
+
+    private final Duration SlowDownlinkTimeout;
 
     private final Duration responseTimeout;
 
     private final Duration connectionTimeout;
 
+    private final boolean hasShutdownHook;
+
     private final ImmutableList<Precheck> prechecks;
 
     private final ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
 
-    private final Stage stage = Cascade.newExecutorStage(service);
+    private final Stage stage = Cascade.newExecutorStage(service).addErrorHandler(ex -> serverLogger().onException(ex));
+
+    private final AtomicLong connectionCount = new AtomicLong();
 
     private final AdaptiveRecvByteBufAllocator recvBufferAllocator;
+
+    private final GlobalChannelTrafficShapingHandler trafficShapingHandler;
 
     /**
      * TODO: Make the sequence-numbers increment monotonically.
@@ -132,6 +216,8 @@ public final class WebServer
      */
     private WebServer (final Builder builder)
     {
+        this.serverLogger = builder.builderServerLogger;
+        this.connectionLogger = builder.builderConnectionLogger;
         this.serverName = builder.builderServerName;
         this.replyTo = builder.builderReplyTo;
         this.bindAddress = builder.builderBindAddress;
@@ -142,18 +228,41 @@ public final class WebServer
         this.recvAllocatorMax = builder.builderRecvAllocatorMax;
         this.softConnectionLimit = builder.builderSoftConnectionLimit;
         this.hardConnectionLimit = builder.builderHardConnectionLimit;
+        this.maxServerUplinkBandwidth = builder.builderMaxServerUplinkBandwidth;
+        this.maxServerDownlinkBandwidth = builder.builderMaxServerDownlinkBandwidth;
+        this.maxConnectionUplinkBandwidth = builder.builderMaxConnectionUplinkBandwidth;
+        this.maxConnectionDownlinkBandwidth = builder.builderMaxConnectionDownlinkBandwidth;
+        this.maxPauseTime = builder.builderMaxPauseTime;
         this.maxRequestSize = builder.builderMaxRequestSize;
         this.maxInitialLineSize = builder.builderMaxInitialLineSize;
         this.maxHeaderSize = builder.builderMaxHeaderSize;
-        this.slowReadTimeout = builder.builderSlowReadTimeout;
+        this.compressionLevel = builder.builderCompressionLevel;
+        this.compressionWindowBits = builder.builderCompressionWindowBits;
+        this.compressionMemoryLevel = builder.builderCompressionMemoryLevel;
+        this.SlowDownlinkTimeout = builder.builderSlowDownlinkTimeout;
+        this.SlowUplinkTimeout = builder.builderSlowUplinkTimeout;
         this.responseTimeout = builder.builderResponseTimeout;
         this.connectionTimeout = builder.builderConnectionTimeout;
+        this.hasShutdownHook = builder.builderShutdownHook;
         this.prechecks = ImmutableList.copyOf(new CopyOnWriteArrayList<>(builder.builderPrechecks));
 
         this.recvBufferAllocator = new AdaptiveRecvByteBufAllocator(recvAllocatorMin, recvAllocatorInitial, recvAllocatorMax);
         this.recvBufferAllocator.maxMessagesPerRead(maxMessagesPerRead);
 
+        this.trafficShapingHandler = new GlobalChannelTrafficShapingHandler(service,
+                                                                            maxServerDownlinkBandwidth,
+                                                                            maxServerUplinkBandwidth,
+                                                                            maxConnectionDownlinkBandwidth,
+                                                                            maxConnectionUplinkBandwidth,
+                                                                            TimeUnit.SECONDS.toMillis(1),
+                                                                            maxPauseTime.toMillis());
+
         this.translator = new Translator(serverName, serverId, replyTo);
+    }
+
+    private ServerLogger serverLogger ()
+    {
+        return serverLogger;
     }
 
     /**
@@ -174,8 +283,7 @@ public final class WebServer
      */
     public int getConnectionCount ()
     {
-//        return connections.size();
-        return 0; // TODO
+        return connectionCount.intValue();
     }
 
     /**
@@ -234,9 +342,20 @@ public final class WebServer
      *
      * @return the read timeout.
      */
-    public Duration getSlowReadTimeout ()
+    public Duration getSlowUplinkTimeout ()
     {
-        return slowReadTimeout;
+        return SlowUplinkTimeout;
+    }
+
+    /**
+     * Get the maximum amount of time the server will wait
+     * for a response to be written to the socket.
+     *
+     * @return the read timeout.
+     */
+    public Duration getSlowDownlinkTimeout ()
+    {
+        return SlowDownlinkTimeout;
     }
 
     /**
@@ -259,6 +378,56 @@ public final class WebServer
     public Duration getConnectionTimeout ()
     {
         return connectionTimeout;
+    }
+
+    /**
+     * Get the maximum number of bytes per second that can be sent to the server, overall.
+     *
+     * @return the global uplink bandwidth limit.
+     */
+    public long getMaxServerUplinkBandwidth ()
+    {
+        return maxServerUplinkBandwidth;
+    }
+
+    /**
+     * Get the maximum number of bytes per second that can be sent from the server, overall.
+     *
+     * @return the global downlink bandwidth limit.
+     */
+    public long getMaxServerDownlinkBandwidth ()
+    {
+        return maxServerDownlinkBandwidth;
+    }
+
+    /**
+     * Get the maximum number of bytes per second that can be sent to the server, per connection.
+     *
+     * @return the connection-specific uplink bandwidth limit.
+     */
+    public long getMaxConnectionUplinkBandwidth ()
+    {
+        return maxConnectionUplinkBandwidth;
+    }
+
+    /**
+     * Get the maximum number of bytes per second that can be sent from the server, per connection.
+     *
+     * @return the connection-specific uplink bandwidth limit.
+     */
+    public long getMaxConnectionDownlinkBandwidth ()
+    {
+        return maxConnectionDownlinkBandwidth;
+    }
+
+    /**
+     * Get the maximum amount of time to pause throughput due to excessive bandwidth.
+     *
+     * @return the maximum pause time.
+     */
+    public Duration getMaxPauseTime ()
+    {
+        return maxPauseTime;
     }
 
     /**
@@ -361,6 +530,49 @@ public final class WebServer
     }
 
     /**
+     * Get the compression-level applied to the downlink,
+     * when the Accept-Encoding header allows it.
+     *
+     * <p>
+     * See Also: <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpContentCompressor.html">HttpContentCompressor</a>
+     * </p>
+     *
+     * @return the compression-level.
+     */
+    public int getCompressionLevel ()
+    {
+        return compressionLevel;
+    }
+
+    /**
+     * Get the window-size setting used during downlink compression.
+     *
+     * <p>
+     * See Also: <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpContentCompressor.html">HttpContentCompressor</a>
+     * </p>
+     *
+     * @return the window-size of the compressor.
+     */
+    public int getCompressionWindowBits ()
+    {
+        return compressionWindowBits;
+    }
+
+    /**
+     * Get the memory-level setting used during downlink compression.
+     *
+     * <p>
+     * See Also: <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpContentCompressor.html">HttpContentCompressor</a>
+     * </p>
+     *
+     * @return the memory-level of the compressor.
+     */
+    public int getCompressionMemoryLevel ()
+    {
+        return compressionMemoryLevel;
+    }
+
+    /**
      * Use this connection to receive HTTP Requests from this HTTP server.
      *
      * @return the connection.
@@ -403,6 +615,7 @@ public final class WebServer
     {
         if (started.compareAndSet(false, true))
         {
+            serverLogger.onStart();
             final Thread thread = new Thread(this::run);
             thread.start();
         }
@@ -417,16 +630,21 @@ public final class WebServer
      * </p>
      *
      * @return this.
-     * @throws java.lang.InterruptedException
      */
     public WebServer stop ()
-            throws InterruptedException
     {
         if (stopped.compareAndSet(false, true))
         {
             if (shutdownHook != null)
             {
-                shutdownHook.channel().close().sync();
+                try
+                {
+                    shutdownHook.channel().close().sync();
+                }
+                catch (Throwable ex)
+                {
+                    serverLogger.onException(ex);
+                }
             }
         }
         return this;
@@ -434,9 +652,8 @@ public final class WebServer
 
     @Override
     public void close ()
-            throws IOException
     {
-        // stop();
+        stop();
     }
 
     /**
@@ -448,7 +665,10 @@ public final class WebServer
         final EventLoopGroup workerGroup = new NioEventLoopGroup(WORKER_THREAD_COUNT);
         try
         {
-            Runtime.getRuntime().addShutdownHook(new Thread(this::onShutdown));
+            if (hasShutdownHook)
+            {
+                Runtime.getRuntime().addShutdownHook(new Thread(this::onShutdown));
+            }
 
             final ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(bossGroup, workerGroup);
@@ -459,32 +679,23 @@ public final class WebServer
             shutdownHook = bootstrap.bind(bindAddress, port).sync();
             shutdownHook.channel().closeFuture().sync();
         }
-        catch (InterruptedException ex)
+        catch (Throwable ex)
         {
-            // TODO:
-            ex.printStackTrace();
-            // logger.catching(ex);
+            serverLogger.onException(ex);
         }
         finally
         {
+            trafficShapingHandler.release();
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
             service.shutdown();
+            serverLogger.onStop();
         }
     }
 
     private void onShutdown ()
     {
-        try
-        {
-            stop();
-        }
-        catch (InterruptedException ex)
-        {
-            // TODO:
-            ex.printStackTrace();
-            // logger.catching(ex);
-        }
+        stop();
     }
 
     /**
@@ -497,9 +708,22 @@ public final class WebServer
     private final class Initializer
             extends ChannelInitializer<SocketChannel>
     {
+        // TODO: What if the factory throws an exception?
+        private final ConnectionLogger channelLogger = ConnectionLoggers.newSafeLogger(connectionLogger.newConnectionLogger());
+
         @Override
         protected void initChannel (final SocketChannel channel)
         {
+            channelLogger.onConnect();
+
+            channel.closeFuture().addListener(x -> onClose());
+
+            if (connectionCount.incrementAndGet() >= hardConnectionLimit)
+            {
+                channel.close();
+                return;
+            }
+
             /**
              * The maximum chunk size, which is required by the HttpRequestDecoder,
              * is always equal to the maximum request size, because the chunk
@@ -524,6 +748,7 @@ public final class WebServer
 
             HardTimeout.enforce(service, channel, connectionTimeout);
 
+            channel.pipeline().addLast(trafficShapingHandler);
             channel.pipeline().addLast(new HttpResponseEncoder());
             channel.pipeline().addLast(new HttpRequestDecoder(maxInitialLineSize,
                                                               maxHeaderSize,
@@ -531,7 +756,7 @@ public final class WebServer
                                                               validateHeaders));
             channel.pipeline().addLast(new Prechecker(translator, prechecks));
             channel.pipeline().addLast(new HttpObjectAggregator(maxRequestSize, closeOnExpectationFailed));
-            channel.pipeline().addLast(SlowReadTimeout.newHandler(channel, service, slowReadTimeout));
+//            channel.pipeline().addLast(SlowUplinkTimeout.newHandler(channel, service, SlowUplinkTimeout));
             channel.pipeline().addLast(new TranslationEncoder(translator));
             channel.pipeline().addLast(new TranslationDecoder(translator));
             channel.pipeline().addLast(router.newHandler());
@@ -544,6 +769,12 @@ public final class WebServer
              */
             service.schedule(WebServer.this::closeStaleConnections, responseTimeout.toMillis(), TimeUnit.MILLISECONDS);
         }
+
+        private void onClose ()
+        {
+            connectionCount.decrementAndGet();
+            channelLogger.onDisconnect();
+        }
     }
 
     private void closeStaleConnections ()
@@ -554,7 +785,7 @@ public final class WebServer
         }
         catch (Throwable ex)
         {
-            // TODO
+            serverLogger.onException(ex);
         }
     }
 
@@ -573,6 +804,10 @@ public final class WebServer
      */
     public static final class Builder
     {
+        private ServerLogger builderServerLogger;
+
+        private ConnectionLoggerFactory builderConnectionLogger;
+
         private String builderServerName = "";
 
         private String builderReplyTo = "";
@@ -593,23 +828,136 @@ public final class WebServer
 
         private Integer builderHardConnectionLimit;
 
+        private Long builderMaxServerUplinkBandwidth;
+
+        private Long builderMaxServerDownlinkBandwidth;
+
+        private Long builderMaxConnectionUplinkBandwidth;
+
+        private Long builderMaxConnectionDownlinkBandwidth;
+
+        private Duration builderMaxPauseTime;
+
         private Integer builderMaxRequestSize;
 
         private Integer builderMaxInitialLineSize;
 
         private Integer builderMaxHeaderSize;
 
-        private Duration builderSlowReadTimeout;
+        private Integer builderCompressionLevel;
+
+        private Integer builderCompressionWindowBits;
+
+        private Integer builderCompressionMemoryLevel;
+
+        private Duration builderSlowUplinkTimeout;
+
+        private Duration builderSlowDownlinkTimeout;
 
         private Duration builderResponseTimeout;
 
         private Duration builderConnectionTimeout;
 
+        private Boolean builderShutdownHook;
+
         private final List<Precheck> builderPrechecks = new LinkedList<>();
+
+        private final Map<Integer, HttpResponse> defaultResponses = Maps.newTreeMap();
 
         private Builder ()
         {
             // Pass.
+        }
+
+        /**
+         * Specify default values for the web-server setup.
+         *
+         * @return this.
+         */
+        public Builder withDefaultSettings ()
+        {
+            this.withServerLogger(null); // TODO
+            this.withConnectionLogger(null); // TODO
+            this.withServerName(DEFAULT_SERVER_NAME);
+            this.withReplyTo(DEFAULT_REPLY_TO);
+            this.withBindAddress(DEFAULT_BIND_ADDRESS);
+            this.withPort(DEFAULT_PORT);
+            this.withMaxMessagesPerRead(DEFAULT_MAX_MESSAGES_PER_READ);
+            this.withRecvBufferAllocator(DEFAULT_RECV_ALLOCATOR_MIN, DEFAULT_RECV_ALLOCATOR_INITIAL, DEFAULT_RECV_ALLOCATOR_MAX);
+            this.withSoftConnectionLimit(DEFAULT_SOFT_CONNECTION_LIMIT);
+            this.withHardConnectionLimit(DEFAULT_HARD_CONNECTION_LIMIT);
+            this.withMaxServerUplinkBandwidth(DEFAULT_SERVER_UPLINK_BANDWIDTH);
+            this.withMaxServerDownlinkBandwidth(DEFAULT_SERVER_DOWNLINK_BANDWIDTH);
+            this.withMaxConnectionUplinkBandwidth(DEFAULT_CONNECTION_UPLINK_BANDWIDTH);
+            this.withMaxConnectionDownlinkBandwidth(DEFAULT_CONNECTION_DOWNLINK_BANDWIDTH);
+            this.withMaxPauseTime(DEFAULT_MAX_PAUSE_TIME);
+            this.withMaxRequestSize(DEFAULT_MAX_REQUEST_SIZE);
+            this.withMaxInitialLineSize(DEFAULT_MAX_INITIAL_LINE_SIZE);
+            this.withMaxHeaderSize(DEFAULT_MAX_HEADER_SIZE);
+            this.withCompressionLevel(DEFAULT_COMPRESSION_LEVEL);
+            this.withCompressionWindowBits(DEFAULT_WINDOW_BITS);
+            this.withCompressionMemoryLevel(DEFAULT_MEMORY_LEVEL);
+            this.withSlowUplinkTimeout(DEFAULT_SLOW_UPLINK_TIMEOUT);
+            this.withSlowDownlinkTimeout(DEFAULT_SLOW_DOWNLINK_TIMEOUT);
+            this.withResponseTimeout(DEFAULT_RESPONSE_TIMEOUT);
+            this.withConnectionTimeout(DEFAULT_CONNECTION_TIMEOUT);
+
+            return this;
+        }
+
+        /**
+         * Specify a default response to use for error messages with a given status code.
+         *
+         * <p>
+         * The response specified here will not override responses generated upstream.
+         * </p>
+         *
+         * @param statusCode is the status code of an error message.
+         * @param response will be used as the response for the given status code.
+         * @return this.
+         */
+        public Builder withDefaultResponse (final int statusCode,
+                                            final HttpResponse response)
+        {
+            Objects.requireNonNull(response, "response");
+            defaultResponses.put(statusCode, response);
+            return this;
+        }
+
+        /**
+         * Add a shutdown hook that will automatically shutdown the server,
+         * when the enclosing application shuts down normally.
+         *
+         * @return this.
+         */
+        public Builder withShutdownHook ()
+        {
+            builderShutdownHook = true;
+            return this;
+        }
+
+        /**
+         * Specify the connection-specific logger to use.
+         *
+         * @param logger will create a logger for each connection.
+         * @return this.
+         */
+        public Builder withServerLogger (final ServerLogger logger)
+        {
+            builderServerLogger = Objects.requireNonNull(logger, "logger");
+            return this;
+        }
+
+        /**
+         * Specify the server-wide logger to use.
+         *
+         * @param logger will be used by the web-server.
+         * @return this.
+         */
+        public Builder withConnectionLogger (final ConnectionLoggerFactory logger)
+        {
+            builderConnectionLogger = Objects.requireNonNull(logger, "logger");
+            return this;
         }
 
         /**
@@ -789,6 +1137,110 @@ public final class WebServer
         }
 
         /**
+         * Specify the maximum rate at which data can be sent to the server, overall.
+         *
+         * <p>
+         * This method is used to configure a <code>GlobalChannelTrafficShapingHandler</code>.
+         * </p>
+         *
+         * @param limit is the maximum data-rate in bytes per second.
+         * @return this.
+         */
+        public Builder withMaxServerUplinkBandwidth (final long limit)
+        {
+            if (limit < 1)
+            {
+                throw new IllegalArgumentException("MaxServerUplinkBandwidth < 1");
+            }
+            else
+            {
+                builderMaxServerUplinkBandwidth = limit;
+                return this;
+            }
+        }
+
+        /**
+         * Specify the maximum rate at which data can be sent to the server, per connection.
+         *
+         * <p>
+         * This method is used to configure a <code>GlobalChannelTrafficShapingHandler</code>.
+         * </p>
+         *
+         * @param limit is the maximum data-rate in bytes per second.
+         * @return this.
+         */
+        public Builder withMaxConnectionUplinkBandwidth (final long limit)
+        {
+            if (limit < 1)
+            {
+                throw new IllegalArgumentException("MaxConnectionUplinkBandwidth < 1");
+            }
+            else
+            {
+                builderMaxConnectionUplinkBandwidth = limit;
+                return this;
+            }
+        }
+
+        /**
+         * Specify the maximum rate at which data can be sent from the server, overall.
+         *
+         * <p>
+         * This method is used to configure a <code>GlobalChannelTrafficShapingHandler</code>.
+         * </p>
+         *
+         * @param limit is the maximum data-rate in bytes per second.
+         * @return this.
+         */
+        public Builder withMaxServerDownlinkBandwidth (final long limit)
+        {
+            if (limit < 1)
+            {
+                throw new IllegalArgumentException("MaxServerDownlinkBandwidth < 1");
+            }
+            else
+            {
+                builderMaxServerDownlinkBandwidth = limit;
+                return this;
+            }
+        }
+
+        /**
+         * Specify the maximum rate at which data can be sent from the server, per connection.
+         *
+         * <p>
+         * This method is used to configure a <code>GlobalChannelTrafficShapingHandler</code>.
+         * </p>
+         *
+         * @param limit is the maximum data-rate in bytes per second.
+         * @return this.
+         */
+        public Builder withMaxConnectionDownlinkBandwidth (final long limit)
+        {
+            if (limit < 1)
+            {
+                throw new IllegalArgumentException("MaxServerDownlinkBandwidth < 1");
+            }
+            else
+            {
+                builderMaxServerDownlinkBandwidth = limit;
+                return this;
+            }
+        }
+
+        /**
+         * Specify the maximum amount of time to pause excessive traffic.
+         *
+         * @param delay is the maximum amount of time to pause inbound data.
+         * @return this.
+         */
+        public Builder withMaxPauseTime (final Duration delay)
+        {
+            builderMaxPauseTime = Objects.requireNonNull(delay, "delay");
+            return this;
+        }
+
+        /**
          * Specify the maximum allowed length of any HTTP request.
          *
          * <p>
@@ -880,17 +1332,30 @@ public final class WebServer
          * @param timeout will limit how long the server spends reading a request.
          * @return this.
          */
-        public Builder withSlowReadTimeout (final Duration timeout)
+        public Builder withSlowUplinkTimeout (final Duration timeout)
         {
-            if (timeout == null)
-            {
-                throw new NullPointerException("SlowReadTimeout");
-            }
-            else
-            {
-                builderSlowReadTimeout = timeout;
-                return this;
-            }
+            builderSlowUplinkTimeout = Objects.requireNonNull(timeout, "timeout");
+            return this;
+        }
+
+        /**
+         * Specify the maximum amount of time that the web-server
+         * will wait for a HTTP response to be written to the socket.
+         *
+         * <p>
+         * This timeout is intended to help defend against slow download attacks.
+         * If the client maliciously reads an HTTP response at a slow data-rate,
+         * then this timeout will cause the connection to be closed automatically.
+         * </p>
+         *
+         * @param timeout will limit how long the server spends reading a request.
+         * @return this.
+         */
+        public Builder withSlowDownlinkTimeout (final Duration timeout)
+        {
+            builderSlowDownlinkTimeout = Objects.requireNonNull(timeout, "timeout");;
+            return this;
+
         }
 
         /**
@@ -906,15 +1371,8 @@ public final class WebServer
          */
         public Builder withResponseTimeout (final Duration timeout)
         {
-            if (timeout == null)
-            {
-                throw new NullPointerException("ResponseTimeout");
-            }
-            else
-            {
-                builderResponseTimeout = timeout;
-                return this;
-            }
+            builderResponseTimeout = Objects.requireNonNull(timeout, "timeout");
+            return this;
         }
 
         /**
@@ -930,15 +1388,8 @@ public final class WebServer
          */
         public Builder withConnectionTimeout (final Duration timeout)
         {
-            if (timeout == null)
-            {
-                throw new NullPointerException("ConnectionTimeout");
-            }
-            else
-            {
-                builderConnectionTimeout = timeout;
-                return this;
-            }
+            builderConnectionTimeout = Objects.requireNonNull(timeout, "timeout");
+            return this;
         }
 
         /**
@@ -964,30 +1415,26 @@ public final class WebServer
          */
         public Builder withPredicateAccept (final Predicate<web_m.HttpRequest> condition)
         {
-            if (condition == null)
-            {
-                throw new NullPointerException("condition");
-            }
-            else
-            {
-                final Precheck check = msg -> condition.test(msg) ? Precheck.Result.ACCEPT : Precheck.Result.FORWARD;
-                builderPrechecks.add(check);
-                return this;
-            }
+            Objects.requireNonNull(condition, "condition");
+            final Precheck check = msg -> condition.test(msg) ? Precheck.Result.ACCEPT : Precheck.Result.FORWARD;
+            builderPrechecks.add(check);
+            return this;
+
         }
 
         /**
          * Unconditionally reject any HTTP requests that reach this predicate.
          *
          * <p>
-         * Equivalent: <code>withPredicateReject(x -> true)</code>
+         * Equivalent: <code>withPredicateReject(status, x -> true)</code>
          * </p>
          *
+         * @param status is the HTTP status code to use upon rejection.
          * @return this.
          */
-        public Builder withPredicateReject ()
+        public Builder withPredicateReject (final int status)
         {
-            return withPredicateReject(x -> true);
+            return withPredicateReject(status, x -> true);
         }
 
         /**
@@ -995,25 +1442,56 @@ public final class WebServer
          * forwarding any non-matching requests to the next predicate in the rule chain.
          *
          * <p>
-         * If this limit is exceeded, then an HTTP (403) (Forbidden)
-         * response will be sent to the client automatically.
+         * If this predicate matches, then an HTTP response with the given
+         * status code will be sent to the client automatically.
+         * </p>
+         *
+         * @param status is the HTTP status code to use upon rejection.
+         * @param condition may cause the HTTP request to be rejected.
+         * @return this.
+         */
+        public Builder withPredicateReject (final int status,
+                                            final Predicate<web_m.HttpRequest> condition)
+        {
+            Objects.requireNonNull(condition, "condition");
+            final Precheck check = msg -> condition.test(msg) ? Precheck.Result.REJECT : Precheck.Result.FORWARD;
+            builderPrechecks.add(check);
+            return this;
+
+        }
+
+        /**
+         * Unconditionally reject any HTTP requests that reach this predicate.
+         *
+         * <p>
+         * Equivalent: <code>withPredicateDeny(x -> true)</code>
+         * </p>
+         *
+         * @return this.
+         */
+        public Builder withPredicateDeny ()
+        {
+            return withPredicateDeny(x -> true);
+        }
+
+        /**
+         * Conditionally reject HTTP requests that reach this predicate,
+         * forwarding any non-matching requests to the next predicate in the rule chain.
+         *
+         * <p>
+         * If this predicate matches, then the connection will be closed
+         * without sending any HTTP response to the client.
          * </p>
          *
          * @param condition may cause the HTTP request to be rejected.
          * @return this.
          */
-        public Builder withPredicateReject (final Predicate<web_m.HttpRequest> condition)
+        public Builder withPredicateDeny (final Predicate<web_m.HttpRequest> condition)
         {
-            if (condition == null)
-            {
-                throw new NullPointerException("condition");
-            }
-            else
-            {
-                final Precheck check = msg -> condition.test(msg) ? Precheck.Result.REJECT : Precheck.Result.FORWARD;
-                builderPrechecks.add(check);
-                return this;
-            }
+            Objects.requireNonNull(condition, "condition");
+            final Precheck check = msg -> condition.test(msg) ? Precheck.Result.DENY : Precheck.Result.FORWARD;
+            builderPrechecks.add(check);
+            return this;
         }
 
         /**
@@ -1041,65 +1519,100 @@ public final class WebServer
         }
 
         /**
+         * Specify the compression-level applied to the downlink,
+         * when the Accept-Encoding header allows compression.
+         *
+         * <p>
+         * See Also: <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpContentCompressor.html">HttpContentCompressor</a>
+         * </p>
+         *
+         * @param level is a value between zero (no compression) and nine (max compression).
+         * @return this.
+         */
+        public Builder withCompressionLevel (final int level)
+        {
+            this.builderCompressionLevel = level;
+            return this;
+        }
+
+        /**
+         * Specify the window-size setting used during downlink compression.
+         *
+         * <p>
+         * See Also: <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpContentCompressor.html">HttpContentCompressor</a>
+         * </p>
+         *
+         * @param count should be a value between nine (worse compression, less memory) and fifteen (better compression, more memory).
+         * @return this.
+         */
+        public Builder withCompressionWindowBits (final int count)
+        {
+            this.builderCompressionWindowBits = count;
+            return this;
+        }
+
+        /**
+         * Specify the memory-level setting used during downlink compression.
+         *
+         * <p>
+         * See Also: <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpContentCompressor.html">HttpContentCompressor</a>
+         * </p>
+         *
+         * @param level should be a value between one (worse compression, less memory) and nine (better compression, more memory).
+         * @return this.
+         */
+        public Builder withCompressionMemoryLevel (final int level)
+        {
+            this.builderCompressionMemoryLevel = level;
+            return this;
+        }
+
+        /**
          * Construct the web-server and start it up.
          *
          * @return the new web-server.
          */
         public WebServer build ()
         {
-            if (builderBindAddress == null)
-            {
-                throw new IllegalStateException("Required: Bind Address");
-            }
-            else if (builderPort == null)
-            {
-                throw new IllegalStateException("Required: Port");
-            }
-            else if (builderMaxMessagesPerRead == null)
-            {
-                throw new IllegalStateException("Required: Max Messages Per Second");
-            }
-            else if (builderRecvAllocatorInitial == null)
-            {
-                throw new IllegalStateException("Required: Recv Allocator");
-            }
-            else if (builderSoftConnectionLimit == null)
-            {
-                throw new IllegalStateException("Required: Soft Connection Limit");
-            }
-            else if (builderHardConnectionLimit == null)
-            {
-                throw new IllegalStateException("Required: Hard Connection Limit");
-            }
-            else if (builderMaxRequestSize == null)
-            {
-                throw new IllegalStateException("Required: Max Request Size");
-            }
-            else if (builderMaxInitialLineSize == null)
-            {
-                throw new IllegalStateException("Required: Max Initial Line Size");
-            }
-            else if (builderMaxHeaderSize == null)
-            {
-                throw new IllegalStateException("Required: Max Header Size");
-            }
-            else if (builderSlowReadTimeout == null)
-            {
-                throw new IllegalStateException("Required: Slow Read Timeout");
-            }
-            else if (builderResponseTimeout == null)
-            {
-                throw new IllegalStateException("Required: Response Timeout");
-            }
-            else if (builderConnectionTimeout == null)
-            {
-                throw new IllegalStateException("Required: Connection Timeout");
-            }
-            else
-            {
-                final WebServer server = new WebServer(this);
-                return server;
-            }
+            requireSetting("Server Logger", builderServerLogger);
+            requireSetting("Connection Logger", builderConnectionLogger);
+            requireSetting("Server Name", builderServerName);
+            requireSetting("Reply To", builderReplyTo);
+            requireSetting("Bind Address", builderBindAddress);
+            requireSetting("Port", builderPort);
+            requireSetting("Max Messages Per Read", builderMaxMessagesPerRead);
+            requireSetting("Recv Allocator Min", builderRecvAllocatorMin);
+            requireSetting("Recv Allocator Max", builderRecvAllocatorMax);
+            requireSetting("Recv Allocator Initial", builderRecvAllocatorInitial);
+            requireSetting("Soft Connection Limit", builderSoftConnectionLimit);
+            requireSetting("Hard Connection Limit", builderHardConnectionLimit);
+            requireSetting("Max Server Uplink Bandwidth", builderMaxServerUplinkBandwidth);
+            requireSetting("Max Server Downlink Bandwidth", builderMaxServerDownlinkBandwidth);
+            requireSetting("Max Connection Uplink Bandwidth", builderMaxConnectionUplinkBandwidth);
+            requireSetting("Max Connection Downlink Bandwidth", builderMaxConnectionDownlinkBandwidth);
+            requireSetting("Max Pause Time", builderMaxPauseTime);
+            requireSetting("Max Request Size", builderMaxRequestSize);
+            requireSetting("Max Initial Line Size", builderMaxInitialLineSize);
+            requireSetting("Max Header Size", builderMaxHeaderSize);
+            requireSetting("Compression Level", builderCompressionLevel);
+            requireSetting("Compression Window Bits", builderCompressionWindowBits);
+            requireSetting("Compression Memory Level", builderCompressionMemoryLevel);
+            requireSetting("Slow Uplink Timeout", builderSlowUplinkTimeout);
+            requireSetting("Slow Downlink Timeout", builderSlowDownlinkTimeout);
+            requireSetting("Response Timeout", builderResponseTimeout);
+            requireSetting("Connection Timeout", builderConnectionTimeout);
+
+            final WebServer server = new WebServer(this);
+            return server;
+        }
+    }
+
+    private static void requireSetting (final String name,
+                                        final Object value)
+    {
+        if (value == null)
+        {
+            throw new IllegalStateException("Required: " + name);
         }
     }
 }

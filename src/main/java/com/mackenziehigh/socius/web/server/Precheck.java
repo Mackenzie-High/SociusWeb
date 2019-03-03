@@ -29,9 +29,15 @@ interface Precheck
          */
         ACCEPT,
         /**
-         * Meaning: Reject the HTTP request, unconditionally.
+         * Meaning: Reject the HTTP request, unconditionally,
+         * by sending an HTTP Status 403 (Forbidden) response.
          */
         REJECT,
+        /**
+         * Meaning: Reject the HTTP request, unconditionally,
+         * by closing the connection without sending a response.
+         */
+        DENY,
         /**
          * Meaning: Forward the HTTP request to the next pre-check,
          * because this pre-check was unable to accept or deny the HTTP request.
