@@ -78,9 +78,11 @@ public final class WebServer
 
     public static final int DEFAULT_COMPRESSION_LEVEL = 6;
 
-    public static final int DEFAULT_WINDOW_BITS = 15;
+    public static final int DEFAULT_COMPRESSION_WINDOW_BITS = 15;
 
-    public static final int DEFAULT_MEMORY_LEVEL = 8;
+    public static final int DEFAULT_COMPRESSION_MEMORY_LEVEL = 8;
+
+    public static final int DEFAULT_COMPRESSION_THRESHOLD = 0; // Always Compress.
 
     public static final int DEFAULT_RECV_ALLOCATOR_MIN = 64;
 
@@ -165,6 +167,8 @@ public final class WebServer
 
     private final int compressionMemoryLevel;
 
+    private final int compressionThreshold;
+
     private final Duration SlowUplinkTimeout;
 
     private final Duration SlowDownlinkTimeout;
@@ -239,6 +243,7 @@ public final class WebServer
         this.compressionLevel = builder.builderCompressionLevel;
         this.compressionWindowBits = builder.builderCompressionWindowBits;
         this.compressionMemoryLevel = builder.builderCompressionMemoryLevel;
+        this.compressionThreshold = builder.builderCompressionThreshold;
         this.SlowDownlinkTimeout = builder.builderSlowDownlinkTimeout;
         this.SlowUplinkTimeout = builder.builderSlowUplinkTimeout;
         this.responseTimeout = builder.builderResponseTimeout;
@@ -573,6 +578,20 @@ public final class WebServer
     }
 
     /**
+     * Get the compression-threshold setting used during downlink compression.
+     *
+     * <p>
+     * See Also: <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpContentCompressor.html">HttpContentCompressor</a>
+     * </p>
+     *
+     * @return the memory-level of the compressor.
+     */
+    public int getCompressionThreshold ()
+    {
+        return compressionThreshold;
+    }
+
+    /**
      * Use this connection to receive HTTP Requests from this HTTP server.
      *
      * @return the connection.
@@ -804,9 +823,9 @@ public final class WebServer
      */
     public static final class Builder
     {
-        private ServerLogger builderServerLogger;
+        private ServerLogger builderServerLogger = ServerLoggers.newNullLogger();
 
-        private ConnectionLoggerFactory builderConnectionLogger;
+        private ConnectionLoggerFactory builderConnectionLogger = () -> ConnectionLoggers.newNullLogger();
 
         private String builderServerName = "";
 
@@ -850,6 +869,8 @@ public final class WebServer
 
         private Integer builderCompressionMemoryLevel;
 
+        private Integer builderCompressionThreshold;
+
         private Duration builderSlowUplinkTimeout;
 
         private Duration builderSlowDownlinkTimeout;
@@ -858,7 +879,7 @@ public final class WebServer
 
         private Duration builderConnectionTimeout;
 
-        private Boolean builderShutdownHook;
+        private boolean builderShutdownHook = false;
 
         private final List<Precheck> builderPrechecks = new LinkedList<>();
 
@@ -876,8 +897,8 @@ public final class WebServer
          */
         public Builder withDefaultSettings ()
         {
-            this.withServerLogger(null); // TODO
-            this.withConnectionLogger(null); // TODO
+            this.withServerLogger(ServerLoggers.newNullLogger());
+            this.withConnectionLogger(() -> ConnectionLoggers.newNullLogger());
             this.withServerName(DEFAULT_SERVER_NAME);
             this.withReplyTo(DEFAULT_REPLY_TO);
             this.withBindAddress(DEFAULT_BIND_ADDRESS);
@@ -895,8 +916,9 @@ public final class WebServer
             this.withMaxInitialLineSize(DEFAULT_MAX_INITIAL_LINE_SIZE);
             this.withMaxHeaderSize(DEFAULT_MAX_HEADER_SIZE);
             this.withCompressionLevel(DEFAULT_COMPRESSION_LEVEL);
-            this.withCompressionWindowBits(DEFAULT_WINDOW_BITS);
-            this.withCompressionMemoryLevel(DEFAULT_MEMORY_LEVEL);
+            this.withCompressionWindowBits(DEFAULT_COMPRESSION_WINDOW_BITS);
+            this.withCompressionMemoryLevel(DEFAULT_COMPRESSION_MEMORY_LEVEL);
+            this.withCompressionThreshold(DEFAULT_COMPRESSION_THRESHOLD);
             this.withSlowUplinkTimeout(DEFAULT_SLOW_UPLINK_TIMEOUT);
             this.withSlowDownlinkTimeout(DEFAULT_SLOW_DOWNLINK_TIMEOUT);
             this.withResponseTimeout(DEFAULT_RESPONSE_TIMEOUT);
@@ -1223,7 +1245,7 @@ public final class WebServer
             }
             else
             {
-                builderMaxServerDownlinkBandwidth = limit;
+                builderMaxConnectionDownlinkBandwidth = limit;
                 return this;
             }
         }
@@ -1568,6 +1590,22 @@ public final class WebServer
         }
 
         /**
+         * Specify the memory-level setting used during downlink compression.
+         *
+         * <p>
+         * See Also: <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpContentCompressor.html">HttpContentCompressor</a>
+         * </p>
+         *
+         * @param size is the minimum size a response must be in order for compression to be applied.
+         * @return this.
+         */
+        public Builder withCompressionThreshold (final int size)
+        {
+            this.builderCompressionThreshold = size;
+            return this;
+        }
+
+        /**
          * Construct the web-server and start it up.
          *
          * @return the new web-server.
@@ -1597,6 +1635,7 @@ public final class WebServer
             requireSetting("Compression Level", builderCompressionLevel);
             requireSetting("Compression Window Bits", builderCompressionWindowBits);
             requireSetting("Compression Memory Level", builderCompressionMemoryLevel);
+            requireSetting("Compression Threshold", builderCompressionThreshold);
             requireSetting("Slow Uplink Timeout", builderSlowUplinkTimeout);
             requireSetting("Slow Downlink Timeout", builderSlowDownlinkTimeout);
             requireSetting("Response Timeout", builderResponseTimeout);
