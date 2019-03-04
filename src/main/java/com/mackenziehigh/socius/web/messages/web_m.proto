@@ -69,69 +69,79 @@ message ServerSideHttpRequest
     optional uint64 timestamp = 7;
 
     /**
+     * The IP address and port of the remote client.
+     */
+    optional RemoteAddress remoteAddress = 8;
+
+    /**
+     * The IP address and port of the local server.
+     */
+    optional LocalAddress localAddress = 9;
+
+    /**
      * Request Protocol.
      */
-    optional HttpProtocol protocol = 8;
+    optional HttpProtocol protocol = 10;
 
     /**
      * HTTP Verb of the request (GET/POST/etc).
      */
-    optional string method = 9;
+    optional string method = 11;
 
     /**
      * Requested URI.
      */
-    optional string uri = 10;
+    optional string uri = 12;
 
     /**
      * Requested Path of URI.
      */
-    optional string path = 11;
+    optional string path = 13;
 
     /**
      * Raw Requested Path of URI.
      */
-    optional string rawPath = 12;
+    optional string rawPath = 14;
 
     /**
      * Raw Query String.
      */
-    optional string rawQuery = 13;
+    optional string rawQuery = 15;
 
     /**
      * Query Parameters.
      */
-    map<string, HttpQueryParameter> parameters = 14;
+    map<string, HttpQueryParameter> parameters = 16;
 
     /**
      * HTTP Headers.
      */
-    map<string, HttpHeader> headers = 15;
+    map<string, HttpHeader> headers = 17;
 
     /**
      * Client Host.
      */
-    optional string host = 16;
+    optional string host = 18;
 
     /**
      * MIME Type of the body.
      */
-    optional string contentType = 17;
+    optional string contentType = 19;
 
     /**
      * Length of the body.
      */
-    optional int32 contentLength = 18;
+    optional int32 contentLength = 20;
 
     /**
      * Body of the request.
      */
-    optional bytes body = 19;
+    optional bytes body = 21;
 
     /**
      * Trailing HTTP Headers.
      */
-    map<string, HttpHeader> trailers = 20;
+    map<string, HttpHeader> trailers = 22;
 }
 
 /**
@@ -182,6 +192,38 @@ message ServerSideHttpResponse
      * Body of the response.
      */
     optional bytes body = 8;
+}
+
+/**
+ * Remote Address.
+ */
+message RemoteAddress
+{
+    /**
+     * This is the host-name in textual form.
+     */
+    optional string host = 1;
+
+    /**
+     * This is the port number.
+     */
+    optional int32 port = 3;
+}
+
+/**
+ * Local Address.
+ */
+message LocalAddress
+{
+    /**
+     * This is the host-name in textual form.
+     */
+    optional string host = 1;
+
+    /**
+     * This is the port number.
+     */
+    optional int32 port = 3;
 }
 
 /**

@@ -15,7 +15,6 @@
  */
 package com.mackenziehigh.socius.web.server;
 
-import com.google.common.collect.ImmutableList;
 import com.mackenziehigh.cascade.Cascade;
 import com.mackenziehigh.cascade.Cascade.Stage;
 import com.mackenziehigh.cascade.Cascade.Stage.Actor.Input;
@@ -47,13 +46,12 @@ import io.netty.handler.codec.http.HttpResponseEncoder;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.traffic.GlobalChannelTrafficShapingHandler;
 import java.io.Closeable;
+import java.net.InetSocketAddress;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -187,7 +185,7 @@ public final class WebServer
 
     private final boolean hasShutdownHook;
 
-    private final ImmutableList<Precheck> prechecks;
+    private final Precheck prechecks;
 
     private final ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
 
@@ -220,6 +218,8 @@ public final class WebServer
      * A reference to this object is needed in order to be able to stop the server.
      */
     private volatile ChannelFuture shutdownHook;
+
+    private final Initializer initializer;
 
     /**
      * Sole Constructor.
@@ -257,7 +257,7 @@ public final class WebServer
         this.responseTimeout = builder.builderResponseTimeout;
         this.connectionTimeout = builder.builderConnectionTimeout;
         this.hasShutdownHook = builder.builderShutdownHook;
-        this.prechecks = ImmutableList.copyOf(new CopyOnWriteArrayList<>(builder.builderPrechecks));
+        this.prechecks = Precheck.compose(builder.builderPrechecks, Precheck.deny());
 
         this.recvBufferAllocator = new AdaptiveRecvByteBufAllocator(recvAllocatorMin, recvAllocatorInitial, recvAllocatorMax);
         this.recvBufferAllocator.maxMessagesPerRead(maxMessagesPerRead);
@@ -271,6 +271,7 @@ public final class WebServer
                                                                             maxPauseTime.toMillis());
 
         this.translator = new Translator(serverName, serverId, replyTo);
+        this.initializer = new Initializer();
     }
 
     private ServerLogger serverLogger ()
@@ -279,14 +280,23 @@ public final class WebServer
     }
 
     /**
+     * Expose the initializer to simplify unit-testing.
+     *
+     * @return the initializer that initializes each channel.
+     */
+    final Initializer initializer ()
+    {
+        return initializer;
+    }
+
+    /**
      * Get the current state of the sequence-number generator.
      *
-     * @return the current sequence-number.
+     * @return the number of translated requests, thus far.
      */
     public long getSequenceCount ()
     {
-        // TODO
-        return 0;
+        return translator.sequenceCount();
     }
 
     /**
@@ -736,10 +746,6 @@ public final class WebServer
     private final class Initializer
             extends ChannelInitializer<SocketChannel>
     {
-        // TODO: What if the factory throws an exception?
-        // TODO: This field is not channel specific!!!!!
-        private final ConnectionLogger channelLogger = ConnectionLoggers.newSafeLogger(connectionLogger.newConnectionLogger());
-
         /**
          * If this handler receives a message before the timeout expires,
          * then the message will be forwarded to the rest of the pipeline;
@@ -806,11 +812,21 @@ public final class WebServer
         }
 
         /**
-         * An decoder that translates Netty-based HTTP requests to GPB-based HTTP requests.
+         *
          */
-        private final class TranslationDecoder
+        private final class Prechecker
                 extends MessageToMessageDecoder<FullHttpRequest>
         {
+            private final InetSocketAddress remoteAddress;
+
+            private final InetSocketAddress localAddress;
+
+            public Prechecker (final InetSocketAddress remoteAddress,
+                               final InetSocketAddress localAddress)
+            {
+                this.remoteAddress = remoteAddress;
+                this.localAddress = localAddress;
+            }
 
             @Override
             protected void decode (final ChannelHandlerContext ctx,
@@ -819,12 +835,67 @@ public final class WebServer
             {
                 try
                 {
-                    final ServerSideHttpRequest request = translator.requestToGPB(msg);
+                    /**
+                     * Convert the Netty-based request to a GPB-based request.
+                     * Some parts of the request will be omitted,
+                     * as they are not needed at this stage.
+                     */
+                    final ServerSideHttpRequest prefix = translator.prefixOf(remoteAddress, localAddress, msg);
+
+                    final Precheck.Decision decision = prechecks.check(prefix);
+
+                    if (decision.type == Precheck.DecisionType.ACCEPT)
+                    {
+                        out.add(msg);
+                    }
+                    else if (decision.type == Precheck.DecisionType.REJECT)
+                    {
+                        sendErrorAndClose(ctx.channel(), decision.statusCode);
+                    }
+                    else // DENY, FORWARD never occurs.
+                    {
+                        closeWithNoResponse(ctx.channel());
+                    }
+                }
+                catch (Throwable e)
+                {
+                    serverLogger.onException(e); // TODO: channel logger
+                    closeWithNoResponse(ctx.channel());
+                }
+            }
+        }
+
+        /**
+         * An decoder that translates Netty-based HTTP requests to GPB-based HTTP requests.
+         */
+        private final class TranslationDecoder
+                extends MessageToMessageDecoder<FullHttpRequest>
+        {
+
+            private final InetSocketAddress remoteAddress;
+
+            private final InetSocketAddress localAddress;
+
+            public TranslationDecoder (final InetSocketAddress remoteAddress,
+                                       final InetSocketAddress localAddress)
+            {
+                this.remoteAddress = remoteAddress;
+                this.localAddress = localAddress;
+            }
+
+            @Override
+            protected void decode (final ChannelHandlerContext ctx,
+                                   final FullHttpRequest msg,
+                                   final List<Object> out)
+            {
+                try
+                {
+                    final ServerSideHttpRequest request = translator.requestToGPB(remoteAddress, localAddress, msg);
                     out.add(request);
                 }
                 catch (Throwable e)
                 {
-                    sendErrorAndClose(ctx.channel(), HttpResponseStatus.BAD_REQUEST);
+                    sendErrorAndClose(ctx.channel(), HttpResponseStatus.BAD_REQUEST.code());
                 }
             }
         }
@@ -848,7 +919,7 @@ public final class WebServer
                 }
                 catch (Throwable ex)
                 {
-                    sendErrorAndClose(ctx.channel(), HttpResponseStatus.INTERNAL_SERVER_ERROR);
+                    sendErrorAndClose(ctx.channel(), HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
                 }
             }
         }
@@ -856,6 +927,8 @@ public final class WebServer
         @Override
         protected void initChannel (final SocketChannel channel)
         {
+            final ConnectionLogger channelLogger = ConnectionLoggers.newSafeLogger(connectionLogger.newConnectionLogger());
+
             /**
              * Configure the connection-specific logger.
              */
@@ -865,7 +938,7 @@ public final class WebServer
             /**
              * The logger, etc, will need to be notified when the connection closes.
              */
-            channel.closeFuture().addListener(x -> onClose());
+            channel.closeFuture().addListener(x -> onClose(channelLogger));
 
             /**
              * Keep track of how many connections are open.
@@ -1017,7 +1090,7 @@ public final class WebServer
              * Downlink Input: Pass-through.
              * Downlink Output: Pass-through.
              */
-            channel.pipeline().addLast(new Prechecker(translator, prechecks));
+            channel.pipeline().addLast(new Prechecker(channel.remoteAddress(), channel.localAddress()));
 
             /**
              * The HTTP Object Aggregator will convert a stream of incoming HTTP Request, HTTP Content,
@@ -1064,7 +1137,7 @@ public final class WebServer
              * Downlink Input: Pass-through.
              * Downlink Output: Pass-through.
              */
-            channel.pipeline().addLast(new TranslationDecoder());
+            channel.pipeline().addLast(new TranslationDecoder(channel.remoteAddress(), channel.localAddress()));
 
             /**
              * The Translation Encoder converts a Socius GPB-based HTTP Response object
@@ -1134,13 +1207,13 @@ public final class WebServer
             if (connectionNumber >= softConnectionLimit)
             {
                 // TODO: log it
-                sendErrorAndClose(channel, HttpResponseStatus.INTERNAL_SERVER_ERROR);
+                sendErrorAndClose(channel, HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
                 return;
             }
         }
 
         private void sendErrorAndClose (final Channel channel,
-                                        final HttpResponseStatus status)
+                                        final int status)
         {
             final ServerSideHttpResponse response = Translator.newErrorResponseGPB(status);
             channel.writeAndFlush(response);
@@ -1152,10 +1225,10 @@ public final class WebServer
             channel.close();
         }
 
-        private void onClose ()
+        private void onClose (final ConnectionLogger logger)
         {
             connectionCount.decrementAndGet();
-            channelLogger.onDisconnect();
+            logger.onDisconnect();
         }
     }
 
@@ -1244,7 +1317,7 @@ public final class WebServer
 
         private boolean builderShutdownHook = false;
 
-        private final List<Precheck> builderPrechecks = new LinkedList<>();
+        private Precheck builderPrechecks = Precheck.forward();
 
         private Builder ()
         {
@@ -1717,7 +1790,7 @@ public final class WebServer
          */
         public Builder withSlowDownlinkTimeout (final Duration timeout)
         {
-            builderSlowDownlinkTimeout = Objects.requireNonNull(timeout, "timeout");;
+            builderSlowDownlinkTimeout = Objects.requireNonNull(timeout, "timeout");
             return this;
 
         }
@@ -1777,11 +1850,10 @@ public final class WebServer
          * @param condition may cause the HTTP request to be accepted.
          * @return this.
          */
-        public Builder withPredicateAccept (final Predicate<web_m.ServerSideHttpRequest> condition)
+        public Builder withPredicateAccept (final Predicate<ServerSideHttpRequest> condition)
         {
             Objects.requireNonNull(condition, "condition");
-            final Precheck check = msg -> condition.test(msg) ? Precheck.Result.ACCEPT : Precheck.Result.FORWARD;
-            builderPrechecks.add(check);
+            builderPrechecks = Precheck.compose(builderPrechecks, Precheck.accept(condition));
             return this;
 
         }
@@ -1818,8 +1890,7 @@ public final class WebServer
                                             final Predicate<web_m.ServerSideHttpRequest> condition)
         {
             Objects.requireNonNull(condition, "condition");
-            final Precheck check = msg -> condition.test(msg) ? Precheck.Result.REJECT : Precheck.Result.FORWARD;
-            builderPrechecks.add(check);
+            builderPrechecks = Precheck.compose(builderPrechecks, Precheck.reject(condition, status));
             return this;
 
         }
@@ -1853,8 +1924,7 @@ public final class WebServer
         public Builder withPredicateDeny (final Predicate<web_m.ServerSideHttpRequest> condition)
         {
             Objects.requireNonNull(condition, "condition");
-            final Precheck check = msg -> condition.test(msg) ? Precheck.Result.DENY : Precheck.Result.FORWARD;
-            builderPrechecks.add(check);
+            builderPrechecks = Precheck.compose(builderPrechecks, Precheck.deny(condition));
             return this;
         }
 

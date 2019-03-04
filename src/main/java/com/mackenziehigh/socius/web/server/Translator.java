@@ -28,6 +28,7 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_0;
 import io.netty.handler.codec.http.QueryStringDecoder;
+import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
@@ -59,30 +60,48 @@ final class Translator
     }
 
     /**
+     * Getter.
+     *
+     * @return the current value of the sequence-counter.
+     */
+    public long sequenceCount ()
+    {
+        return sequenceCount.get();
+    }
+
+    /**
      * Translate a Netty-based request to a GPB-based request,
      * for use in the pre-check handlers, with certain parts
      * of the request are omitted, such as the entity.
      *
+     * @param clientAddress is the remote-address of the client.
+     * @param serverAddress is the local-address of the server.
      * @param request is a Netty-based request.
      * @return the partial GPB-based request.
      */
-    public web_m.ServerSideHttpRequest prefixOf (final HttpRequest request)
+    public web_m.ServerSideHttpRequest prefixOf (final InetSocketAddress clientAddress,
+                                                 final InetSocketAddress serverAddress,
+                                                 final HttpRequest request)
     {
         Objects.requireNonNull(request, "request");
-        return commonPrefix(request).build();
+        return commonPrefix(clientAddress, serverAddress, request).build();
     }
 
     /**
      * Translate a Netty-based request to a GPB-based request.
      *
+     * @param clientAddress is the remote-address of the client.
+     * @param serverAddress is the local-address of the server.
      * @param request is a Netty-based request.
      * @return the complete GPB-based request.
      */
-    public web_m.ServerSideHttpRequest requestToGPB (final FullHttpRequest request)
+    public web_m.ServerSideHttpRequest requestToGPB (final InetSocketAddress clientAddress,
+                                                     final InetSocketAddress serverAddress,
+                                                     final FullHttpRequest request)
     {
         Objects.requireNonNull(request, "request");
 
-        final web_m.ServerSideHttpRequest.Builder builder = commonPrefix(request);
+        final web_m.ServerSideHttpRequest.Builder builder = commonPrefix(clientAddress, serverAddress, request);
 
         /**
          * Sequence Number.
@@ -134,7 +153,9 @@ final class Translator
         return builder.build();
     }
 
-    private web_m.ServerSideHttpRequest.Builder commonPrefix (final io.netty.handler.codec.http.HttpRequest request)
+    private web_m.ServerSideHttpRequest.Builder commonPrefix (final InetSocketAddress clientAddress,
+                                                              final InetSocketAddress serverAddress,
+                                                              final HttpRequest request)
     {
         final web_m.ServerSideHttpRequest.Builder builder = web_m.ServerSideHttpRequest.newBuilder();
 
@@ -152,6 +173,26 @@ final class Translator
          * Timestamp.
          */
         builder.setTimestamp(System.currentTimeMillis());
+
+        /**
+         * Remote Address.
+         */
+        final web_m.RemoteAddress remoteAddress = web_m.RemoteAddress.newBuilder()
+                .setHost(clientAddress.getHostString())
+                .setPort(clientAddress.getPort())
+                .build();
+
+        builder.setRemoteAddress(remoteAddress);
+
+        /**
+         * Remote Address.
+         */
+        final web_m.LocalAddress localAddress = web_m.LocalAddress.newBuilder()
+                .setHost(serverAddress.getHostString())
+                .setPort(serverAddress.getPort())
+                .build();
+
+        builder.setLocalAddress(localAddress);
 
         /**
          * HTTP Protocol.
@@ -345,6 +386,7 @@ final class Translator
         final FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_0, status, content);
         response.headers().set("connection", "close");
         response.headers().set("content-type", "text/html");
+        response.headers().set("content-length", message.length());
         return response;
     }
 
@@ -359,15 +401,15 @@ final class Translator
      * @param status is the HTTP error-code.
      * @return the Netty-based response object.
      */
-    public static web_m.ServerSideHttpResponse newErrorResponseGPB (final HttpResponseStatus status)
+    public static web_m.ServerSideHttpResponse newErrorResponseGPB (final int status)
     {
-        final String message = "<head> <meta http-equiv=\"refresh\" content=\"5; URL=\"/" + status.code() + ".html\" /> </head>\r\n";
+        final String message = "<head> <meta http-equiv=\"refresh\" content=\"5; URL=\"/" + status + ".html\" /> </head>\r\n";
 
         final web_m.ServerSideHttpResponse response = web_m.ServerSideHttpResponse.newBuilder()
                 .addHeaders(web_m.HttpHeader.newBuilder().setKey("connection").addValues("close"))
                 .setContentType("text/html")
                 .setTimestamp(System.currentTimeMillis())
-                .setStatus(status.code())
+                .setStatus(status)
                 .setBody(ByteString.copyFromUtf8(message))
                 .build();
 

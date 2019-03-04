@@ -235,10 +235,66 @@ public final class web_m {
     /**
      * <pre>
      **
+     * The IP address and port of the remote client.
+     * </pre>
+     *
+     * <code>optional .com.mackenziehigh.socius.web.messages.RemoteAddress remoteAddress = 8;</code>
+     */
+    boolean hasRemoteAddress();
+    /**
+     * <pre>
+     **
+     * The IP address and port of the remote client.
+     * </pre>
+     *
+     * <code>optional .com.mackenziehigh.socius.web.messages.RemoteAddress remoteAddress = 8;</code>
+     */
+    com.mackenziehigh.socius.web.messages.web_m.RemoteAddress getRemoteAddress();
+    /**
+     * <pre>
+     **
+     * The IP address and port of the remote client.
+     * </pre>
+     *
+     * <code>optional .com.mackenziehigh.socius.web.messages.RemoteAddress remoteAddress = 8;</code>
+     */
+    com.mackenziehigh.socius.web.messages.web_m.RemoteAddressOrBuilder getRemoteAddressOrBuilder();
+
+    /**
+     * <pre>
+     **
+     * The IP address and port of the local server.
+     * </pre>
+     *
+     * <code>optional .com.mackenziehigh.socius.web.messages.LocalAddress localAddress = 9;</code>
+     */
+    boolean hasLocalAddress();
+    /**
+     * <pre>
+     **
+     * The IP address and port of the local server.
+     * </pre>
+     *
+     * <code>optional .com.mackenziehigh.socius.web.messages.LocalAddress localAddress = 9;</code>
+     */
+    com.mackenziehigh.socius.web.messages.web_m.LocalAddress getLocalAddress();
+    /**
+     * <pre>
+     **
+     * The IP address and port of the local server.
+     * </pre>
+     *
+     * <code>optional .com.mackenziehigh.socius.web.messages.LocalAddress localAddress = 9;</code>
+     */
+    com.mackenziehigh.socius.web.messages.web_m.LocalAddressOrBuilder getLocalAddressOrBuilder();
+
+    /**
+     * <pre>
+     **
      * Request Protocol.
      * </pre>
      *
-     * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 8;</code>
+     * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 10;</code>
      */
     boolean hasProtocol();
     /**
@@ -247,7 +303,7 @@ public final class web_m {
      * Request Protocol.
      * </pre>
      *
-     * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 8;</code>
+     * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 10;</code>
      */
     com.mackenziehigh.socius.web.messages.web_m.HttpProtocol getProtocol();
     /**
@@ -256,7 +312,7 @@ public final class web_m {
      * Request Protocol.
      * </pre>
      *
-     * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 8;</code>
+     * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 10;</code>
      */
     com.mackenziehigh.socius.web.messages.web_m.HttpProtocolOrBuilder getProtocolOrBuilder();
 
@@ -266,7 +322,7 @@ public final class web_m {
      * HTTP Verb of the request (GET/POST/etc).
      * </pre>
      *
-     * <code>optional string method = 9;</code>
+     * <code>optional string method = 11;</code>
      */
     boolean hasMethod();
     /**
@@ -275,7 +331,7 @@ public final class web_m {
      * HTTP Verb of the request (GET/POST/etc).
      * </pre>
      *
-     * <code>optional string method = 9;</code>
+     * <code>optional string method = 11;</code>
      */
     java.lang.String getMethod();
     /**
@@ -284,7 +340,7 @@ public final class web_m {
      * HTTP Verb of the request (GET/POST/etc).
      * </pre>
      *
-     * <code>optional string method = 9;</code>
+     * <code>optional string method = 11;</code>
      */
     com.google.protobuf.ByteString
         getMethodBytes();
@@ -295,7 +351,7 @@ public final class web_m {
      * Requested URI.
      * </pre>
      *
-     * <code>optional string uri = 10;</code>
+     * <code>optional string uri = 12;</code>
      */
     boolean hasUri();
     /**
@@ -304,7 +360,7 @@ public final class web_m {
      * Requested URI.
      * </pre>
      *
-     * <code>optional string uri = 10;</code>
+     * <code>optional string uri = 12;</code>
      */
     java.lang.String getUri();
     /**
@@ -313,7 +369,7 @@ public final class web_m {
      * Requested URI.
      * </pre>
      *
-     * <code>optional string uri = 10;</code>
+     * <code>optional string uri = 12;</code>
      */
     com.google.protobuf.ByteString
         getUriBytes();
@@ -324,7 +380,7 @@ public final class web_m {
      * Requested Path of URI.
      * </pre>
      *
-     * <code>optional string path = 11;</code>
+     * <code>optional string path = 13;</code>
      */
     boolean hasPath();
     /**
@@ -333,7 +389,7 @@ public final class web_m {
      * Requested Path of URI.
      * </pre>
      *
-     * <code>optional string path = 11;</code>
+     * <code>optional string path = 13;</code>
      */
     java.lang.String getPath();
     /**
@@ -342,7 +398,7 @@ public final class web_m {
      * Requested Path of URI.
      * </pre>
      *
-     * <code>optional string path = 11;</code>
+     * <code>optional string path = 13;</code>
      */
     com.google.protobuf.ByteString
         getPathBytes();
@@ -353,7 +409,7 @@ public final class web_m {
      * Raw Requested Path of URI.
      * </pre>
      *
-     * <code>optional string rawPath = 12;</code>
+     * <code>optional string rawPath = 14;</code>
      */
     boolean hasRawPath();
     /**
@@ -362,7 +418,7 @@ public final class web_m {
      * Raw Requested Path of URI.
      * </pre>
      *
-     * <code>optional string rawPath = 12;</code>
+     * <code>optional string rawPath = 14;</code>
      */
     java.lang.String getRawPath();
     /**
@@ -371,7 +427,7 @@ public final class web_m {
      * Raw Requested Path of URI.
      * </pre>
      *
-     * <code>optional string rawPath = 12;</code>
+     * <code>optional string rawPath = 14;</code>
      */
     com.google.protobuf.ByteString
         getRawPathBytes();
@@ -382,7 +438,7 @@ public final class web_m {
      * Raw Query String.
      * </pre>
      *
-     * <code>optional string rawQuery = 13;</code>
+     * <code>optional string rawQuery = 15;</code>
      */
     boolean hasRawQuery();
     /**
@@ -391,7 +447,7 @@ public final class web_m {
      * Raw Query String.
      * </pre>
      *
-     * <code>optional string rawQuery = 13;</code>
+     * <code>optional string rawQuery = 15;</code>
      */
     java.lang.String getRawQuery();
     /**
@@ -400,7 +456,7 @@ public final class web_m {
      * Raw Query String.
      * </pre>
      *
-     * <code>optional string rawQuery = 13;</code>
+     * <code>optional string rawQuery = 15;</code>
      */
     com.google.protobuf.ByteString
         getRawQueryBytes();
@@ -411,7 +467,7 @@ public final class web_m {
      * Query Parameters.
      * </pre>
      *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 14;</code>
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 16;</code>
      */
     int getParametersCount();
     /**
@@ -420,7 +476,7 @@ public final class web_m {
      * Query Parameters.
      * </pre>
      *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 14;</code>
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 16;</code>
      */
     boolean containsParameters(
         java.lang.String key);
@@ -436,7 +492,7 @@ public final class web_m {
      * Query Parameters.
      * </pre>
      *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 14;</code>
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 16;</code>
      */
     java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter>
     getParametersMap();
@@ -446,7 +502,7 @@ public final class web_m {
      * Query Parameters.
      * </pre>
      *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 14;</code>
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 16;</code>
      */
 
     com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter getParametersOrDefault(
@@ -458,7 +514,7 @@ public final class web_m {
      * Query Parameters.
      * </pre>
      *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 14;</code>
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 16;</code>
      */
 
     com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter getParametersOrThrow(
@@ -470,7 +526,7 @@ public final class web_m {
      * HTTP Headers.
      * </pre>
      *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 15;</code>
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 17;</code>
      */
     int getHeadersCount();
     /**
@@ -479,7 +535,7 @@ public final class web_m {
      * HTTP Headers.
      * </pre>
      *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 15;</code>
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 17;</code>
      */
     boolean containsHeaders(
         java.lang.String key);
@@ -495,7 +551,7 @@ public final class web_m {
      * HTTP Headers.
      * </pre>
      *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 15;</code>
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 17;</code>
      */
     java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>
     getHeadersMap();
@@ -505,7 +561,7 @@ public final class web_m {
      * HTTP Headers.
      * </pre>
      *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 15;</code>
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 17;</code>
      */
 
     com.mackenziehigh.socius.web.messages.web_m.HttpHeader getHeadersOrDefault(
@@ -517,7 +573,7 @@ public final class web_m {
      * HTTP Headers.
      * </pre>
      *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 15;</code>
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 17;</code>
      */
 
     com.mackenziehigh.socius.web.messages.web_m.HttpHeader getHeadersOrThrow(
@@ -529,7 +585,7 @@ public final class web_m {
      * Client Host.
      * </pre>
      *
-     * <code>optional string host = 16;</code>
+     * <code>optional string host = 18;</code>
      */
     boolean hasHost();
     /**
@@ -538,7 +594,7 @@ public final class web_m {
      * Client Host.
      * </pre>
      *
-     * <code>optional string host = 16;</code>
+     * <code>optional string host = 18;</code>
      */
     java.lang.String getHost();
     /**
@@ -547,7 +603,7 @@ public final class web_m {
      * Client Host.
      * </pre>
      *
-     * <code>optional string host = 16;</code>
+     * <code>optional string host = 18;</code>
      */
     com.google.protobuf.ByteString
         getHostBytes();
@@ -558,7 +614,7 @@ public final class web_m {
      * MIME Type of the body.
      * </pre>
      *
-     * <code>optional string contentType = 17;</code>
+     * <code>optional string contentType = 19;</code>
      */
     boolean hasContentType();
     /**
@@ -567,7 +623,7 @@ public final class web_m {
      * MIME Type of the body.
      * </pre>
      *
-     * <code>optional string contentType = 17;</code>
+     * <code>optional string contentType = 19;</code>
      */
     java.lang.String getContentType();
     /**
@@ -576,7 +632,7 @@ public final class web_m {
      * MIME Type of the body.
      * </pre>
      *
-     * <code>optional string contentType = 17;</code>
+     * <code>optional string contentType = 19;</code>
      */
     com.google.protobuf.ByteString
         getContentTypeBytes();
@@ -587,7 +643,7 @@ public final class web_m {
      * Length of the body.
      * </pre>
      *
-     * <code>optional int32 contentLength = 18;</code>
+     * <code>optional int32 contentLength = 20;</code>
      */
     boolean hasContentLength();
     /**
@@ -596,7 +652,7 @@ public final class web_m {
      * Length of the body.
      * </pre>
      *
-     * <code>optional int32 contentLength = 18;</code>
+     * <code>optional int32 contentLength = 20;</code>
      */
     int getContentLength();
 
@@ -606,7 +662,7 @@ public final class web_m {
      * Body of the request.
      * </pre>
      *
-     * <code>optional bytes body = 19;</code>
+     * <code>optional bytes body = 21;</code>
      */
     boolean hasBody();
     /**
@@ -615,7 +671,7 @@ public final class web_m {
      * Body of the request.
      * </pre>
      *
-     * <code>optional bytes body = 19;</code>
+     * <code>optional bytes body = 21;</code>
      */
     com.google.protobuf.ByteString getBody();
 
@@ -625,7 +681,7 @@ public final class web_m {
      * Trailing HTTP Headers.
      * </pre>
      *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 20;</code>
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 22;</code>
      */
     int getTrailersCount();
     /**
@@ -634,7 +690,7 @@ public final class web_m {
      * Trailing HTTP Headers.
      * </pre>
      *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 20;</code>
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 22;</code>
      */
     boolean containsTrailers(
         java.lang.String key);
@@ -650,7 +706,7 @@ public final class web_m {
      * Trailing HTTP Headers.
      * </pre>
      *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 20;</code>
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 22;</code>
      */
     java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>
     getTrailersMap();
@@ -660,7 +716,7 @@ public final class web_m {
      * Trailing HTTP Headers.
      * </pre>
      *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 20;</code>
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 22;</code>
      */
 
     com.mackenziehigh.socius.web.messages.web_m.HttpHeader getTrailersOrDefault(
@@ -672,7 +728,7 @@ public final class web_m {
      * Trailing HTTP Headers.
      * </pre>
      *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 20;</code>
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 22;</code>
      */
 
     com.mackenziehigh.socius.web.messages.web_m.HttpHeader getTrailersOrThrow(
@@ -785,8 +841,34 @@ public final class web_m {
               break;
             }
             case 66: {
-              com.mackenziehigh.socius.web.messages.web_m.HttpProtocol.Builder subBuilder = null;
+              com.mackenziehigh.socius.web.messages.web_m.RemoteAddress.Builder subBuilder = null;
               if (((bitField0_ & 0x00000040) == 0x00000040)) {
+                subBuilder = remoteAddress_.toBuilder();
+              }
+              remoteAddress_ = input.readMessage(com.mackenziehigh.socius.web.messages.web_m.RemoteAddress.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(remoteAddress_);
+                remoteAddress_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000040;
+              break;
+            }
+            case 74: {
+              com.mackenziehigh.socius.web.messages.web_m.LocalAddress.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000080) == 0x00000080)) {
+                subBuilder = localAddress_.toBuilder();
+              }
+              localAddress_ = input.readMessage(com.mackenziehigh.socius.web.messages.web_m.LocalAddress.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(localAddress_);
+                localAddress_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000080;
+              break;
+            }
+            case 82: {
+              com.mackenziehigh.socius.web.messages.web_m.HttpProtocol.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000100) == 0x00000100)) {
                 subBuilder = protocol_.toBuilder();
               }
               protocol_ = input.readMessage(com.mackenziehigh.socius.web.messages.web_m.HttpProtocol.PARSER, extensionRegistry);
@@ -794,44 +876,44 @@ public final class web_m {
                 subBuilder.mergeFrom(protocol_);
                 protocol_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000040;
-              break;
-            }
-            case 74: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000080;
-              method_ = bs;
-              break;
-            }
-            case 82: {
-              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000100;
-              uri_ = bs;
               break;
             }
             case 90: {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000200;
-              path_ = bs;
+              method_ = bs;
               break;
             }
             case 98: {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000400;
-              rawPath_ = bs;
+              uri_ = bs;
               break;
             }
             case 106: {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000800;
-              rawQuery_ = bs;
+              path_ = bs;
               break;
             }
             case 114: {
-              if (!((mutable_bitField0_ & 0x00002000) == 0x00002000)) {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00001000;
+              rawPath_ = bs;
+              break;
+            }
+            case 122: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00002000;
+              rawQuery_ = bs;
+              break;
+            }
+            case 130: {
+              if (!((mutable_bitField0_ & 0x00008000) == 0x00008000)) {
                 parameters_ = com.google.protobuf.MapField.newMapField(
                     ParametersDefaultEntryHolder.defaultEntry);
-                mutable_bitField0_ |= 0x00002000;
+                mutable_bitField0_ |= 0x00008000;
               }
               com.google.protobuf.MapEntry<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter>
               parameters__ = input.readMessage(
@@ -840,11 +922,11 @@ public final class web_m {
                   parameters__.getKey(), parameters__.getValue());
               break;
             }
-            case 122: {
-              if (!((mutable_bitField0_ & 0x00004000) == 0x00004000)) {
+            case 138: {
+              if (!((mutable_bitField0_ & 0x00010000) == 0x00010000)) {
                 headers_ = com.google.protobuf.MapField.newMapField(
                     HeadersDefaultEntryHolder.defaultEntry);
-                mutable_bitField0_ |= 0x00004000;
+                mutable_bitField0_ |= 0x00010000;
               }
               com.google.protobuf.MapEntry<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>
               headers__ = input.readMessage(
@@ -853,33 +935,33 @@ public final class web_m {
                   headers__.getKey(), headers__.getValue());
               break;
             }
-            case 130: {
+            case 146: {
               com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00001000;
+              bitField0_ |= 0x00004000;
               host_ = bs;
               break;
             }
-            case 138: {
+            case 154: {
               com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00002000;
+              bitField0_ |= 0x00008000;
               contentType_ = bs;
               break;
             }
-            case 144: {
-              bitField0_ |= 0x00004000;
+            case 160: {
+              bitField0_ |= 0x00010000;
               contentLength_ = input.readInt32();
               break;
             }
-            case 154: {
-              bitField0_ |= 0x00008000;
+            case 170: {
+              bitField0_ |= 0x00020000;
               body_ = input.readBytes();
               break;
             }
-            case 162: {
-              if (!((mutable_bitField0_ & 0x00080000) == 0x00080000)) {
+            case 178: {
+              if (!((mutable_bitField0_ & 0x00200000) == 0x00200000)) {
                 trailers_ = com.google.protobuf.MapField.newMapField(
                     TrailersDefaultEntryHolder.defaultEntry);
-                mutable_bitField0_ |= 0x00080000;
+                mutable_bitField0_ |= 0x00200000;
               }
               com.google.protobuf.MapEntry<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader>
               trailers__ = input.readMessage(
@@ -912,11 +994,11 @@ public final class web_m {
     protected com.google.protobuf.MapField internalGetMapField(
         int number) {
       switch (number) {
-        case 14:
+        case 16:
           return internalGetParameters();
-        case 15:
+        case 17:
           return internalGetHeaders();
-        case 20:
+        case 22:
           return internalGetTrailers();
         default:
           throw new RuntimeException(
@@ -1279,7 +1361,79 @@ public final class web_m {
       return timestamp_;
     }
 
-    public static final int PROTOCOL_FIELD_NUMBER = 8;
+    public static final int REMOTEADDRESS_FIELD_NUMBER = 8;
+    private com.mackenziehigh.socius.web.messages.web_m.RemoteAddress remoteAddress_;
+    /**
+     * <pre>
+     **
+     * The IP address and port of the remote client.
+     * </pre>
+     *
+     * <code>optional .com.mackenziehigh.socius.web.messages.RemoteAddress remoteAddress = 8;</code>
+     */
+    public boolean hasRemoteAddress() {
+      return ((bitField0_ & 0x00000040) == 0x00000040);
+    }
+    /**
+     * <pre>
+     **
+     * The IP address and port of the remote client.
+     * </pre>
+     *
+     * <code>optional .com.mackenziehigh.socius.web.messages.RemoteAddress remoteAddress = 8;</code>
+     */
+    public com.mackenziehigh.socius.web.messages.web_m.RemoteAddress getRemoteAddress() {
+      return remoteAddress_ == null ? com.mackenziehigh.socius.web.messages.web_m.RemoteAddress.getDefaultInstance() : remoteAddress_;
+    }
+    /**
+     * <pre>
+     **
+     * The IP address and port of the remote client.
+     * </pre>
+     *
+     * <code>optional .com.mackenziehigh.socius.web.messages.RemoteAddress remoteAddress = 8;</code>
+     */
+    public com.mackenziehigh.socius.web.messages.web_m.RemoteAddressOrBuilder getRemoteAddressOrBuilder() {
+      return remoteAddress_ == null ? com.mackenziehigh.socius.web.messages.web_m.RemoteAddress.getDefaultInstance() : remoteAddress_;
+    }
+
+    public static final int LOCALADDRESS_FIELD_NUMBER = 9;
+    private com.mackenziehigh.socius.web.messages.web_m.LocalAddress localAddress_;
+    /**
+     * <pre>
+     **
+     * The IP address and port of the local server.
+     * </pre>
+     *
+     * <code>optional .com.mackenziehigh.socius.web.messages.LocalAddress localAddress = 9;</code>
+     */
+    public boolean hasLocalAddress() {
+      return ((bitField0_ & 0x00000080) == 0x00000080);
+    }
+    /**
+     * <pre>
+     **
+     * The IP address and port of the local server.
+     * </pre>
+     *
+     * <code>optional .com.mackenziehigh.socius.web.messages.LocalAddress localAddress = 9;</code>
+     */
+    public com.mackenziehigh.socius.web.messages.web_m.LocalAddress getLocalAddress() {
+      return localAddress_ == null ? com.mackenziehigh.socius.web.messages.web_m.LocalAddress.getDefaultInstance() : localAddress_;
+    }
+    /**
+     * <pre>
+     **
+     * The IP address and port of the local server.
+     * </pre>
+     *
+     * <code>optional .com.mackenziehigh.socius.web.messages.LocalAddress localAddress = 9;</code>
+     */
+    public com.mackenziehigh.socius.web.messages.web_m.LocalAddressOrBuilder getLocalAddressOrBuilder() {
+      return localAddress_ == null ? com.mackenziehigh.socius.web.messages.web_m.LocalAddress.getDefaultInstance() : localAddress_;
+    }
+
+    public static final int PROTOCOL_FIELD_NUMBER = 10;
     private com.mackenziehigh.socius.web.messages.web_m.HttpProtocol protocol_;
     /**
      * <pre>
@@ -1287,10 +1441,10 @@ public final class web_m {
      * Request Protocol.
      * </pre>
      *
-     * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 8;</code>
+     * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 10;</code>
      */
     public boolean hasProtocol() {
-      return ((bitField0_ & 0x00000040) == 0x00000040);
+      return ((bitField0_ & 0x00000100) == 0x00000100);
     }
     /**
      * <pre>
@@ -1298,7 +1452,7 @@ public final class web_m {
      * Request Protocol.
      * </pre>
      *
-     * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 8;</code>
+     * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 10;</code>
      */
     public com.mackenziehigh.socius.web.messages.web_m.HttpProtocol getProtocol() {
       return protocol_ == null ? com.mackenziehigh.socius.web.messages.web_m.HttpProtocol.getDefaultInstance() : protocol_;
@@ -1309,13 +1463,13 @@ public final class web_m {
      * Request Protocol.
      * </pre>
      *
-     * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 8;</code>
+     * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 10;</code>
      */
     public com.mackenziehigh.socius.web.messages.web_m.HttpProtocolOrBuilder getProtocolOrBuilder() {
       return protocol_ == null ? com.mackenziehigh.socius.web.messages.web_m.HttpProtocol.getDefaultInstance() : protocol_;
     }
 
-    public static final int METHOD_FIELD_NUMBER = 9;
+    public static final int METHOD_FIELD_NUMBER = 11;
     private volatile java.lang.Object method_;
     /**
      * <pre>
@@ -1323,10 +1477,10 @@ public final class web_m {
      * HTTP Verb of the request (GET/POST/etc).
      * </pre>
      *
-     * <code>optional string method = 9;</code>
+     * <code>optional string method = 11;</code>
      */
     public boolean hasMethod() {
-      return ((bitField0_ & 0x00000080) == 0x00000080);
+      return ((bitField0_ & 0x00000200) == 0x00000200);
     }
     /**
      * <pre>
@@ -1334,7 +1488,7 @@ public final class web_m {
      * HTTP Verb of the request (GET/POST/etc).
      * </pre>
      *
-     * <code>optional string method = 9;</code>
+     * <code>optional string method = 11;</code>
      */
     public java.lang.String getMethod() {
       java.lang.Object ref = method_;
@@ -1356,7 +1510,7 @@ public final class web_m {
      * HTTP Verb of the request (GET/POST/etc).
      * </pre>
      *
-     * <code>optional string method = 9;</code>
+     * <code>optional string method = 11;</code>
      */
     public com.google.protobuf.ByteString
         getMethodBytes() {
@@ -1372,7 +1526,7 @@ public final class web_m {
       }
     }
 
-    public static final int URI_FIELD_NUMBER = 10;
+    public static final int URI_FIELD_NUMBER = 12;
     private volatile java.lang.Object uri_;
     /**
      * <pre>
@@ -1380,10 +1534,10 @@ public final class web_m {
      * Requested URI.
      * </pre>
      *
-     * <code>optional string uri = 10;</code>
+     * <code>optional string uri = 12;</code>
      */
     public boolean hasUri() {
-      return ((bitField0_ & 0x00000100) == 0x00000100);
+      return ((bitField0_ & 0x00000400) == 0x00000400);
     }
     /**
      * <pre>
@@ -1391,7 +1545,7 @@ public final class web_m {
      * Requested URI.
      * </pre>
      *
-     * <code>optional string uri = 10;</code>
+     * <code>optional string uri = 12;</code>
      */
     public java.lang.String getUri() {
       java.lang.Object ref = uri_;
@@ -1413,7 +1567,7 @@ public final class web_m {
      * Requested URI.
      * </pre>
      *
-     * <code>optional string uri = 10;</code>
+     * <code>optional string uri = 12;</code>
      */
     public com.google.protobuf.ByteString
         getUriBytes() {
@@ -1429,7 +1583,7 @@ public final class web_m {
       }
     }
 
-    public static final int PATH_FIELD_NUMBER = 11;
+    public static final int PATH_FIELD_NUMBER = 13;
     private volatile java.lang.Object path_;
     /**
      * <pre>
@@ -1437,10 +1591,10 @@ public final class web_m {
      * Requested Path of URI.
      * </pre>
      *
-     * <code>optional string path = 11;</code>
+     * <code>optional string path = 13;</code>
      */
     public boolean hasPath() {
-      return ((bitField0_ & 0x00000200) == 0x00000200);
+      return ((bitField0_ & 0x00000800) == 0x00000800);
     }
     /**
      * <pre>
@@ -1448,7 +1602,7 @@ public final class web_m {
      * Requested Path of URI.
      * </pre>
      *
-     * <code>optional string path = 11;</code>
+     * <code>optional string path = 13;</code>
      */
     public java.lang.String getPath() {
       java.lang.Object ref = path_;
@@ -1470,7 +1624,7 @@ public final class web_m {
      * Requested Path of URI.
      * </pre>
      *
-     * <code>optional string path = 11;</code>
+     * <code>optional string path = 13;</code>
      */
     public com.google.protobuf.ByteString
         getPathBytes() {
@@ -1486,7 +1640,7 @@ public final class web_m {
       }
     }
 
-    public static final int RAWPATH_FIELD_NUMBER = 12;
+    public static final int RAWPATH_FIELD_NUMBER = 14;
     private volatile java.lang.Object rawPath_;
     /**
      * <pre>
@@ -1494,10 +1648,10 @@ public final class web_m {
      * Raw Requested Path of URI.
      * </pre>
      *
-     * <code>optional string rawPath = 12;</code>
+     * <code>optional string rawPath = 14;</code>
      */
     public boolean hasRawPath() {
-      return ((bitField0_ & 0x00000400) == 0x00000400);
+      return ((bitField0_ & 0x00001000) == 0x00001000);
     }
     /**
      * <pre>
@@ -1505,7 +1659,7 @@ public final class web_m {
      * Raw Requested Path of URI.
      * </pre>
      *
-     * <code>optional string rawPath = 12;</code>
+     * <code>optional string rawPath = 14;</code>
      */
     public java.lang.String getRawPath() {
       java.lang.Object ref = rawPath_;
@@ -1527,7 +1681,7 @@ public final class web_m {
      * Raw Requested Path of URI.
      * </pre>
      *
-     * <code>optional string rawPath = 12;</code>
+     * <code>optional string rawPath = 14;</code>
      */
     public com.google.protobuf.ByteString
         getRawPathBytes() {
@@ -1543,7 +1697,7 @@ public final class web_m {
       }
     }
 
-    public static final int RAWQUERY_FIELD_NUMBER = 13;
+    public static final int RAWQUERY_FIELD_NUMBER = 15;
     private volatile java.lang.Object rawQuery_;
     /**
      * <pre>
@@ -1551,10 +1705,10 @@ public final class web_m {
      * Raw Query String.
      * </pre>
      *
-     * <code>optional string rawQuery = 13;</code>
+     * <code>optional string rawQuery = 15;</code>
      */
     public boolean hasRawQuery() {
-      return ((bitField0_ & 0x00000800) == 0x00000800);
+      return ((bitField0_ & 0x00002000) == 0x00002000);
     }
     /**
      * <pre>
@@ -1562,7 +1716,7 @@ public final class web_m {
      * Raw Query String.
      * </pre>
      *
-     * <code>optional string rawQuery = 13;</code>
+     * <code>optional string rawQuery = 15;</code>
      */
     public java.lang.String getRawQuery() {
       java.lang.Object ref = rawQuery_;
@@ -1584,7 +1738,7 @@ public final class web_m {
      * Raw Query String.
      * </pre>
      *
-     * <code>optional string rawQuery = 13;</code>
+     * <code>optional string rawQuery = 15;</code>
      */
     public com.google.protobuf.ByteString
         getRawQueryBytes() {
@@ -1600,7 +1754,7 @@ public final class web_m {
       }
     }
 
-    public static final int PARAMETERS_FIELD_NUMBER = 14;
+    public static final int PARAMETERS_FIELD_NUMBER = 16;
     private static final class ParametersDefaultEntryHolder {
       static final com.google.protobuf.MapEntry<
           java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter> defaultEntry =
@@ -1632,7 +1786,7 @@ public final class web_m {
      * Query Parameters.
      * </pre>
      *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 14;</code>
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 16;</code>
      */
 
     public boolean containsParameters(
@@ -1653,7 +1807,7 @@ public final class web_m {
      * Query Parameters.
      * </pre>
      *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 14;</code>
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 16;</code>
      */
 
     public java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter> getParametersMap() {
@@ -1665,7 +1819,7 @@ public final class web_m {
      * Query Parameters.
      * </pre>
      *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 14;</code>
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 16;</code>
      */
 
     public com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter getParametersOrDefault(
@@ -1682,7 +1836,7 @@ public final class web_m {
      * Query Parameters.
      * </pre>
      *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 14;</code>
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 16;</code>
      */
 
     public com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter getParametersOrThrow(
@@ -1696,7 +1850,7 @@ public final class web_m {
       return map.get(key);
     }
 
-    public static final int HEADERS_FIELD_NUMBER = 15;
+    public static final int HEADERS_FIELD_NUMBER = 17;
     private static final class HeadersDefaultEntryHolder {
       static final com.google.protobuf.MapEntry<
           java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> defaultEntry =
@@ -1728,7 +1882,7 @@ public final class web_m {
      * HTTP Headers.
      * </pre>
      *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 15;</code>
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 17;</code>
      */
 
     public boolean containsHeaders(
@@ -1749,7 +1903,7 @@ public final class web_m {
      * HTTP Headers.
      * </pre>
      *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 15;</code>
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 17;</code>
      */
 
     public java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> getHeadersMap() {
@@ -1761,7 +1915,7 @@ public final class web_m {
      * HTTP Headers.
      * </pre>
      *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 15;</code>
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 17;</code>
      */
 
     public com.mackenziehigh.socius.web.messages.web_m.HttpHeader getHeadersOrDefault(
@@ -1778,7 +1932,7 @@ public final class web_m {
      * HTTP Headers.
      * </pre>
      *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 15;</code>
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 17;</code>
      */
 
     public com.mackenziehigh.socius.web.messages.web_m.HttpHeader getHeadersOrThrow(
@@ -1792,7 +1946,7 @@ public final class web_m {
       return map.get(key);
     }
 
-    public static final int HOST_FIELD_NUMBER = 16;
+    public static final int HOST_FIELD_NUMBER = 18;
     private volatile java.lang.Object host_;
     /**
      * <pre>
@@ -1800,10 +1954,10 @@ public final class web_m {
      * Client Host.
      * </pre>
      *
-     * <code>optional string host = 16;</code>
+     * <code>optional string host = 18;</code>
      */
     public boolean hasHost() {
-      return ((bitField0_ & 0x00001000) == 0x00001000);
+      return ((bitField0_ & 0x00004000) == 0x00004000);
     }
     /**
      * <pre>
@@ -1811,7 +1965,7 @@ public final class web_m {
      * Client Host.
      * </pre>
      *
-     * <code>optional string host = 16;</code>
+     * <code>optional string host = 18;</code>
      */
     public java.lang.String getHost() {
       java.lang.Object ref = host_;
@@ -1833,7 +1987,7 @@ public final class web_m {
      * Client Host.
      * </pre>
      *
-     * <code>optional string host = 16;</code>
+     * <code>optional string host = 18;</code>
      */
     public com.google.protobuf.ByteString
         getHostBytes() {
@@ -1849,7 +2003,7 @@ public final class web_m {
       }
     }
 
-    public static final int CONTENTTYPE_FIELD_NUMBER = 17;
+    public static final int CONTENTTYPE_FIELD_NUMBER = 19;
     private volatile java.lang.Object contentType_;
     /**
      * <pre>
@@ -1857,10 +2011,10 @@ public final class web_m {
      * MIME Type of the body.
      * </pre>
      *
-     * <code>optional string contentType = 17;</code>
+     * <code>optional string contentType = 19;</code>
      */
     public boolean hasContentType() {
-      return ((bitField0_ & 0x00002000) == 0x00002000);
+      return ((bitField0_ & 0x00008000) == 0x00008000);
     }
     /**
      * <pre>
@@ -1868,7 +2022,7 @@ public final class web_m {
      * MIME Type of the body.
      * </pre>
      *
-     * <code>optional string contentType = 17;</code>
+     * <code>optional string contentType = 19;</code>
      */
     public java.lang.String getContentType() {
       java.lang.Object ref = contentType_;
@@ -1890,7 +2044,7 @@ public final class web_m {
      * MIME Type of the body.
      * </pre>
      *
-     * <code>optional string contentType = 17;</code>
+     * <code>optional string contentType = 19;</code>
      */
     public com.google.protobuf.ByteString
         getContentTypeBytes() {
@@ -1906,7 +2060,7 @@ public final class web_m {
       }
     }
 
-    public static final int CONTENTLENGTH_FIELD_NUMBER = 18;
+    public static final int CONTENTLENGTH_FIELD_NUMBER = 20;
     private int contentLength_;
     /**
      * <pre>
@@ -1914,10 +2068,10 @@ public final class web_m {
      * Length of the body.
      * </pre>
      *
-     * <code>optional int32 contentLength = 18;</code>
+     * <code>optional int32 contentLength = 20;</code>
      */
     public boolean hasContentLength() {
-      return ((bitField0_ & 0x00004000) == 0x00004000);
+      return ((bitField0_ & 0x00010000) == 0x00010000);
     }
     /**
      * <pre>
@@ -1925,13 +2079,13 @@ public final class web_m {
      * Length of the body.
      * </pre>
      *
-     * <code>optional int32 contentLength = 18;</code>
+     * <code>optional int32 contentLength = 20;</code>
      */
     public int getContentLength() {
       return contentLength_;
     }
 
-    public static final int BODY_FIELD_NUMBER = 19;
+    public static final int BODY_FIELD_NUMBER = 21;
     private com.google.protobuf.ByteString body_;
     /**
      * <pre>
@@ -1939,10 +2093,10 @@ public final class web_m {
      * Body of the request.
      * </pre>
      *
-     * <code>optional bytes body = 19;</code>
+     * <code>optional bytes body = 21;</code>
      */
     public boolean hasBody() {
-      return ((bitField0_ & 0x00008000) == 0x00008000);
+      return ((bitField0_ & 0x00020000) == 0x00020000);
     }
     /**
      * <pre>
@@ -1950,13 +2104,13 @@ public final class web_m {
      * Body of the request.
      * </pre>
      *
-     * <code>optional bytes body = 19;</code>
+     * <code>optional bytes body = 21;</code>
      */
     public com.google.protobuf.ByteString getBody() {
       return body_;
     }
 
-    public static final int TRAILERS_FIELD_NUMBER = 20;
+    public static final int TRAILERS_FIELD_NUMBER = 22;
     private static final class TrailersDefaultEntryHolder {
       static final com.google.protobuf.MapEntry<
           java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> defaultEntry =
@@ -1988,7 +2142,7 @@ public final class web_m {
      * Trailing HTTP Headers.
      * </pre>
      *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 20;</code>
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 22;</code>
      */
 
     public boolean containsTrailers(
@@ -2009,7 +2163,7 @@ public final class web_m {
      * Trailing HTTP Headers.
      * </pre>
      *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 20;</code>
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 22;</code>
      */
 
     public java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> getTrailersMap() {
@@ -2021,7 +2175,7 @@ public final class web_m {
      * Trailing HTTP Headers.
      * </pre>
      *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 20;</code>
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 22;</code>
      */
 
     public com.mackenziehigh.socius.web.messages.web_m.HttpHeader getTrailersOrDefault(
@@ -2038,7 +2192,7 @@ public final class web_m {
      * Trailing HTTP Headers.
      * </pre>
      *
-     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 20;</code>
+     * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 22;</code>
      */
 
     public com.mackenziehigh.socius.web.messages.web_m.HttpHeader getTrailersOrThrow(
@@ -2086,53 +2240,59 @@ public final class web_m {
         output.writeUInt64(7, timestamp_);
       }
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        output.writeMessage(8, getProtocol());
+        output.writeMessage(8, getRemoteAddress());
       }
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 9, method_);
+        output.writeMessage(9, getLocalAddress());
       }
       if (((bitField0_ & 0x00000100) == 0x00000100)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 10, uri_);
+        output.writeMessage(10, getProtocol());
       }
       if (((bitField0_ & 0x00000200) == 0x00000200)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 11, path_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 11, method_);
       }
       if (((bitField0_ & 0x00000400) == 0x00000400)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 12, rawPath_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 12, uri_);
       }
       if (((bitField0_ & 0x00000800) == 0x00000800)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 13, rawQuery_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 13, path_);
+      }
+      if (((bitField0_ & 0x00001000) == 0x00001000)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 14, rawPath_);
+      }
+      if (((bitField0_ & 0x00002000) == 0x00002000)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 15, rawQuery_);
       }
       com.google.protobuf.GeneratedMessageV3
         .serializeStringMapTo(
           output,
           internalGetParameters(),
           ParametersDefaultEntryHolder.defaultEntry,
-          14);
+          16);
       com.google.protobuf.GeneratedMessageV3
         .serializeStringMapTo(
           output,
           internalGetHeaders(),
           HeadersDefaultEntryHolder.defaultEntry,
-          15);
-      if (((bitField0_ & 0x00001000) == 0x00001000)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 16, host_);
-      }
-      if (((bitField0_ & 0x00002000) == 0x00002000)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 17, contentType_);
-      }
+          17);
       if (((bitField0_ & 0x00004000) == 0x00004000)) {
-        output.writeInt32(18, contentLength_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 18, host_);
       }
       if (((bitField0_ & 0x00008000) == 0x00008000)) {
-        output.writeBytes(19, body_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 19, contentType_);
+      }
+      if (((bitField0_ & 0x00010000) == 0x00010000)) {
+        output.writeInt32(20, contentLength_);
+      }
+      if (((bitField0_ & 0x00020000) == 0x00020000)) {
+        output.writeBytes(21, body_);
       }
       com.google.protobuf.GeneratedMessageV3
         .serializeStringMapTo(
           output,
           internalGetTrailers(),
           TrailersDefaultEntryHolder.defaultEntry,
-          20);
+          22);
       unknownFields.writeTo(output);
     }
 
@@ -2171,22 +2331,30 @@ public final class web_m {
       }
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(8, getProtocol());
+          .computeMessageSize(8, getRemoteAddress());
       }
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(9, method_);
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(9, getLocalAddress());
       }
       if (((bitField0_ & 0x00000100) == 0x00000100)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(10, uri_);
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(10, getProtocol());
       }
       if (((bitField0_ & 0x00000200) == 0x00000200)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(11, path_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(11, method_);
       }
       if (((bitField0_ & 0x00000400) == 0x00000400)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(12, rawPath_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(12, uri_);
       }
       if (((bitField0_ & 0x00000800) == 0x00000800)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(13, rawQuery_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(13, path_);
+      }
+      if (((bitField0_ & 0x00001000) == 0x00001000)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(14, rawPath_);
+      }
+      if (((bitField0_ & 0x00002000) == 0x00002000)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(15, rawQuery_);
       }
       for (java.util.Map.Entry<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter> entry
            : internalGetParameters().getMap().entrySet()) {
@@ -2196,7 +2364,7 @@ public final class web_m {
             .setValue(entry.getValue())
             .build();
         size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(14, parameters__);
+            .computeMessageSize(16, parameters__);
       }
       for (java.util.Map.Entry<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> entry
            : internalGetHeaders().getMap().entrySet()) {
@@ -2206,21 +2374,21 @@ public final class web_m {
             .setValue(entry.getValue())
             .build();
         size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(15, headers__);
-      }
-      if (((bitField0_ & 0x00001000) == 0x00001000)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(16, host_);
-      }
-      if (((bitField0_ & 0x00002000) == 0x00002000)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(17, contentType_);
+            .computeMessageSize(17, headers__);
       }
       if (((bitField0_ & 0x00004000) == 0x00004000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(18, contentLength_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(18, host_);
       }
       if (((bitField0_ & 0x00008000) == 0x00008000)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(19, contentType_);
+      }
+      if (((bitField0_ & 0x00010000) == 0x00010000)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(19, body_);
+          .computeInt32Size(20, contentLength_);
+      }
+      if (((bitField0_ & 0x00020000) == 0x00020000)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(21, body_);
       }
       for (java.util.Map.Entry<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> entry
            : internalGetTrailers().getMap().entrySet()) {
@@ -2230,7 +2398,7 @@ public final class web_m {
             .setValue(entry.getValue())
             .build();
         size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(20, trailers__);
+            .computeMessageSize(22, trailers__);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -2280,6 +2448,16 @@ public final class web_m {
       if (hasTimestamp()) {
         result = result && (getTimestamp()
             == other.getTimestamp());
+      }
+      result = result && (hasRemoteAddress() == other.hasRemoteAddress());
+      if (hasRemoteAddress()) {
+        result = result && getRemoteAddress()
+            .equals(other.getRemoteAddress());
+      }
+      result = result && (hasLocalAddress() == other.hasLocalAddress());
+      if (hasLocalAddress()) {
+        result = result && getLocalAddress()
+            .equals(other.getLocalAddress());
       }
       result = result && (hasProtocol() == other.hasProtocol());
       if (hasProtocol()) {
@@ -2377,6 +2555,14 @@ public final class web_m {
         hash = (37 * hash) + TIMESTAMP_FIELD_NUMBER;
         hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
             getTimestamp());
+      }
+      if (hasRemoteAddress()) {
+        hash = (37 * hash) + REMOTEADDRESS_FIELD_NUMBER;
+        hash = (53 * hash) + getRemoteAddress().hashCode();
+      }
+      if (hasLocalAddress()) {
+        hash = (37 * hash) + LOCALADDRESS_FIELD_NUMBER;
+        hash = (53 * hash) + getLocalAddress().hashCode();
       }
       if (hasProtocol()) {
         hash = (37 * hash) + PROTOCOL_FIELD_NUMBER;
@@ -2544,11 +2730,11 @@ public final class web_m {
       protected com.google.protobuf.MapField internalGetMapField(
           int number) {
         switch (number) {
-          case 14:
+          case 16:
             return internalGetParameters();
-          case 15:
+          case 17:
             return internalGetHeaders();
-          case 20:
+          case 22:
             return internalGetTrailers();
           default:
             throw new RuntimeException(
@@ -2559,11 +2745,11 @@ public final class web_m {
       protected com.google.protobuf.MapField internalGetMutableMapField(
           int number) {
         switch (number) {
-          case 14:
+          case 16:
             return internalGetMutableParameters();
-          case 15:
+          case 17:
             return internalGetMutableHeaders();
-          case 20:
+          case 22:
             return internalGetMutableTrailers();
           default:
             throw new RuntimeException(
@@ -2590,6 +2776,8 @@ public final class web_m {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
+          getRemoteAddressFieldBuilder();
+          getLocalAddressFieldBuilder();
           getProtocolFieldBuilder();
         }
       }
@@ -2609,32 +2797,44 @@ public final class web_m {
         bitField0_ = (bitField0_ & ~0x00000020);
         timestamp_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000040);
+        if (remoteAddressBuilder_ == null) {
+          remoteAddress_ = null;
+        } else {
+          remoteAddressBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000080);
+        if (localAddressBuilder_ == null) {
+          localAddress_ = null;
+        } else {
+          localAddressBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000100);
         if (protocolBuilder_ == null) {
           protocol_ = null;
         } else {
           protocolBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000080);
-        method_ = "";
-        bitField0_ = (bitField0_ & ~0x00000100);
-        uri_ = "";
         bitField0_ = (bitField0_ & ~0x00000200);
-        path_ = "";
+        method_ = "";
         bitField0_ = (bitField0_ & ~0x00000400);
-        rawPath_ = "";
+        uri_ = "";
         bitField0_ = (bitField0_ & ~0x00000800);
-        rawQuery_ = "";
+        path_ = "";
         bitField0_ = (bitField0_ & ~0x00001000);
+        rawPath_ = "";
+        bitField0_ = (bitField0_ & ~0x00002000);
+        rawQuery_ = "";
+        bitField0_ = (bitField0_ & ~0x00004000);
         internalGetMutableParameters().clear();
         internalGetMutableHeaders().clear();
         host_ = "";
-        bitField0_ = (bitField0_ & ~0x00008000);
-        contentType_ = "";
-        bitField0_ = (bitField0_ & ~0x00010000);
-        contentLength_ = 0;
         bitField0_ = (bitField0_ & ~0x00020000);
-        body_ = com.google.protobuf.ByteString.EMPTY;
+        contentType_ = "";
         bitField0_ = (bitField0_ & ~0x00040000);
+        contentLength_ = 0;
+        bitField0_ = (bitField0_ & ~0x00080000);
+        body_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00100000);
         internalGetMutableTrailers().clear();
         return this;
       }
@@ -2692,49 +2892,65 @@ public final class web_m {
         if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
           to_bitField0_ |= 0x00000040;
         }
+        if (remoteAddressBuilder_ == null) {
+          result.remoteAddress_ = remoteAddress_;
+        } else {
+          result.remoteAddress_ = remoteAddressBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
+          to_bitField0_ |= 0x00000080;
+        }
+        if (localAddressBuilder_ == null) {
+          result.localAddress_ = localAddress_;
+        } else {
+          result.localAddress_ = localAddressBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
+          to_bitField0_ |= 0x00000100;
+        }
         if (protocolBuilder_ == null) {
           result.protocol_ = protocol_;
         } else {
           result.protocol_ = protocolBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
-          to_bitField0_ |= 0x00000080;
-        }
-        result.method_ = method_;
-        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
-          to_bitField0_ |= 0x00000100;
-        }
-        result.uri_ = uri_;
         if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
           to_bitField0_ |= 0x00000200;
         }
-        result.path_ = path_;
+        result.method_ = method_;
         if (((from_bitField0_ & 0x00000800) == 0x00000800)) {
           to_bitField0_ |= 0x00000400;
         }
-        result.rawPath_ = rawPath_;
+        result.uri_ = uri_;
         if (((from_bitField0_ & 0x00001000) == 0x00001000)) {
           to_bitField0_ |= 0x00000800;
+        }
+        result.path_ = path_;
+        if (((from_bitField0_ & 0x00002000) == 0x00002000)) {
+          to_bitField0_ |= 0x00001000;
+        }
+        result.rawPath_ = rawPath_;
+        if (((from_bitField0_ & 0x00004000) == 0x00004000)) {
+          to_bitField0_ |= 0x00002000;
         }
         result.rawQuery_ = rawQuery_;
         result.parameters_ = internalGetParameters();
         result.parameters_.makeImmutable();
         result.headers_ = internalGetHeaders();
         result.headers_.makeImmutable();
-        if (((from_bitField0_ & 0x00008000) == 0x00008000)) {
-          to_bitField0_ |= 0x00001000;
-        }
-        result.host_ = host_;
-        if (((from_bitField0_ & 0x00010000) == 0x00010000)) {
-          to_bitField0_ |= 0x00002000;
-        }
-        result.contentType_ = contentType_;
         if (((from_bitField0_ & 0x00020000) == 0x00020000)) {
           to_bitField0_ |= 0x00004000;
         }
-        result.contentLength_ = contentLength_;
+        result.host_ = host_;
         if (((from_bitField0_ & 0x00040000) == 0x00040000)) {
           to_bitField0_ |= 0x00008000;
+        }
+        result.contentType_ = contentType_;
+        if (((from_bitField0_ & 0x00080000) == 0x00080000)) {
+          to_bitField0_ |= 0x00010000;
+        }
+        result.contentLength_ = contentLength_;
+        if (((from_bitField0_ & 0x00100000) == 0x00100000)) {
+          to_bitField0_ |= 0x00020000;
         }
         result.body_ = body_;
         result.trailers_ = internalGetTrailers();
@@ -2817,31 +3033,37 @@ public final class web_m {
         if (other.hasTimestamp()) {
           setTimestamp(other.getTimestamp());
         }
+        if (other.hasRemoteAddress()) {
+          mergeRemoteAddress(other.getRemoteAddress());
+        }
+        if (other.hasLocalAddress()) {
+          mergeLocalAddress(other.getLocalAddress());
+        }
         if (other.hasProtocol()) {
           mergeProtocol(other.getProtocol());
         }
         if (other.hasMethod()) {
-          bitField0_ |= 0x00000100;
+          bitField0_ |= 0x00000400;
           method_ = other.method_;
           onChanged();
         }
         if (other.hasUri()) {
-          bitField0_ |= 0x00000200;
+          bitField0_ |= 0x00000800;
           uri_ = other.uri_;
           onChanged();
         }
         if (other.hasPath()) {
-          bitField0_ |= 0x00000400;
+          bitField0_ |= 0x00001000;
           path_ = other.path_;
           onChanged();
         }
         if (other.hasRawPath()) {
-          bitField0_ |= 0x00000800;
+          bitField0_ |= 0x00002000;
           rawPath_ = other.rawPath_;
           onChanged();
         }
         if (other.hasRawQuery()) {
-          bitField0_ |= 0x00001000;
+          bitField0_ |= 0x00004000;
           rawQuery_ = other.rawQuery_;
           onChanged();
         }
@@ -2850,12 +3072,12 @@ public final class web_m {
         internalGetMutableHeaders().mergeFrom(
             other.internalGetHeaders());
         if (other.hasHost()) {
-          bitField0_ |= 0x00008000;
+          bitField0_ |= 0x00020000;
           host_ = other.host_;
           onChanged();
         }
         if (other.hasContentType()) {
-          bitField0_ |= 0x00010000;
+          bitField0_ |= 0x00040000;
           contentType_ = other.contentType_;
           onChanged();
         }
@@ -3603,6 +3825,332 @@ public final class web_m {
         return this;
       }
 
+      private com.mackenziehigh.socius.web.messages.web_m.RemoteAddress remoteAddress_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.mackenziehigh.socius.web.messages.web_m.RemoteAddress, com.mackenziehigh.socius.web.messages.web_m.RemoteAddress.Builder, com.mackenziehigh.socius.web.messages.web_m.RemoteAddressOrBuilder> remoteAddressBuilder_;
+      /**
+       * <pre>
+       **
+       * The IP address and port of the remote client.
+       * </pre>
+       *
+       * <code>optional .com.mackenziehigh.socius.web.messages.RemoteAddress remoteAddress = 8;</code>
+       */
+      public boolean hasRemoteAddress() {
+        return ((bitField0_ & 0x00000080) == 0x00000080);
+      }
+      /**
+       * <pre>
+       **
+       * The IP address and port of the remote client.
+       * </pre>
+       *
+       * <code>optional .com.mackenziehigh.socius.web.messages.RemoteAddress remoteAddress = 8;</code>
+       */
+      public com.mackenziehigh.socius.web.messages.web_m.RemoteAddress getRemoteAddress() {
+        if (remoteAddressBuilder_ == null) {
+          return remoteAddress_ == null ? com.mackenziehigh.socius.web.messages.web_m.RemoteAddress.getDefaultInstance() : remoteAddress_;
+        } else {
+          return remoteAddressBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       **
+       * The IP address and port of the remote client.
+       * </pre>
+       *
+       * <code>optional .com.mackenziehigh.socius.web.messages.RemoteAddress remoteAddress = 8;</code>
+       */
+      public Builder setRemoteAddress(com.mackenziehigh.socius.web.messages.web_m.RemoteAddress value) {
+        if (remoteAddressBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          remoteAddress_ = value;
+          onChanged();
+        } else {
+          remoteAddressBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000080;
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * The IP address and port of the remote client.
+       * </pre>
+       *
+       * <code>optional .com.mackenziehigh.socius.web.messages.RemoteAddress remoteAddress = 8;</code>
+       */
+      public Builder setRemoteAddress(
+          com.mackenziehigh.socius.web.messages.web_m.RemoteAddress.Builder builderForValue) {
+        if (remoteAddressBuilder_ == null) {
+          remoteAddress_ = builderForValue.build();
+          onChanged();
+        } else {
+          remoteAddressBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000080;
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * The IP address and port of the remote client.
+       * </pre>
+       *
+       * <code>optional .com.mackenziehigh.socius.web.messages.RemoteAddress remoteAddress = 8;</code>
+       */
+      public Builder mergeRemoteAddress(com.mackenziehigh.socius.web.messages.web_m.RemoteAddress value) {
+        if (remoteAddressBuilder_ == null) {
+          if (((bitField0_ & 0x00000080) == 0x00000080) &&
+              remoteAddress_ != null &&
+              remoteAddress_ != com.mackenziehigh.socius.web.messages.web_m.RemoteAddress.getDefaultInstance()) {
+            remoteAddress_ =
+              com.mackenziehigh.socius.web.messages.web_m.RemoteAddress.newBuilder(remoteAddress_).mergeFrom(value).buildPartial();
+          } else {
+            remoteAddress_ = value;
+          }
+          onChanged();
+        } else {
+          remoteAddressBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000080;
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * The IP address and port of the remote client.
+       * </pre>
+       *
+       * <code>optional .com.mackenziehigh.socius.web.messages.RemoteAddress remoteAddress = 8;</code>
+       */
+      public Builder clearRemoteAddress() {
+        if (remoteAddressBuilder_ == null) {
+          remoteAddress_ = null;
+          onChanged();
+        } else {
+          remoteAddressBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000080);
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * The IP address and port of the remote client.
+       * </pre>
+       *
+       * <code>optional .com.mackenziehigh.socius.web.messages.RemoteAddress remoteAddress = 8;</code>
+       */
+      public com.mackenziehigh.socius.web.messages.web_m.RemoteAddress.Builder getRemoteAddressBuilder() {
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return getRemoteAddressFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       **
+       * The IP address and port of the remote client.
+       * </pre>
+       *
+       * <code>optional .com.mackenziehigh.socius.web.messages.RemoteAddress remoteAddress = 8;</code>
+       */
+      public com.mackenziehigh.socius.web.messages.web_m.RemoteAddressOrBuilder getRemoteAddressOrBuilder() {
+        if (remoteAddressBuilder_ != null) {
+          return remoteAddressBuilder_.getMessageOrBuilder();
+        } else {
+          return remoteAddress_ == null ?
+              com.mackenziehigh.socius.web.messages.web_m.RemoteAddress.getDefaultInstance() : remoteAddress_;
+        }
+      }
+      /**
+       * <pre>
+       **
+       * The IP address and port of the remote client.
+       * </pre>
+       *
+       * <code>optional .com.mackenziehigh.socius.web.messages.RemoteAddress remoteAddress = 8;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.mackenziehigh.socius.web.messages.web_m.RemoteAddress, com.mackenziehigh.socius.web.messages.web_m.RemoteAddress.Builder, com.mackenziehigh.socius.web.messages.web_m.RemoteAddressOrBuilder> 
+          getRemoteAddressFieldBuilder() {
+        if (remoteAddressBuilder_ == null) {
+          remoteAddressBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.mackenziehigh.socius.web.messages.web_m.RemoteAddress, com.mackenziehigh.socius.web.messages.web_m.RemoteAddress.Builder, com.mackenziehigh.socius.web.messages.web_m.RemoteAddressOrBuilder>(
+                  getRemoteAddress(),
+                  getParentForChildren(),
+                  isClean());
+          remoteAddress_ = null;
+        }
+        return remoteAddressBuilder_;
+      }
+
+      private com.mackenziehigh.socius.web.messages.web_m.LocalAddress localAddress_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.mackenziehigh.socius.web.messages.web_m.LocalAddress, com.mackenziehigh.socius.web.messages.web_m.LocalAddress.Builder, com.mackenziehigh.socius.web.messages.web_m.LocalAddressOrBuilder> localAddressBuilder_;
+      /**
+       * <pre>
+       **
+       * The IP address and port of the local server.
+       * </pre>
+       *
+       * <code>optional .com.mackenziehigh.socius.web.messages.LocalAddress localAddress = 9;</code>
+       */
+      public boolean hasLocalAddress() {
+        return ((bitField0_ & 0x00000100) == 0x00000100);
+      }
+      /**
+       * <pre>
+       **
+       * The IP address and port of the local server.
+       * </pre>
+       *
+       * <code>optional .com.mackenziehigh.socius.web.messages.LocalAddress localAddress = 9;</code>
+       */
+      public com.mackenziehigh.socius.web.messages.web_m.LocalAddress getLocalAddress() {
+        if (localAddressBuilder_ == null) {
+          return localAddress_ == null ? com.mackenziehigh.socius.web.messages.web_m.LocalAddress.getDefaultInstance() : localAddress_;
+        } else {
+          return localAddressBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       **
+       * The IP address and port of the local server.
+       * </pre>
+       *
+       * <code>optional .com.mackenziehigh.socius.web.messages.LocalAddress localAddress = 9;</code>
+       */
+      public Builder setLocalAddress(com.mackenziehigh.socius.web.messages.web_m.LocalAddress value) {
+        if (localAddressBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          localAddress_ = value;
+          onChanged();
+        } else {
+          localAddressBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000100;
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * The IP address and port of the local server.
+       * </pre>
+       *
+       * <code>optional .com.mackenziehigh.socius.web.messages.LocalAddress localAddress = 9;</code>
+       */
+      public Builder setLocalAddress(
+          com.mackenziehigh.socius.web.messages.web_m.LocalAddress.Builder builderForValue) {
+        if (localAddressBuilder_ == null) {
+          localAddress_ = builderForValue.build();
+          onChanged();
+        } else {
+          localAddressBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000100;
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * The IP address and port of the local server.
+       * </pre>
+       *
+       * <code>optional .com.mackenziehigh.socius.web.messages.LocalAddress localAddress = 9;</code>
+       */
+      public Builder mergeLocalAddress(com.mackenziehigh.socius.web.messages.web_m.LocalAddress value) {
+        if (localAddressBuilder_ == null) {
+          if (((bitField0_ & 0x00000100) == 0x00000100) &&
+              localAddress_ != null &&
+              localAddress_ != com.mackenziehigh.socius.web.messages.web_m.LocalAddress.getDefaultInstance()) {
+            localAddress_ =
+              com.mackenziehigh.socius.web.messages.web_m.LocalAddress.newBuilder(localAddress_).mergeFrom(value).buildPartial();
+          } else {
+            localAddress_ = value;
+          }
+          onChanged();
+        } else {
+          localAddressBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000100;
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * The IP address and port of the local server.
+       * </pre>
+       *
+       * <code>optional .com.mackenziehigh.socius.web.messages.LocalAddress localAddress = 9;</code>
+       */
+      public Builder clearLocalAddress() {
+        if (localAddressBuilder_ == null) {
+          localAddress_ = null;
+          onChanged();
+        } else {
+          localAddressBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000100);
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * The IP address and port of the local server.
+       * </pre>
+       *
+       * <code>optional .com.mackenziehigh.socius.web.messages.LocalAddress localAddress = 9;</code>
+       */
+      public com.mackenziehigh.socius.web.messages.web_m.LocalAddress.Builder getLocalAddressBuilder() {
+        bitField0_ |= 0x00000100;
+        onChanged();
+        return getLocalAddressFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       **
+       * The IP address and port of the local server.
+       * </pre>
+       *
+       * <code>optional .com.mackenziehigh.socius.web.messages.LocalAddress localAddress = 9;</code>
+       */
+      public com.mackenziehigh.socius.web.messages.web_m.LocalAddressOrBuilder getLocalAddressOrBuilder() {
+        if (localAddressBuilder_ != null) {
+          return localAddressBuilder_.getMessageOrBuilder();
+        } else {
+          return localAddress_ == null ?
+              com.mackenziehigh.socius.web.messages.web_m.LocalAddress.getDefaultInstance() : localAddress_;
+        }
+      }
+      /**
+       * <pre>
+       **
+       * The IP address and port of the local server.
+       * </pre>
+       *
+       * <code>optional .com.mackenziehigh.socius.web.messages.LocalAddress localAddress = 9;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.mackenziehigh.socius.web.messages.web_m.LocalAddress, com.mackenziehigh.socius.web.messages.web_m.LocalAddress.Builder, com.mackenziehigh.socius.web.messages.web_m.LocalAddressOrBuilder> 
+          getLocalAddressFieldBuilder() {
+        if (localAddressBuilder_ == null) {
+          localAddressBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.mackenziehigh.socius.web.messages.web_m.LocalAddress, com.mackenziehigh.socius.web.messages.web_m.LocalAddress.Builder, com.mackenziehigh.socius.web.messages.web_m.LocalAddressOrBuilder>(
+                  getLocalAddress(),
+                  getParentForChildren(),
+                  isClean());
+          localAddress_ = null;
+        }
+        return localAddressBuilder_;
+      }
+
       private com.mackenziehigh.socius.web.messages.web_m.HttpProtocol protocol_ = null;
       private com.google.protobuf.SingleFieldBuilderV3<
           com.mackenziehigh.socius.web.messages.web_m.HttpProtocol, com.mackenziehigh.socius.web.messages.web_m.HttpProtocol.Builder, com.mackenziehigh.socius.web.messages.web_m.HttpProtocolOrBuilder> protocolBuilder_;
@@ -3612,10 +4160,10 @@ public final class web_m {
        * Request Protocol.
        * </pre>
        *
-       * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 8;</code>
+       * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 10;</code>
        */
       public boolean hasProtocol() {
-        return ((bitField0_ & 0x00000080) == 0x00000080);
+        return ((bitField0_ & 0x00000200) == 0x00000200);
       }
       /**
        * <pre>
@@ -3623,7 +4171,7 @@ public final class web_m {
        * Request Protocol.
        * </pre>
        *
-       * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 8;</code>
+       * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 10;</code>
        */
       public com.mackenziehigh.socius.web.messages.web_m.HttpProtocol getProtocol() {
         if (protocolBuilder_ == null) {
@@ -3638,7 +4186,7 @@ public final class web_m {
        * Request Protocol.
        * </pre>
        *
-       * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 8;</code>
+       * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 10;</code>
        */
       public Builder setProtocol(com.mackenziehigh.socius.web.messages.web_m.HttpProtocol value) {
         if (protocolBuilder_ == null) {
@@ -3650,7 +4198,7 @@ public final class web_m {
         } else {
           protocolBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000080;
+        bitField0_ |= 0x00000200;
         return this;
       }
       /**
@@ -3659,7 +4207,7 @@ public final class web_m {
        * Request Protocol.
        * </pre>
        *
-       * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 8;</code>
+       * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 10;</code>
        */
       public Builder setProtocol(
           com.mackenziehigh.socius.web.messages.web_m.HttpProtocol.Builder builderForValue) {
@@ -3669,7 +4217,7 @@ public final class web_m {
         } else {
           protocolBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000080;
+        bitField0_ |= 0x00000200;
         return this;
       }
       /**
@@ -3678,11 +4226,11 @@ public final class web_m {
        * Request Protocol.
        * </pre>
        *
-       * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 8;</code>
+       * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 10;</code>
        */
       public Builder mergeProtocol(com.mackenziehigh.socius.web.messages.web_m.HttpProtocol value) {
         if (protocolBuilder_ == null) {
-          if (((bitField0_ & 0x00000080) == 0x00000080) &&
+          if (((bitField0_ & 0x00000200) == 0x00000200) &&
               protocol_ != null &&
               protocol_ != com.mackenziehigh.socius.web.messages.web_m.HttpProtocol.getDefaultInstance()) {
             protocol_ =
@@ -3694,7 +4242,7 @@ public final class web_m {
         } else {
           protocolBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000080;
+        bitField0_ |= 0x00000200;
         return this;
       }
       /**
@@ -3703,7 +4251,7 @@ public final class web_m {
        * Request Protocol.
        * </pre>
        *
-       * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 8;</code>
+       * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 10;</code>
        */
       public Builder clearProtocol() {
         if (protocolBuilder_ == null) {
@@ -3712,7 +4260,7 @@ public final class web_m {
         } else {
           protocolBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000080);
+        bitField0_ = (bitField0_ & ~0x00000200);
         return this;
       }
       /**
@@ -3721,10 +4269,10 @@ public final class web_m {
        * Request Protocol.
        * </pre>
        *
-       * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 8;</code>
+       * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 10;</code>
        */
       public com.mackenziehigh.socius.web.messages.web_m.HttpProtocol.Builder getProtocolBuilder() {
-        bitField0_ |= 0x00000080;
+        bitField0_ |= 0x00000200;
         onChanged();
         return getProtocolFieldBuilder().getBuilder();
       }
@@ -3734,7 +4282,7 @@ public final class web_m {
        * Request Protocol.
        * </pre>
        *
-       * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 8;</code>
+       * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 10;</code>
        */
       public com.mackenziehigh.socius.web.messages.web_m.HttpProtocolOrBuilder getProtocolOrBuilder() {
         if (protocolBuilder_ != null) {
@@ -3750,7 +4298,7 @@ public final class web_m {
        * Request Protocol.
        * </pre>
        *
-       * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 8;</code>
+       * <code>optional .com.mackenziehigh.socius.web.messages.HttpProtocol protocol = 10;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           com.mackenziehigh.socius.web.messages.web_m.HttpProtocol, com.mackenziehigh.socius.web.messages.web_m.HttpProtocol.Builder, com.mackenziehigh.socius.web.messages.web_m.HttpProtocolOrBuilder> 
@@ -3773,10 +4321,10 @@ public final class web_m {
        * HTTP Verb of the request (GET/POST/etc).
        * </pre>
        *
-       * <code>optional string method = 9;</code>
+       * <code>optional string method = 11;</code>
        */
       public boolean hasMethod() {
-        return ((bitField0_ & 0x00000100) == 0x00000100);
+        return ((bitField0_ & 0x00000400) == 0x00000400);
       }
       /**
        * <pre>
@@ -3784,7 +4332,7 @@ public final class web_m {
        * HTTP Verb of the request (GET/POST/etc).
        * </pre>
        *
-       * <code>optional string method = 9;</code>
+       * <code>optional string method = 11;</code>
        */
       public java.lang.String getMethod() {
         java.lang.Object ref = method_;
@@ -3806,7 +4354,7 @@ public final class web_m {
        * HTTP Verb of the request (GET/POST/etc).
        * </pre>
        *
-       * <code>optional string method = 9;</code>
+       * <code>optional string method = 11;</code>
        */
       public com.google.protobuf.ByteString
           getMethodBytes() {
@@ -3827,14 +4375,14 @@ public final class web_m {
        * HTTP Verb of the request (GET/POST/etc).
        * </pre>
        *
-       * <code>optional string method = 9;</code>
+       * <code>optional string method = 11;</code>
        */
       public Builder setMethod(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000100;
+  bitField0_ |= 0x00000400;
         method_ = value;
         onChanged();
         return this;
@@ -3845,10 +4393,10 @@ public final class web_m {
        * HTTP Verb of the request (GET/POST/etc).
        * </pre>
        *
-       * <code>optional string method = 9;</code>
+       * <code>optional string method = 11;</code>
        */
       public Builder clearMethod() {
-        bitField0_ = (bitField0_ & ~0x00000100);
+        bitField0_ = (bitField0_ & ~0x00000400);
         method_ = getDefaultInstance().getMethod();
         onChanged();
         return this;
@@ -3859,14 +4407,14 @@ public final class web_m {
        * HTTP Verb of the request (GET/POST/etc).
        * </pre>
        *
-       * <code>optional string method = 9;</code>
+       * <code>optional string method = 11;</code>
        */
       public Builder setMethodBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000100;
+  bitField0_ |= 0x00000400;
         method_ = value;
         onChanged();
         return this;
@@ -3879,10 +4427,10 @@ public final class web_m {
        * Requested URI.
        * </pre>
        *
-       * <code>optional string uri = 10;</code>
+       * <code>optional string uri = 12;</code>
        */
       public boolean hasUri() {
-        return ((bitField0_ & 0x00000200) == 0x00000200);
+        return ((bitField0_ & 0x00000800) == 0x00000800);
       }
       /**
        * <pre>
@@ -3890,7 +4438,7 @@ public final class web_m {
        * Requested URI.
        * </pre>
        *
-       * <code>optional string uri = 10;</code>
+       * <code>optional string uri = 12;</code>
        */
       public java.lang.String getUri() {
         java.lang.Object ref = uri_;
@@ -3912,7 +4460,7 @@ public final class web_m {
        * Requested URI.
        * </pre>
        *
-       * <code>optional string uri = 10;</code>
+       * <code>optional string uri = 12;</code>
        */
       public com.google.protobuf.ByteString
           getUriBytes() {
@@ -3933,14 +4481,14 @@ public final class web_m {
        * Requested URI.
        * </pre>
        *
-       * <code>optional string uri = 10;</code>
+       * <code>optional string uri = 12;</code>
        */
       public Builder setUri(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000200;
+  bitField0_ |= 0x00000800;
         uri_ = value;
         onChanged();
         return this;
@@ -3951,10 +4499,10 @@ public final class web_m {
        * Requested URI.
        * </pre>
        *
-       * <code>optional string uri = 10;</code>
+       * <code>optional string uri = 12;</code>
        */
       public Builder clearUri() {
-        bitField0_ = (bitField0_ & ~0x00000200);
+        bitField0_ = (bitField0_ & ~0x00000800);
         uri_ = getDefaultInstance().getUri();
         onChanged();
         return this;
@@ -3965,14 +4513,14 @@ public final class web_m {
        * Requested URI.
        * </pre>
        *
-       * <code>optional string uri = 10;</code>
+       * <code>optional string uri = 12;</code>
        */
       public Builder setUriBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000200;
+  bitField0_ |= 0x00000800;
         uri_ = value;
         onChanged();
         return this;
@@ -3985,10 +4533,10 @@ public final class web_m {
        * Requested Path of URI.
        * </pre>
        *
-       * <code>optional string path = 11;</code>
+       * <code>optional string path = 13;</code>
        */
       public boolean hasPath() {
-        return ((bitField0_ & 0x00000400) == 0x00000400);
+        return ((bitField0_ & 0x00001000) == 0x00001000);
       }
       /**
        * <pre>
@@ -3996,7 +4544,7 @@ public final class web_m {
        * Requested Path of URI.
        * </pre>
        *
-       * <code>optional string path = 11;</code>
+       * <code>optional string path = 13;</code>
        */
       public java.lang.String getPath() {
         java.lang.Object ref = path_;
@@ -4018,7 +4566,7 @@ public final class web_m {
        * Requested Path of URI.
        * </pre>
        *
-       * <code>optional string path = 11;</code>
+       * <code>optional string path = 13;</code>
        */
       public com.google.protobuf.ByteString
           getPathBytes() {
@@ -4039,14 +4587,14 @@ public final class web_m {
        * Requested Path of URI.
        * </pre>
        *
-       * <code>optional string path = 11;</code>
+       * <code>optional string path = 13;</code>
        */
       public Builder setPath(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000400;
+  bitField0_ |= 0x00001000;
         path_ = value;
         onChanged();
         return this;
@@ -4057,10 +4605,10 @@ public final class web_m {
        * Requested Path of URI.
        * </pre>
        *
-       * <code>optional string path = 11;</code>
+       * <code>optional string path = 13;</code>
        */
       public Builder clearPath() {
-        bitField0_ = (bitField0_ & ~0x00000400);
+        bitField0_ = (bitField0_ & ~0x00001000);
         path_ = getDefaultInstance().getPath();
         onChanged();
         return this;
@@ -4071,14 +4619,14 @@ public final class web_m {
        * Requested Path of URI.
        * </pre>
        *
-       * <code>optional string path = 11;</code>
+       * <code>optional string path = 13;</code>
        */
       public Builder setPathBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000400;
+  bitField0_ |= 0x00001000;
         path_ = value;
         onChanged();
         return this;
@@ -4091,10 +4639,10 @@ public final class web_m {
        * Raw Requested Path of URI.
        * </pre>
        *
-       * <code>optional string rawPath = 12;</code>
+       * <code>optional string rawPath = 14;</code>
        */
       public boolean hasRawPath() {
-        return ((bitField0_ & 0x00000800) == 0x00000800);
+        return ((bitField0_ & 0x00002000) == 0x00002000);
       }
       /**
        * <pre>
@@ -4102,7 +4650,7 @@ public final class web_m {
        * Raw Requested Path of URI.
        * </pre>
        *
-       * <code>optional string rawPath = 12;</code>
+       * <code>optional string rawPath = 14;</code>
        */
       public java.lang.String getRawPath() {
         java.lang.Object ref = rawPath_;
@@ -4124,7 +4672,7 @@ public final class web_m {
        * Raw Requested Path of URI.
        * </pre>
        *
-       * <code>optional string rawPath = 12;</code>
+       * <code>optional string rawPath = 14;</code>
        */
       public com.google.protobuf.ByteString
           getRawPathBytes() {
@@ -4145,14 +4693,14 @@ public final class web_m {
        * Raw Requested Path of URI.
        * </pre>
        *
-       * <code>optional string rawPath = 12;</code>
+       * <code>optional string rawPath = 14;</code>
        */
       public Builder setRawPath(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000800;
+  bitField0_ |= 0x00002000;
         rawPath_ = value;
         onChanged();
         return this;
@@ -4163,10 +4711,10 @@ public final class web_m {
        * Raw Requested Path of URI.
        * </pre>
        *
-       * <code>optional string rawPath = 12;</code>
+       * <code>optional string rawPath = 14;</code>
        */
       public Builder clearRawPath() {
-        bitField0_ = (bitField0_ & ~0x00000800);
+        bitField0_ = (bitField0_ & ~0x00002000);
         rawPath_ = getDefaultInstance().getRawPath();
         onChanged();
         return this;
@@ -4177,14 +4725,14 @@ public final class web_m {
        * Raw Requested Path of URI.
        * </pre>
        *
-       * <code>optional string rawPath = 12;</code>
+       * <code>optional string rawPath = 14;</code>
        */
       public Builder setRawPathBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000800;
+  bitField0_ |= 0x00002000;
         rawPath_ = value;
         onChanged();
         return this;
@@ -4197,10 +4745,10 @@ public final class web_m {
        * Raw Query String.
        * </pre>
        *
-       * <code>optional string rawQuery = 13;</code>
+       * <code>optional string rawQuery = 15;</code>
        */
       public boolean hasRawQuery() {
-        return ((bitField0_ & 0x00001000) == 0x00001000);
+        return ((bitField0_ & 0x00004000) == 0x00004000);
       }
       /**
        * <pre>
@@ -4208,7 +4756,7 @@ public final class web_m {
        * Raw Query String.
        * </pre>
        *
-       * <code>optional string rawQuery = 13;</code>
+       * <code>optional string rawQuery = 15;</code>
        */
       public java.lang.String getRawQuery() {
         java.lang.Object ref = rawQuery_;
@@ -4230,7 +4778,7 @@ public final class web_m {
        * Raw Query String.
        * </pre>
        *
-       * <code>optional string rawQuery = 13;</code>
+       * <code>optional string rawQuery = 15;</code>
        */
       public com.google.protobuf.ByteString
           getRawQueryBytes() {
@@ -4251,14 +4799,14 @@ public final class web_m {
        * Raw Query String.
        * </pre>
        *
-       * <code>optional string rawQuery = 13;</code>
+       * <code>optional string rawQuery = 15;</code>
        */
       public Builder setRawQuery(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00001000;
+  bitField0_ |= 0x00004000;
         rawQuery_ = value;
         onChanged();
         return this;
@@ -4269,10 +4817,10 @@ public final class web_m {
        * Raw Query String.
        * </pre>
        *
-       * <code>optional string rawQuery = 13;</code>
+       * <code>optional string rawQuery = 15;</code>
        */
       public Builder clearRawQuery() {
-        bitField0_ = (bitField0_ & ~0x00001000);
+        bitField0_ = (bitField0_ & ~0x00004000);
         rawQuery_ = getDefaultInstance().getRawQuery();
         onChanged();
         return this;
@@ -4283,14 +4831,14 @@ public final class web_m {
        * Raw Query String.
        * </pre>
        *
-       * <code>optional string rawQuery = 13;</code>
+       * <code>optional string rawQuery = 15;</code>
        */
       public Builder setRawQueryBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00001000;
+  bitField0_ |= 0x00004000;
         rawQuery_ = value;
         onChanged();
         return this;
@@ -4328,7 +4876,7 @@ public final class web_m {
        * Query Parameters.
        * </pre>
        *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 14;</code>
+       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 16;</code>
        */
 
       public boolean containsParameters(
@@ -4349,7 +4897,7 @@ public final class web_m {
        * Query Parameters.
        * </pre>
        *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 14;</code>
+       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 16;</code>
        */
 
       public java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter> getParametersMap() {
@@ -4361,7 +4909,7 @@ public final class web_m {
        * Query Parameters.
        * </pre>
        *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 14;</code>
+       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 16;</code>
        */
 
       public com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter getParametersOrDefault(
@@ -4378,7 +4926,7 @@ public final class web_m {
        * Query Parameters.
        * </pre>
        *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 14;</code>
+       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 16;</code>
        */
 
       public com.mackenziehigh.socius.web.messages.web_m.HttpQueryParameter getParametersOrThrow(
@@ -4403,7 +4951,7 @@ public final class web_m {
        * Query Parameters.
        * </pre>
        *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 14;</code>
+       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 16;</code>
        */
 
       public Builder removeParameters(
@@ -4427,7 +4975,7 @@ public final class web_m {
        * Query Parameters.
        * </pre>
        *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 14;</code>
+       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 16;</code>
        */
       public Builder putParameters(
           java.lang.String key,
@@ -4444,7 +4992,7 @@ public final class web_m {
        * Query Parameters.
        * </pre>
        *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 14;</code>
+       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpQueryParameter&gt; parameters = 16;</code>
        */
 
       public Builder putAllParameters(
@@ -4486,7 +5034,7 @@ public final class web_m {
        * HTTP Headers.
        * </pre>
        *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 15;</code>
+       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 17;</code>
        */
 
       public boolean containsHeaders(
@@ -4507,7 +5055,7 @@ public final class web_m {
        * HTTP Headers.
        * </pre>
        *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 15;</code>
+       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 17;</code>
        */
 
       public java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> getHeadersMap() {
@@ -4519,7 +5067,7 @@ public final class web_m {
        * HTTP Headers.
        * </pre>
        *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 15;</code>
+       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 17;</code>
        */
 
       public com.mackenziehigh.socius.web.messages.web_m.HttpHeader getHeadersOrDefault(
@@ -4536,7 +5084,7 @@ public final class web_m {
        * HTTP Headers.
        * </pre>
        *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 15;</code>
+       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 17;</code>
        */
 
       public com.mackenziehigh.socius.web.messages.web_m.HttpHeader getHeadersOrThrow(
@@ -4561,7 +5109,7 @@ public final class web_m {
        * HTTP Headers.
        * </pre>
        *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 15;</code>
+       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 17;</code>
        */
 
       public Builder removeHeaders(
@@ -4585,7 +5133,7 @@ public final class web_m {
        * HTTP Headers.
        * </pre>
        *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 15;</code>
+       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 17;</code>
        */
       public Builder putHeaders(
           java.lang.String key,
@@ -4602,7 +5150,7 @@ public final class web_m {
        * HTTP Headers.
        * </pre>
        *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 15;</code>
+       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; headers = 17;</code>
        */
 
       public Builder putAllHeaders(
@@ -4619,10 +5167,10 @@ public final class web_m {
        * Client Host.
        * </pre>
        *
-       * <code>optional string host = 16;</code>
+       * <code>optional string host = 18;</code>
        */
       public boolean hasHost() {
-        return ((bitField0_ & 0x00008000) == 0x00008000);
+        return ((bitField0_ & 0x00020000) == 0x00020000);
       }
       /**
        * <pre>
@@ -4630,7 +5178,7 @@ public final class web_m {
        * Client Host.
        * </pre>
        *
-       * <code>optional string host = 16;</code>
+       * <code>optional string host = 18;</code>
        */
       public java.lang.String getHost() {
         java.lang.Object ref = host_;
@@ -4652,7 +5200,7 @@ public final class web_m {
        * Client Host.
        * </pre>
        *
-       * <code>optional string host = 16;</code>
+       * <code>optional string host = 18;</code>
        */
       public com.google.protobuf.ByteString
           getHostBytes() {
@@ -4673,14 +5221,14 @@ public final class web_m {
        * Client Host.
        * </pre>
        *
-       * <code>optional string host = 16;</code>
+       * <code>optional string host = 18;</code>
        */
       public Builder setHost(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00008000;
+  bitField0_ |= 0x00020000;
         host_ = value;
         onChanged();
         return this;
@@ -4691,10 +5239,10 @@ public final class web_m {
        * Client Host.
        * </pre>
        *
-       * <code>optional string host = 16;</code>
+       * <code>optional string host = 18;</code>
        */
       public Builder clearHost() {
-        bitField0_ = (bitField0_ & ~0x00008000);
+        bitField0_ = (bitField0_ & ~0x00020000);
         host_ = getDefaultInstance().getHost();
         onChanged();
         return this;
@@ -4705,14 +5253,14 @@ public final class web_m {
        * Client Host.
        * </pre>
        *
-       * <code>optional string host = 16;</code>
+       * <code>optional string host = 18;</code>
        */
       public Builder setHostBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00008000;
+  bitField0_ |= 0x00020000;
         host_ = value;
         onChanged();
         return this;
@@ -4725,10 +5273,10 @@ public final class web_m {
        * MIME Type of the body.
        * </pre>
        *
-       * <code>optional string contentType = 17;</code>
+       * <code>optional string contentType = 19;</code>
        */
       public boolean hasContentType() {
-        return ((bitField0_ & 0x00010000) == 0x00010000);
+        return ((bitField0_ & 0x00040000) == 0x00040000);
       }
       /**
        * <pre>
@@ -4736,7 +5284,7 @@ public final class web_m {
        * MIME Type of the body.
        * </pre>
        *
-       * <code>optional string contentType = 17;</code>
+       * <code>optional string contentType = 19;</code>
        */
       public java.lang.String getContentType() {
         java.lang.Object ref = contentType_;
@@ -4758,7 +5306,7 @@ public final class web_m {
        * MIME Type of the body.
        * </pre>
        *
-       * <code>optional string contentType = 17;</code>
+       * <code>optional string contentType = 19;</code>
        */
       public com.google.protobuf.ByteString
           getContentTypeBytes() {
@@ -4779,14 +5327,14 @@ public final class web_m {
        * MIME Type of the body.
        * </pre>
        *
-       * <code>optional string contentType = 17;</code>
+       * <code>optional string contentType = 19;</code>
        */
       public Builder setContentType(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00010000;
+  bitField0_ |= 0x00040000;
         contentType_ = value;
         onChanged();
         return this;
@@ -4797,10 +5345,10 @@ public final class web_m {
        * MIME Type of the body.
        * </pre>
        *
-       * <code>optional string contentType = 17;</code>
+       * <code>optional string contentType = 19;</code>
        */
       public Builder clearContentType() {
-        bitField0_ = (bitField0_ & ~0x00010000);
+        bitField0_ = (bitField0_ & ~0x00040000);
         contentType_ = getDefaultInstance().getContentType();
         onChanged();
         return this;
@@ -4811,14 +5359,14 @@ public final class web_m {
        * MIME Type of the body.
        * </pre>
        *
-       * <code>optional string contentType = 17;</code>
+       * <code>optional string contentType = 19;</code>
        */
       public Builder setContentTypeBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00010000;
+  bitField0_ |= 0x00040000;
         contentType_ = value;
         onChanged();
         return this;
@@ -4831,10 +5379,10 @@ public final class web_m {
        * Length of the body.
        * </pre>
        *
-       * <code>optional int32 contentLength = 18;</code>
+       * <code>optional int32 contentLength = 20;</code>
        */
       public boolean hasContentLength() {
-        return ((bitField0_ & 0x00020000) == 0x00020000);
+        return ((bitField0_ & 0x00080000) == 0x00080000);
       }
       /**
        * <pre>
@@ -4842,7 +5390,7 @@ public final class web_m {
        * Length of the body.
        * </pre>
        *
-       * <code>optional int32 contentLength = 18;</code>
+       * <code>optional int32 contentLength = 20;</code>
        */
       public int getContentLength() {
         return contentLength_;
@@ -4853,10 +5401,10 @@ public final class web_m {
        * Length of the body.
        * </pre>
        *
-       * <code>optional int32 contentLength = 18;</code>
+       * <code>optional int32 contentLength = 20;</code>
        */
       public Builder setContentLength(int value) {
-        bitField0_ |= 0x00020000;
+        bitField0_ |= 0x00080000;
         contentLength_ = value;
         onChanged();
         return this;
@@ -4867,10 +5415,10 @@ public final class web_m {
        * Length of the body.
        * </pre>
        *
-       * <code>optional int32 contentLength = 18;</code>
+       * <code>optional int32 contentLength = 20;</code>
        */
       public Builder clearContentLength() {
-        bitField0_ = (bitField0_ & ~0x00020000);
+        bitField0_ = (bitField0_ & ~0x00080000);
         contentLength_ = 0;
         onChanged();
         return this;
@@ -4883,10 +5431,10 @@ public final class web_m {
        * Body of the request.
        * </pre>
        *
-       * <code>optional bytes body = 19;</code>
+       * <code>optional bytes body = 21;</code>
        */
       public boolean hasBody() {
-        return ((bitField0_ & 0x00040000) == 0x00040000);
+        return ((bitField0_ & 0x00100000) == 0x00100000);
       }
       /**
        * <pre>
@@ -4894,7 +5442,7 @@ public final class web_m {
        * Body of the request.
        * </pre>
        *
-       * <code>optional bytes body = 19;</code>
+       * <code>optional bytes body = 21;</code>
        */
       public com.google.protobuf.ByteString getBody() {
         return body_;
@@ -4905,13 +5453,13 @@ public final class web_m {
        * Body of the request.
        * </pre>
        *
-       * <code>optional bytes body = 19;</code>
+       * <code>optional bytes body = 21;</code>
        */
       public Builder setBody(com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00040000;
+  bitField0_ |= 0x00100000;
         body_ = value;
         onChanged();
         return this;
@@ -4922,10 +5470,10 @@ public final class web_m {
        * Body of the request.
        * </pre>
        *
-       * <code>optional bytes body = 19;</code>
+       * <code>optional bytes body = 21;</code>
        */
       public Builder clearBody() {
-        bitField0_ = (bitField0_ & ~0x00040000);
+        bitField0_ = (bitField0_ & ~0x00100000);
         body_ = getDefaultInstance().getBody();
         onChanged();
         return this;
@@ -4963,7 +5511,7 @@ public final class web_m {
        * Trailing HTTP Headers.
        * </pre>
        *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 20;</code>
+       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 22;</code>
        */
 
       public boolean containsTrailers(
@@ -4984,7 +5532,7 @@ public final class web_m {
        * Trailing HTTP Headers.
        * </pre>
        *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 20;</code>
+       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 22;</code>
        */
 
       public java.util.Map<java.lang.String, com.mackenziehigh.socius.web.messages.web_m.HttpHeader> getTrailersMap() {
@@ -4996,7 +5544,7 @@ public final class web_m {
        * Trailing HTTP Headers.
        * </pre>
        *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 20;</code>
+       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 22;</code>
        */
 
       public com.mackenziehigh.socius.web.messages.web_m.HttpHeader getTrailersOrDefault(
@@ -5013,7 +5561,7 @@ public final class web_m {
        * Trailing HTTP Headers.
        * </pre>
        *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 20;</code>
+       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 22;</code>
        */
 
       public com.mackenziehigh.socius.web.messages.web_m.HttpHeader getTrailersOrThrow(
@@ -5038,7 +5586,7 @@ public final class web_m {
        * Trailing HTTP Headers.
        * </pre>
        *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 20;</code>
+       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 22;</code>
        */
 
       public Builder removeTrailers(
@@ -5062,7 +5610,7 @@ public final class web_m {
        * Trailing HTTP Headers.
        * </pre>
        *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 20;</code>
+       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 22;</code>
        */
       public Builder putTrailers(
           java.lang.String key,
@@ -5079,7 +5627,7 @@ public final class web_m {
        * Trailing HTTP Headers.
        * </pre>
        *
-       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 20;</code>
+       * <code>map&lt;string, .com.mackenziehigh.socius.web.messages.HttpHeader&gt; trailers = 22;</code>
        */
 
       public Builder putAllTrailers(
@@ -7457,6 +8005,1510 @@ public final class web_m {
     }
 
     public com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface RemoteAddressOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.mackenziehigh.socius.web.messages.RemoteAddress)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     **
+     * This is the host-name in textual form.
+     * </pre>
+     *
+     * <code>optional string host = 1;</code>
+     */
+    boolean hasHost();
+    /**
+     * <pre>
+     **
+     * This is the host-name in textual form.
+     * </pre>
+     *
+     * <code>optional string host = 1;</code>
+     */
+    java.lang.String getHost();
+    /**
+     * <pre>
+     **
+     * This is the host-name in textual form.
+     * </pre>
+     *
+     * <code>optional string host = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getHostBytes();
+
+    /**
+     * <pre>
+     **
+     * This is the port number.
+     * </pre>
+     *
+     * <code>optional int32 port = 3;</code>
+     */
+    boolean hasPort();
+    /**
+     * <pre>
+     **
+     * This is the port number.
+     * </pre>
+     *
+     * <code>optional int32 port = 3;</code>
+     */
+    int getPort();
+  }
+  /**
+   * <pre>
+   **
+   * Remote Address.
+   * </pre>
+   *
+   * Protobuf type {@code com.mackenziehigh.socius.web.messages.RemoteAddress}
+   */
+  public  static final class RemoteAddress extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.mackenziehigh.socius.web.messages.RemoteAddress)
+      RemoteAddressOrBuilder {
+    // Use RemoteAddress.newBuilder() to construct.
+    private RemoteAddress(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private RemoteAddress() {
+      host_ = "";
+      port_ = 0;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private RemoteAddress(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000001;
+              host_ = bs;
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000002;
+              port_ = input.readInt32();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_RemoteAddress_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_RemoteAddress_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.mackenziehigh.socius.web.messages.web_m.RemoteAddress.class, com.mackenziehigh.socius.web.messages.web_m.RemoteAddress.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int HOST_FIELD_NUMBER = 1;
+    private volatile java.lang.Object host_;
+    /**
+     * <pre>
+     **
+     * This is the host-name in textual form.
+     * </pre>
+     *
+     * <code>optional string host = 1;</code>
+     */
+    public boolean hasHost() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <pre>
+     **
+     * This is the host-name in textual form.
+     * </pre>
+     *
+     * <code>optional string host = 1;</code>
+     */
+    public java.lang.String getHost() {
+      java.lang.Object ref = host_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          host_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     **
+     * This is the host-name in textual form.
+     * </pre>
+     *
+     * <code>optional string host = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getHostBytes() {
+      java.lang.Object ref = host_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        host_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PORT_FIELD_NUMBER = 3;
+    private int port_;
+    /**
+     * <pre>
+     **
+     * This is the port number.
+     * </pre>
+     *
+     * <code>optional int32 port = 3;</code>
+     */
+    public boolean hasPort() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <pre>
+     **
+     * This is the port number.
+     * </pre>
+     *
+     * <code>optional int32 port = 3;</code>
+     */
+    public int getPort() {
+      return port_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, host_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeInt32(3, port_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, host_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, port_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.mackenziehigh.socius.web.messages.web_m.RemoteAddress)) {
+        return super.equals(obj);
+      }
+      com.mackenziehigh.socius.web.messages.web_m.RemoteAddress other = (com.mackenziehigh.socius.web.messages.web_m.RemoteAddress) obj;
+
+      boolean result = true;
+      result = result && (hasHost() == other.hasHost());
+      if (hasHost()) {
+        result = result && getHost()
+            .equals(other.getHost());
+      }
+      result = result && (hasPort() == other.hasPort());
+      if (hasPort()) {
+        result = result && (getPort()
+            == other.getPort());
+      }
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasHost()) {
+        hash = (37 * hash) + HOST_FIELD_NUMBER;
+        hash = (53 * hash) + getHost().hashCode();
+      }
+      if (hasPort()) {
+        hash = (37 * hash) + PORT_FIELD_NUMBER;
+        hash = (53 * hash) + getPort();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.mackenziehigh.socius.web.messages.web_m.RemoteAddress parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.mackenziehigh.socius.web.messages.web_m.RemoteAddress parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.mackenziehigh.socius.web.messages.web_m.RemoteAddress parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.mackenziehigh.socius.web.messages.web_m.RemoteAddress parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.mackenziehigh.socius.web.messages.web_m.RemoteAddress parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.mackenziehigh.socius.web.messages.web_m.RemoteAddress parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.mackenziehigh.socius.web.messages.web_m.RemoteAddress parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.mackenziehigh.socius.web.messages.web_m.RemoteAddress parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.mackenziehigh.socius.web.messages.web_m.RemoteAddress parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.mackenziehigh.socius.web.messages.web_m.RemoteAddress parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.mackenziehigh.socius.web.messages.web_m.RemoteAddress parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.mackenziehigh.socius.web.messages.web_m.RemoteAddress parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.mackenziehigh.socius.web.messages.web_m.RemoteAddress prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     **
+     * Remote Address.
+     * </pre>
+     *
+     * Protobuf type {@code com.mackenziehigh.socius.web.messages.RemoteAddress}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.mackenziehigh.socius.web.messages.RemoteAddress)
+        com.mackenziehigh.socius.web.messages.web_m.RemoteAddressOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_RemoteAddress_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_RemoteAddress_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.mackenziehigh.socius.web.messages.web_m.RemoteAddress.class, com.mackenziehigh.socius.web.messages.web_m.RemoteAddress.Builder.class);
+      }
+
+      // Construct using com.mackenziehigh.socius.web.messages.web_m.RemoteAddress.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        host_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        port_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_RemoteAddress_descriptor;
+      }
+
+      public com.mackenziehigh.socius.web.messages.web_m.RemoteAddress getDefaultInstanceForType() {
+        return com.mackenziehigh.socius.web.messages.web_m.RemoteAddress.getDefaultInstance();
+      }
+
+      public com.mackenziehigh.socius.web.messages.web_m.RemoteAddress build() {
+        com.mackenziehigh.socius.web.messages.web_m.RemoteAddress result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.mackenziehigh.socius.web.messages.web_m.RemoteAddress buildPartial() {
+        com.mackenziehigh.socius.web.messages.web_m.RemoteAddress result = new com.mackenziehigh.socius.web.messages.web_m.RemoteAddress(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.host_ = host_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.port_ = port_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.mackenziehigh.socius.web.messages.web_m.RemoteAddress) {
+          return mergeFrom((com.mackenziehigh.socius.web.messages.web_m.RemoteAddress)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.mackenziehigh.socius.web.messages.web_m.RemoteAddress other) {
+        if (other == com.mackenziehigh.socius.web.messages.web_m.RemoteAddress.getDefaultInstance()) return this;
+        if (other.hasHost()) {
+          bitField0_ |= 0x00000001;
+          host_ = other.host_;
+          onChanged();
+        }
+        if (other.hasPort()) {
+          setPort(other.getPort());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.mackenziehigh.socius.web.messages.web_m.RemoteAddress parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.mackenziehigh.socius.web.messages.web_m.RemoteAddress) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object host_ = "";
+      /**
+       * <pre>
+       **
+       * This is the host-name in textual form.
+       * </pre>
+       *
+       * <code>optional string host = 1;</code>
+       */
+      public boolean hasHost() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <pre>
+       **
+       * This is the host-name in textual form.
+       * </pre>
+       *
+       * <code>optional string host = 1;</code>
+       */
+      public java.lang.String getHost() {
+        java.lang.Object ref = host_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            host_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       **
+       * This is the host-name in textual form.
+       * </pre>
+       *
+       * <code>optional string host = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getHostBytes() {
+        java.lang.Object ref = host_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          host_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       **
+       * This is the host-name in textual form.
+       * </pre>
+       *
+       * <code>optional string host = 1;</code>
+       */
+      public Builder setHost(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        host_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * This is the host-name in textual form.
+       * </pre>
+       *
+       * <code>optional string host = 1;</code>
+       */
+      public Builder clearHost() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        host_ = getDefaultInstance().getHost();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * This is the host-name in textual form.
+       * </pre>
+       *
+       * <code>optional string host = 1;</code>
+       */
+      public Builder setHostBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        host_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int port_ ;
+      /**
+       * <pre>
+       **
+       * This is the port number.
+       * </pre>
+       *
+       * <code>optional int32 port = 3;</code>
+       */
+      public boolean hasPort() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <pre>
+       **
+       * This is the port number.
+       * </pre>
+       *
+       * <code>optional int32 port = 3;</code>
+       */
+      public int getPort() {
+        return port_;
+      }
+      /**
+       * <pre>
+       **
+       * This is the port number.
+       * </pre>
+       *
+       * <code>optional int32 port = 3;</code>
+       */
+      public Builder setPort(int value) {
+        bitField0_ |= 0x00000002;
+        port_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * This is the port number.
+       * </pre>
+       *
+       * <code>optional int32 port = 3;</code>
+       */
+      public Builder clearPort() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        port_ = 0;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.mackenziehigh.socius.web.messages.RemoteAddress)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.mackenziehigh.socius.web.messages.RemoteAddress)
+    private static final com.mackenziehigh.socius.web.messages.web_m.RemoteAddress DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.mackenziehigh.socius.web.messages.web_m.RemoteAddress();
+    }
+
+    public static com.mackenziehigh.socius.web.messages.web_m.RemoteAddress getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    @java.lang.Deprecated public static final com.google.protobuf.Parser<RemoteAddress>
+        PARSER = new com.google.protobuf.AbstractParser<RemoteAddress>() {
+      public RemoteAddress parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new RemoteAddress(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<RemoteAddress> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<RemoteAddress> getParserForType() {
+      return PARSER;
+    }
+
+    public com.mackenziehigh.socius.web.messages.web_m.RemoteAddress getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface LocalAddressOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.mackenziehigh.socius.web.messages.LocalAddress)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     **
+     * This is the host-name in textual form.
+     * </pre>
+     *
+     * <code>optional string host = 1;</code>
+     */
+    boolean hasHost();
+    /**
+     * <pre>
+     **
+     * This is the host-name in textual form.
+     * </pre>
+     *
+     * <code>optional string host = 1;</code>
+     */
+    java.lang.String getHost();
+    /**
+     * <pre>
+     **
+     * This is the host-name in textual form.
+     * </pre>
+     *
+     * <code>optional string host = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getHostBytes();
+
+    /**
+     * <pre>
+     **
+     * This is the port number.
+     * </pre>
+     *
+     * <code>optional int32 port = 3;</code>
+     */
+    boolean hasPort();
+    /**
+     * <pre>
+     **
+     * This is the port number.
+     * </pre>
+     *
+     * <code>optional int32 port = 3;</code>
+     */
+    int getPort();
+  }
+  /**
+   * <pre>
+   **
+   * Local Address.
+   * </pre>
+   *
+   * Protobuf type {@code com.mackenziehigh.socius.web.messages.LocalAddress}
+   */
+  public  static final class LocalAddress extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.mackenziehigh.socius.web.messages.LocalAddress)
+      LocalAddressOrBuilder {
+    // Use LocalAddress.newBuilder() to construct.
+    private LocalAddress(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private LocalAddress() {
+      host_ = "";
+      port_ = 0;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private LocalAddress(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000001;
+              host_ = bs;
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000002;
+              port_ = input.readInt32();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_LocalAddress_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_LocalAddress_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.mackenziehigh.socius.web.messages.web_m.LocalAddress.class, com.mackenziehigh.socius.web.messages.web_m.LocalAddress.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int HOST_FIELD_NUMBER = 1;
+    private volatile java.lang.Object host_;
+    /**
+     * <pre>
+     **
+     * This is the host-name in textual form.
+     * </pre>
+     *
+     * <code>optional string host = 1;</code>
+     */
+    public boolean hasHost() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <pre>
+     **
+     * This is the host-name in textual form.
+     * </pre>
+     *
+     * <code>optional string host = 1;</code>
+     */
+    public java.lang.String getHost() {
+      java.lang.Object ref = host_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          host_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     **
+     * This is the host-name in textual form.
+     * </pre>
+     *
+     * <code>optional string host = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getHostBytes() {
+      java.lang.Object ref = host_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        host_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PORT_FIELD_NUMBER = 3;
+    private int port_;
+    /**
+     * <pre>
+     **
+     * This is the port number.
+     * </pre>
+     *
+     * <code>optional int32 port = 3;</code>
+     */
+    public boolean hasPort() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <pre>
+     **
+     * This is the port number.
+     * </pre>
+     *
+     * <code>optional int32 port = 3;</code>
+     */
+    public int getPort() {
+      return port_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, host_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeInt32(3, port_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, host_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, port_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.mackenziehigh.socius.web.messages.web_m.LocalAddress)) {
+        return super.equals(obj);
+      }
+      com.mackenziehigh.socius.web.messages.web_m.LocalAddress other = (com.mackenziehigh.socius.web.messages.web_m.LocalAddress) obj;
+
+      boolean result = true;
+      result = result && (hasHost() == other.hasHost());
+      if (hasHost()) {
+        result = result && getHost()
+            .equals(other.getHost());
+      }
+      result = result && (hasPort() == other.hasPort());
+      if (hasPort()) {
+        result = result && (getPort()
+            == other.getPort());
+      }
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasHost()) {
+        hash = (37 * hash) + HOST_FIELD_NUMBER;
+        hash = (53 * hash) + getHost().hashCode();
+      }
+      if (hasPort()) {
+        hash = (37 * hash) + PORT_FIELD_NUMBER;
+        hash = (53 * hash) + getPort();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.mackenziehigh.socius.web.messages.web_m.LocalAddress parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.mackenziehigh.socius.web.messages.web_m.LocalAddress parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.mackenziehigh.socius.web.messages.web_m.LocalAddress parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.mackenziehigh.socius.web.messages.web_m.LocalAddress parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.mackenziehigh.socius.web.messages.web_m.LocalAddress parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.mackenziehigh.socius.web.messages.web_m.LocalAddress parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.mackenziehigh.socius.web.messages.web_m.LocalAddress parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.mackenziehigh.socius.web.messages.web_m.LocalAddress parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.mackenziehigh.socius.web.messages.web_m.LocalAddress parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.mackenziehigh.socius.web.messages.web_m.LocalAddress parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.mackenziehigh.socius.web.messages.web_m.LocalAddress parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.mackenziehigh.socius.web.messages.web_m.LocalAddress parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.mackenziehigh.socius.web.messages.web_m.LocalAddress prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     **
+     * Local Address.
+     * </pre>
+     *
+     * Protobuf type {@code com.mackenziehigh.socius.web.messages.LocalAddress}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.mackenziehigh.socius.web.messages.LocalAddress)
+        com.mackenziehigh.socius.web.messages.web_m.LocalAddressOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_LocalAddress_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_LocalAddress_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.mackenziehigh.socius.web.messages.web_m.LocalAddress.class, com.mackenziehigh.socius.web.messages.web_m.LocalAddress.Builder.class);
+      }
+
+      // Construct using com.mackenziehigh.socius.web.messages.web_m.LocalAddress.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        host_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        port_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.mackenziehigh.socius.web.messages.web_m.internal_static_com_mackenziehigh_socius_web_messages_LocalAddress_descriptor;
+      }
+
+      public com.mackenziehigh.socius.web.messages.web_m.LocalAddress getDefaultInstanceForType() {
+        return com.mackenziehigh.socius.web.messages.web_m.LocalAddress.getDefaultInstance();
+      }
+
+      public com.mackenziehigh.socius.web.messages.web_m.LocalAddress build() {
+        com.mackenziehigh.socius.web.messages.web_m.LocalAddress result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.mackenziehigh.socius.web.messages.web_m.LocalAddress buildPartial() {
+        com.mackenziehigh.socius.web.messages.web_m.LocalAddress result = new com.mackenziehigh.socius.web.messages.web_m.LocalAddress(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.host_ = host_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.port_ = port_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.mackenziehigh.socius.web.messages.web_m.LocalAddress) {
+          return mergeFrom((com.mackenziehigh.socius.web.messages.web_m.LocalAddress)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.mackenziehigh.socius.web.messages.web_m.LocalAddress other) {
+        if (other == com.mackenziehigh.socius.web.messages.web_m.LocalAddress.getDefaultInstance()) return this;
+        if (other.hasHost()) {
+          bitField0_ |= 0x00000001;
+          host_ = other.host_;
+          onChanged();
+        }
+        if (other.hasPort()) {
+          setPort(other.getPort());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.mackenziehigh.socius.web.messages.web_m.LocalAddress parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.mackenziehigh.socius.web.messages.web_m.LocalAddress) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object host_ = "";
+      /**
+       * <pre>
+       **
+       * This is the host-name in textual form.
+       * </pre>
+       *
+       * <code>optional string host = 1;</code>
+       */
+      public boolean hasHost() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <pre>
+       **
+       * This is the host-name in textual form.
+       * </pre>
+       *
+       * <code>optional string host = 1;</code>
+       */
+      public java.lang.String getHost() {
+        java.lang.Object ref = host_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            host_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       **
+       * This is the host-name in textual form.
+       * </pre>
+       *
+       * <code>optional string host = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getHostBytes() {
+        java.lang.Object ref = host_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          host_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       **
+       * This is the host-name in textual form.
+       * </pre>
+       *
+       * <code>optional string host = 1;</code>
+       */
+      public Builder setHost(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        host_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * This is the host-name in textual form.
+       * </pre>
+       *
+       * <code>optional string host = 1;</code>
+       */
+      public Builder clearHost() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        host_ = getDefaultInstance().getHost();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * This is the host-name in textual form.
+       * </pre>
+       *
+       * <code>optional string host = 1;</code>
+       */
+      public Builder setHostBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        host_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int port_ ;
+      /**
+       * <pre>
+       **
+       * This is the port number.
+       * </pre>
+       *
+       * <code>optional int32 port = 3;</code>
+       */
+      public boolean hasPort() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <pre>
+       **
+       * This is the port number.
+       * </pre>
+       *
+       * <code>optional int32 port = 3;</code>
+       */
+      public int getPort() {
+        return port_;
+      }
+      /**
+       * <pre>
+       **
+       * This is the port number.
+       * </pre>
+       *
+       * <code>optional int32 port = 3;</code>
+       */
+      public Builder setPort(int value) {
+        bitField0_ |= 0x00000002;
+        port_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * This is the port number.
+       * </pre>
+       *
+       * <code>optional int32 port = 3;</code>
+       */
+      public Builder clearPort() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        port_ = 0;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.mackenziehigh.socius.web.messages.LocalAddress)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.mackenziehigh.socius.web.messages.LocalAddress)
+    private static final com.mackenziehigh.socius.web.messages.web_m.LocalAddress DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.mackenziehigh.socius.web.messages.web_m.LocalAddress();
+    }
+
+    public static com.mackenziehigh.socius.web.messages.web_m.LocalAddress getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    @java.lang.Deprecated public static final com.google.protobuf.Parser<LocalAddress>
+        PARSER = new com.google.protobuf.AbstractParser<LocalAddress>() {
+      public LocalAddress parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new LocalAddress(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<LocalAddress> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<LocalAddress> getParserForType() {
+      return PARSER;
+    }
+
+    public com.mackenziehigh.socius.web.messages.web_m.LocalAddress getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -10049,6 +12101,16 @@ public final class web_m {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpResponse_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_mackenziehigh_socius_web_messages_RemoteAddress_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_mackenziehigh_socius_web_messages_RemoteAddress_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_mackenziehigh_socius_web_messages_LocalAddress_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_mackenziehigh_socius_web_messages_LocalAddress_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_com_mackenziehigh_socius_web_messages_HttpProtocol_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -10074,44 +12136,50 @@ public final class web_m {
     java.lang.String[] descriptorData = {
       "\n?src/main/java/com/mackenziehigh/socius" +
       "/web/messages/web_m.proto\022%com.mackenzie" +
-      "high.socius.web.messages\"\315\007\n\025ServerSideH" +
+      "high.socius.web.messages\"\345\010\n\025ServerSideH" +
       "ttpRequest\022\r\n\005debug\030\001 \003(\t\022\022\n\nserverName\030" +
       "\002 \001(\t\022\020\n\010serverId\030\003 \001(\t\022\017\n\007replyTo\030\004 \001(\t" +
       "\022\025\n\rcorrelationId\030\005 \001(\t\022\026\n\016sequenceNumbe" +
-      "r\030\006 \001(\003\022\021\n\ttimestamp\030\007 \001(\004\022E\n\010protocol\030\010" +
-      " \001(\01323.com.mackenziehigh.socius.web.mess" +
-      "ages.HttpProtocol\022\016\n\006method\030\t \001(\t\022\013\n\003uri" +
-      "\030\n \001(\t\022\014\n\004path\030\013 \001(\t\022\017\n\007rawPath\030\014 \001(\t\022\020\n",
-      "\010rawQuery\030\r \001(\t\022`\n\nparameters\030\016 \003(\0132L.co" +
-      "m.mackenziehigh.socius.web.messages.Serv" +
-      "erSideHttpRequest.ParametersEntry\022Z\n\007hea" +
-      "ders\030\017 \003(\0132I.com.mackenziehigh.socius.we" +
-      "b.messages.ServerSideHttpRequest.Headers" +
-      "Entry\022\014\n\004host\030\020 \001(\t\022\023\n\013contentType\030\021 \001(\t" +
-      "\022\025\n\rcontentLength\030\022 \001(\005\022\014\n\004body\030\023 \001(\014\022\\\n" +
-      "\010trailers\030\024 \003(\0132J.com.mackenziehigh.soci" +
-      "us.web.messages.ServerSideHttpRequest.Tr" +
-      "ailersEntry\032l\n\017ParametersEntry\022\013\n\003key\030\001 ",
-      "\001(\t\022H\n\005value\030\002 \001(\01329.com.mackenziehigh.s" +
-      "ocius.web.messages.HttpQueryParameter:\0028" +
-      "\001\032a\n\014HeadersEntry\022\013\n\003key\030\001 \001(\t\022@\n\005value\030" +
-      "\002 \001(\01321.com.mackenziehigh.socius.web.mes" +
-      "sages.HttpHeader:\0028\001\032b\n\rTrailersEntry\022\013\n" +
-      "\003key\030\001 \001(\t\022@\n\005value\030\002 \001(\01321.com.mackenzi" +
-      "ehigh.socius.web.messages.HttpHeader:\0028\001" +
-      "\"\227\002\n\026ServerSideHttpResponse\022\r\n\005debug\030\001 \003" +
-      "(\t\022M\n\007request\030\002 \001(\0132<.com.mackenziehigh." +
-      "socius.web.messages.ServerSideHttpReques",
-      "t\022\025\n\rcorrelationId\030\003 \001(\t\022\021\n\ttimestamp\030\004 " +
-      "\001(\004\022\016\n\006status\030\005 \001(\005\022B\n\007headers\030\006 \003(\01321.c" +
+      "r\030\006 \001(\003\022\021\n\ttimestamp\030\007 \001(\004\022K\n\rremoteAddr" +
+      "ess\030\010 \001(\01324.com.mackenziehigh.socius.web" +
+      ".messages.RemoteAddress\022I\n\014localAddress\030" +
+      "\t \001(\01323.com.mackenziehigh.socius.web.mes",
+      "sages.LocalAddress\022E\n\010protocol\030\n \001(\01323.c" +
       "om.mackenziehigh.socius.web.messages.Htt" +
-      "pHeader\022\023\n\013contentType\030\007 \001(\t\022\014\n\004body\030\010 \001" +
-      "(\014\"V\n\014HttpProtocol\022\014\n\004text\030\001 \001(\t\022\014\n\004name" +
-      "\030\002 \001(\t\022\024\n\014majorVersion\030\003 \001(\005\022\024\n\014minorVer" +
-      "sion\030\004 \001(\005\"1\n\022HttpQueryParameter\022\013\n\003key\030" +
-      "\001 \001(\t\022\016\n\006values\030\002 \003(\t\")\n\nHttpHeader\022\013\n\003k" +
-      "ey\030\001 \001(\t\022\016\n\006values\030\002 \003(\tB.\n%com.mackenzi" +
-      "ehigh.socius.web.messagesB\005web_m"
+      "pProtocol\022\016\n\006method\030\013 \001(\t\022\013\n\003uri\030\014 \001(\t\022\014" +
+      "\n\004path\030\r \001(\t\022\017\n\007rawPath\030\016 \001(\t\022\020\n\010rawQuer" +
+      "y\030\017 \001(\t\022`\n\nparameters\030\020 \003(\0132L.com.macken" +
+      "ziehigh.socius.web.messages.ServerSideHt" +
+      "tpRequest.ParametersEntry\022Z\n\007headers\030\021 \003" +
+      "(\0132I.com.mackenziehigh.socius.web.messag" +
+      "es.ServerSideHttpRequest.HeadersEntry\022\014\n" +
+      "\004host\030\022 \001(\t\022\023\n\013contentType\030\023 \001(\t\022\025\n\rcont",
+      "entLength\030\024 \001(\005\022\014\n\004body\030\025 \001(\014\022\\\n\010trailer" +
+      "s\030\026 \003(\0132J.com.mackenziehigh.socius.web.m" +
+      "essages.ServerSideHttpRequest.TrailersEn" +
+      "try\032l\n\017ParametersEntry\022\013\n\003key\030\001 \001(\t\022H\n\005v" +
+      "alue\030\002 \001(\01329.com.mackenziehigh.socius.we" +
+      "b.messages.HttpQueryParameter:\0028\001\032a\n\014Hea" +
+      "dersEntry\022\013\n\003key\030\001 \001(\t\022@\n\005value\030\002 \001(\01321." +
+      "com.mackenziehigh.socius.web.messages.Ht" +
+      "tpHeader:\0028\001\032b\n\rTrailersEntry\022\013\n\003key\030\001 \001" +
+      "(\t\022@\n\005value\030\002 \001(\01321.com.mackenziehigh.so",
+      "cius.web.messages.HttpHeader:\0028\001\"\227\002\n\026Ser" +
+      "verSideHttpResponse\022\r\n\005debug\030\001 \003(\t\022M\n\007re" +
+      "quest\030\002 \001(\0132<.com.mackenziehigh.socius.w" +
+      "eb.messages.ServerSideHttpRequest\022\025\n\rcor" +
+      "relationId\030\003 \001(\t\022\021\n\ttimestamp\030\004 \001(\004\022\016\n\006s" +
+      "tatus\030\005 \001(\005\022B\n\007headers\030\006 \003(\01321.com.macke" +
+      "nziehigh.socius.web.messages.HttpHeader\022" +
+      "\023\n\013contentType\030\007 \001(\t\022\014\n\004body\030\010 \001(\014\"+\n\rRe" +
+      "moteAddress\022\014\n\004host\030\001 \001(\t\022\014\n\004port\030\003 \001(\005\"" +
+      "*\n\014LocalAddress\022\014\n\004host\030\001 \001(\t\022\014\n\004port\030\003 ",
+      "\001(\005\"V\n\014HttpProtocol\022\014\n\004text\030\001 \001(\t\022\014\n\004nam" +
+      "e\030\002 \001(\t\022\024\n\014majorVersion\030\003 \001(\005\022\024\n\014minorVe" +
+      "rsion\030\004 \001(\005\"1\n\022HttpQueryParameter\022\013\n\003key" +
+      "\030\001 \001(\t\022\016\n\006values\030\002 \003(\t\")\n\nHttpHeader\022\013\n\003" +
+      "key\030\001 \001(\t\022\016\n\006values\030\002 \003(\tB.\n%com.mackenz" +
+      "iehigh.socius.web.messagesB\005web_m"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -10130,7 +12198,7 @@ public final class web_m {
     internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_descriptor,
-        new java.lang.String[] { "Debug", "ServerName", "ServerId", "ReplyTo", "CorrelationId", "SequenceNumber", "Timestamp", "Protocol", "Method", "Uri", "Path", "RawPath", "RawQuery", "Parameters", "Headers", "Host", "ContentType", "ContentLength", "Body", "Trailers", });
+        new java.lang.String[] { "Debug", "ServerName", "ServerId", "ReplyTo", "CorrelationId", "SequenceNumber", "Timestamp", "RemoteAddress", "LocalAddress", "Protocol", "Method", "Uri", "Path", "RawPath", "RawQuery", "Parameters", "Headers", "Host", "ContentType", "ContentLength", "Body", "Trailers", });
     internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_ParametersEntry_descriptor =
       internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_descriptor.getNestedTypes().get(0);
     internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpRequest_ParametersEntry_fieldAccessorTable = new
@@ -10155,20 +12223,32 @@ public final class web_m {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_mackenziehigh_socius_web_messages_ServerSideHttpResponse_descriptor,
         new java.lang.String[] { "Debug", "Request", "CorrelationId", "Timestamp", "Status", "Headers", "ContentType", "Body", });
-    internal_static_com_mackenziehigh_socius_web_messages_HttpProtocol_descriptor =
+    internal_static_com_mackenziehigh_socius_web_messages_RemoteAddress_descriptor =
       getDescriptor().getMessageTypes().get(2);
+    internal_static_com_mackenziehigh_socius_web_messages_RemoteAddress_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_mackenziehigh_socius_web_messages_RemoteAddress_descriptor,
+        new java.lang.String[] { "Host", "Port", });
+    internal_static_com_mackenziehigh_socius_web_messages_LocalAddress_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_com_mackenziehigh_socius_web_messages_LocalAddress_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_mackenziehigh_socius_web_messages_LocalAddress_descriptor,
+        new java.lang.String[] { "Host", "Port", });
+    internal_static_com_mackenziehigh_socius_web_messages_HttpProtocol_descriptor =
+      getDescriptor().getMessageTypes().get(4);
     internal_static_com_mackenziehigh_socius_web_messages_HttpProtocol_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_mackenziehigh_socius_web_messages_HttpProtocol_descriptor,
         new java.lang.String[] { "Text", "Name", "MajorVersion", "MinorVersion", });
     internal_static_com_mackenziehigh_socius_web_messages_HttpQueryParameter_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(5);
     internal_static_com_mackenziehigh_socius_web_messages_HttpQueryParameter_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_mackenziehigh_socius_web_messages_HttpQueryParameter_descriptor,
         new java.lang.String[] { "Key", "Values", });
     internal_static_com_mackenziehigh_socius_web_messages_HttpHeader_descriptor =
-      getDescriptor().getMessageTypes().get(4);
+      getDescriptor().getMessageTypes().get(6);
     internal_static_com_mackenziehigh_socius_web_messages_HttpHeader_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_mackenziehigh_socius_web_messages_HttpHeader_descriptor,

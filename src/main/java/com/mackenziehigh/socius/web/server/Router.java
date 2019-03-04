@@ -211,7 +211,7 @@ final class Router
 
             if (conn.creationTime.isBefore(limit))
             {
-
+                conn.closeStaleConnection();
             }
             else
             {
@@ -257,7 +257,7 @@ final class Router
 
         public void closeStaleConnection ()
         {
-            final ServerSideHttpResponse response = Translator.newErrorResponseGPB(HttpResponseStatus.REQUEST_TIMEOUT);
+            final ServerSideHttpResponse response = Translator.newErrorResponseGPB(HttpResponseStatus.REQUEST_TIMEOUT.code());
             respondWith(response);
         }
     }

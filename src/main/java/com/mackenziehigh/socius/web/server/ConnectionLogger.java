@@ -1,6 +1,7 @@
 package com.mackenziehigh.socius.web.server;
 
-import com.mackenziehigh.socius.web.messages.web_m;
+import com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest;
+import com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse;
 
 /**
  *
@@ -22,27 +23,27 @@ public interface ConnectionLogger
         // Pass.
     }
 
-    public default void onReceivedRequest (web_m.ServerSideHttpRequest message)
+    public default void onReceivedRequest (ServerSideHttpRequest message)
     {
         // Pass.
     }
 
-    public default void onAcceptedRequest (web_m.ServerSideHttpRequest message)
+    public default void onAcceptedRequest (ServerSideHttpRequest message)
     {
         // Pass.
     }
 
-    public default void onRejectedRequest (web_m.ServerSideHttpRequest message)
+    public default void onRejectedRequest (ServerSideHttpRequest message)
     {
         // Pass.
     }
 
-    public default void onDeniedRequest (web_m.ServerSideHttpRequest message)
+    public default void onDeniedRequest (ServerSideHttpRequest message)
     {
         // Pass.
     }
 
-    public default void onResponse (web_m.ServerSideHttpResponse message)
+    public default void onResponse (ServerSideHttpResponse message)
     {
         // Pass.
     }
@@ -53,6 +54,21 @@ public interface ConnectionLogger
     }
 
     public default void onDownlinkTimeout ()
+    {
+        // Pass.
+    }
+
+    public default void onSlowUplinkTimeout ()
+    {
+        // Pass.
+    }
+
+    public default void onSlowDownlinkTimeout ()
+    {
+        // Pass.
+    }
+
+    public default void onResponseTimeout ()
     {
         // Pass.
     }
