@@ -12,9 +12,11 @@ TODO
 
 TODO
 
-# Why HTTP 1.0
+# Encoding
 
-TODO
+## Requests
+
+## Responses
 
 # Configuration Options
 
@@ -66,5 +68,8 @@ TODO
 
 ## Connection Loggers
 
+# Why HTTP 1.0
+
+TODO
 
 
