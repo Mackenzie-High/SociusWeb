@@ -19,7 +19,6 @@ import com.mackenziehigh.cascade.Cascade;
 import com.mackenziehigh.cascade.Cascade.Stage;
 import com.mackenziehigh.cascade.Cascade.Stage.Actor.Input;
 import com.mackenziehigh.cascade.Cascade.Stage.Actor.Output;
-import com.mackenziehigh.socius.web.messages.web_m;
 import com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest;
 import com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse;
 import io.netty.bootstrap.ServerBootstrap;
@@ -57,7 +56,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Predicate;
 
 /**
  * A non-blocking HTTP server based on the Netty framework,
@@ -257,7 +255,7 @@ public final class WebServer
         this.responseTimeout = builder.builderResponseTimeout;
         this.connectionTimeout = builder.builderConnectionTimeout;
         this.hasShutdownHook = builder.builderShutdownHook;
-        this.prechecks = Precheck.compose(builder.builderPrechecks, Precheck.deny());
+        this.prechecks = Prechecks.chain(builder.builderPrechecks, Prechecks.deny());
 
         this.recvBufferAllocator = new AdaptiveRecvByteBufAllocator(recvAllocatorMin, recvAllocatorInitial, recvAllocatorMax);
         this.recvBufferAllocator.maxMessagesPerRead(maxMessagesPerRead);
@@ -710,7 +708,7 @@ public final class WebServer
             final ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(bossGroup, workerGroup);
             bootstrap.channel(NioServerSocketChannel.class);
-            bootstrap.childHandler(new Initializer());
+            bootstrap.childHandler(initializer);
             bootstrap.option(ChannelOption.RCVBUF_ALLOCATOR, recvBufferAllocator);
 
             shutdownHook = bootstrap.bind(bindAddress, port).sync();
@@ -723,9 +721,12 @@ public final class WebServer
         finally
         {
             trafficShapingHandler.release();
-            bossGroup.shutdownGracefully();
-            workerGroup.shutdownGracefully();
-            service.shutdown();
+            bossGroup.shutdownGracefully().syncUninterruptibly();
+            workerGroup.shutdownGracefully().syncUninterruptibly();
+            stage.close();
+            // Delayed tasks (timeout tasks) can delay shutdown.
+            // Therefore, we must use shutdownNow().
+            service.shutdownNow();
             serverLogger.onStop();
         }
     }
@@ -842,15 +843,16 @@ public final class WebServer
                      */
                     final ServerSideHttpRequest prefix = translator.prefixOf(remoteAddress, localAddress, msg);
 
-                    final Precheck.Decision decision = prechecks.check(prefix);
+                    final Precheck.Action decision = prechecks.check(prefix);
 
-                    if (decision.type == Precheck.DecisionType.ACCEPT)
+                    if (decision.action() == Precheck.ActionType.ACCEPT)
                     {
                         out.add(msg);
                     }
-                    else if (decision.type == Precheck.DecisionType.REJECT)
+                    else if (decision.action() == Precheck.ActionType.REJECT)
                     {
-                        sendErrorAndClose(ctx.channel(), decision.statusCode);
+                        final int statusCode = decision.status().orElse(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
+                        sendErrorAndClose(ctx.channel(), statusCode);
                     }
                     else // DENY, FORWARD never occurs.
                     {
@@ -1317,7 +1319,7 @@ public final class WebServer
 
         private boolean builderShutdownHook = false;
 
-        private Precheck builderPrechecks = Precheck.forward();
+        private Precheck builderPrechecks = Prechecks.forward();
 
         private Builder ()
         {
@@ -1830,102 +1832,28 @@ public final class WebServer
         }
 
         /**
-         * Unconditionally accept any HTTP requests that reach this predicate.
-         *
-         * <p>
-         * Equivalent: <code>withPredicateAccept(x -> true)</code>
-         * </p>
+         * Unconditionally accept any HTTP requests that reaches this predicate.
          *
          * @return this.
          */
         public Builder withPredicateAccept ()
         {
-            return withPredicateAccept(x -> true);
+            return withPrecheck(Prechecks.accept(x -> true));
         }
 
         /**
-         * Conditionally accept HTTP requests that reach this predicate,
-         * forwarding any non-matching requests to the next predicate in the rule chain.
+         * Apply the given predicate to all incoming HTTP requests.
+         * Accept, Reject, or Deny those requests as the predicate deems appropriate.
          *
-         * @param condition may cause the HTTP request to be accepted.
+         * @param check may cause the HTTP request to be accepted, rejected, or denied.
          * @return this.
          */
-        public Builder withPredicateAccept (final Predicate<ServerSideHttpRequest> condition)
+        public Builder withPrecheck (final Precheck check)
         {
-            Objects.requireNonNull(condition, "condition");
-            builderPrechecks = Precheck.compose(builderPrechecks, Precheck.accept(condition));
+            Objects.requireNonNull(check, "check");
+            builderPrechecks = Prechecks.chain(builderPrechecks, check);
             return this;
 
-        }
-
-        /**
-         * Unconditionally reject any HTTP requests that reach this predicate.
-         *
-         * <p>
-         * Equivalent: <code>withPredicateReject(status, x -> true)</code>
-         * </p>
-         *
-         * @param status is the HTTP status code to use upon rejection.
-         * @return this.
-         */
-        public Builder withPredicateReject (final int status)
-        {
-            return withPredicateReject(status, x -> true);
-        }
-
-        /**
-         * Conditionally reject HTTP requests that reach this predicate,
-         * forwarding any non-matching requests to the next predicate in the rule chain.
-         *
-         * <p>
-         * If this predicate matches, then an HTTP response with the given
-         * status code will be sent to the client automatically.
-         * </p>
-         *
-         * @param status is the HTTP status code to use upon rejection.
-         * @param condition may cause the HTTP request to be rejected.
-         * @return this.
-         */
-        public Builder withPredicateReject (final int status,
-                                            final Predicate<web_m.ServerSideHttpRequest> condition)
-        {
-            Objects.requireNonNull(condition, "condition");
-            builderPrechecks = Precheck.compose(builderPrechecks, Precheck.reject(condition, status));
-            return this;
-
-        }
-
-        /**
-         * Unconditionally reject any HTTP requests that reach this predicate.
-         *
-         * <p>
-         * Equivalent: <code>withPredicateDeny(x -> true)</code>
-         * </p>
-         *
-         * @return this.
-         */
-        public Builder withPredicateDeny ()
-        {
-            return withPredicateDeny(x -> true);
-        }
-
-        /**
-         * Conditionally reject HTTP requests that reach this predicate,
-         * forwarding any non-matching requests to the next predicate in the rule chain.
-         *
-         * <p>
-         * If this predicate matches, then the connection will be closed
-         * without sending any HTTP response to the client.
-         * </p>
-         *
-         * @param condition may cause the HTTP request to be rejected.
-         * @return this.
-         */
-        public Builder withPredicateDeny (final Predicate<web_m.ServerSideHttpRequest> condition)
-        {
-            Objects.requireNonNull(condition, "condition");
-            builderPrechecks = Precheck.compose(builderPrechecks, Precheck.deny(condition));
-            return this;
         }
 
         /**

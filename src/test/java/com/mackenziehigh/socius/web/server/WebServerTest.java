@@ -15,8 +15,6 @@
  */
 package com.mackenziehigh.socius.web.server;
 
-import com.mackenziehigh.cascade.Cascade;
-import com.mackenziehigh.cascade.Cascade.Stage;
 import java.time.Duration;
 import static junit.framework.Assert.*;
 import org.junit.Test;
@@ -26,21 +24,6 @@ import org.junit.Test;
  */
 public final class WebServerTest
 {
-    private final Stage stage = Cascade.newStage();
-
-    private void run (final WebServer server,
-                      final String testCase)
-    {
-
-        server.start();
-
-    }
-
-    private void onEcho ()
-    {
-
-    }
-
     /**
      * Test: 20190303101911066030
      *
@@ -151,4 +134,401 @@ public final class WebServerTest
         assertEquals(Duration.ofSeconds(87), server.getConnectionTimeout());
     }
 
+    /**
+     * Test: 20190308002223203440
+     *
+     * <p>
+     * Type: End-To-End Throughput Test.
+     * </p>
+     *
+     * <p>
+     * Case: Basic Throughput.
+     * </p>
+     */
+    @Test
+    public void test20190308002223203440 ()
+    {
+        System.out.println("Test: 20190308002223203440");
+        fail();
+    }
+
+    /**
+     * Test: 20190308002223203558
+     *
+     * <p>
+     * Type: End-To-End Throughput Test.
+     * </p>
+     *
+     * <p>
+     * Case: Uplink Timeout.
+     * </p>
+     */
+    @Test
+    public void test20190308002223203558 ()
+    {
+        System.out.println("Test: 20190308002223203558");
+        fail();
+    }
+
+    /**
+     * Test: 20190308002223203594
+     *
+     * <p>
+     * Type: End-To-End Throughput Test.
+     * </p>
+     *
+     * <p>
+     * Case: Downlink Timeout.
+     * </p>
+     */
+    @Test
+    public void test20190308002223203594 ()
+    {
+        System.out.println("Test: 20190308002223203594");
+        fail();
+    }
+
+    /**
+     * Test: 20190308002223203627
+     *
+     * <p>
+     * Type: End-To-End Throughput Test.
+     * </p>
+     *
+     * <p>
+     * Case: Response Timeout.
+     * </p>
+     */
+    @Test
+    public void test20190308002223203627 ()
+    {
+        System.out.println("Test: 20190308002223203627");
+        fail();
+    }
+
+    /**
+     * Test: 20190308002223203694
+     *
+     * <p>
+     * Type: End-To-End Throughput Test.
+     * </p>
+     *
+     * <p>
+     * Case: Connection Timeout.
+     * </p>
+     */
+    @Test
+    public void test20190308002223203694 ()
+    {
+        System.out.println("Test: 20190308002223203694");
+        fail();
+    }
+
+    /**
+     * Test: 20190308002223203722
+     *
+     * <p>
+     * Type: End-To-End Throughput Test.
+     * </p>
+     *
+     * <p>
+     * Case: Request denied due to the default pre-check rule.
+     * </p>
+     */
+    @Test
+    public void test20190308002223203722 ()
+    {
+        System.out.println("Test: 20190308002223203722");
+        fail();
+    }
+
+    /**
+     * Test: 20190308002223203750
+     *
+     * <p>
+     * Type: End-To-End Throughput Test.
+     * </p>
+     *
+     * <p>
+     * Case: Request denied due to custom pre-check rule.
+     * </p>
+     */
+    @Test
+    public void test20190308002223203750 ()
+    {
+        System.out.println("Test: 20190308002223203750");
+        fail();
+    }
+
+    /**
+     * Test: 20190308003051428365
+     *
+     * <p>
+     * Type: End-To-End Throughput Test.
+     * </p>
+     *
+     * <p>
+     * Case: Request denied due to an exception thrown
+     * inside of a custom pre-check rule.
+     * </p>
+     */
+    @Test
+    public void test20190308003051428365 ()
+    {
+        System.out.println("Test: 20190308003051428365");
+        fail();
+    }
+
+    /**
+     * Test: 20190308002223203777
+     *
+     * <p>
+     * Type: End-To-End Throughput Test.
+     * </p>
+     *
+     * <p>
+     * Case: Request rejected due to custom pre-check rule.
+     * </p>
+     */
+    @Test
+    public void test20190308002223203777 ()
+    {
+        System.out.println("Test: 20190308002223203777");
+        fail();
+    }
+
+    /**
+     * Test: 20190308002223203806
+     *
+     * <p>
+     * Type: End-To-End Throughput Test.
+     * </p>
+     *
+     * <p>
+     * Case: Very large number of sequential requests,
+     * which may help detect resource leaks, etc.
+     * </p>
+     */
+    @Test
+    public void test20190308002223203806 ()
+    {
+        System.out.println("Test: 20190308002223203806");
+        fail();
+    }
+
+    /**
+     * Test: 20190308002223203832
+     *
+     * <p>
+     * Type: End-To-End Throughput Test.
+     * </p>
+     *
+     * <p>
+     * Case: Parallel Requests.
+     * </p>
+     */
+    @Test
+    public void test20190308002223203832 ()
+    {
+        System.out.println("Test: 20190308002223203832");
+        fail();
+    }
+
+    /**
+     * Test: 20190308003051428434
+     *
+     * <p>
+     * Type: End-To-End Throughput Test.
+     * </p>
+     *
+     * <p>
+     * Case: Successful Chunked Request.
+     * </p>
+     */
+    @Test
+    public void test20190308003051428434 ()
+    {
+        System.out.println("Test: 20190308003051428434");
+        fail();
+    }
+
+    /**
+     * Test: 20190308003311329885
+     *
+     * <p>
+     * Type: End-To-End Throughput Test.
+     * </p>
+     *
+     * <p>
+     * Case: Chunked Request Too Large (Expectation Failed).
+     * </p>
+     */
+    @Test
+    public void test20190308003311329885 ()
+    {
+        System.out.println("Test: 20190308003311329885");
+        fail();
+    }
+
+    /**
+     * Test: 20190308003457842596
+     *
+     * <p>
+     * Type: End-To-End Throughput Test.
+     * </p>
+     *
+     * <p>
+     * Case: Compressed Request.
+     * </p>
+     */
+    @Test
+    public void test20190308003457842596 ()
+    {
+        System.out.println("Test: 20190308003457842596");
+        fail();
+    }
+
+    /**
+     * Test: 20190308003457842680
+     *
+     * <p>
+     * Type: End-To-End Throughput Test.
+     * </p>
+     *
+     * <p>
+     * Case: Compressed Response.
+     * </p>
+     */
+    @Test
+    public void test20190308003457842680 ()
+    {
+        System.out.println("Test: 20190308003457842680");
+        fail();
+    }
+
+    /**
+     * Test: 20190308003457842710
+     *
+     * <p>
+     * Type: End-To-End Throughput Test.
+     * </p>
+     *
+     * <p>
+     * Case: Request Too Large.
+     * </p>
+     */
+    @Test
+    public void test20190308003457842710 ()
+    {
+        System.out.println("Test: 20190308003457842710");
+        fail();
+    }
+
+    /**
+     * Test: 20190308003457842738
+     *
+     * <p>
+     * Type: End-To-End Throughput Test.
+     * </p>
+     *
+     * <p>
+     * Case: Initial Line Too Large.
+     * </p>
+     */
+    @Test
+    public void test20190308003457842738 ()
+    {
+        System.out.println("Test: 20190308003457842738");
+        fail();
+    }
+
+    /**
+     * Test: 20190308003654044008
+     *
+     * <p>
+     * Type: End-To-End Throughput Test.
+     * </p>
+     *
+     * <p>
+     * Case: Headers Too Large.
+     * </p>
+     */
+    @Test
+    public void test20190308003654044008 ()
+    {
+        System.out.println("Test: 20190308003654044008");
+        fail();
+    }
+
+    /**
+     * Test: 20190308004116128009
+     *
+     * <p>
+     * Type: End-To-End Throughput Test.
+     * </p>
+     *
+     * <p>
+     * Case: Soft Connection Limit Exceeded.
+     * </p>
+     */
+    @Test
+    public void test20190308004116128009 ()
+    {
+        System.out.println("Test: 20190308004116128009");
+        fail();
+    }
+
+    /**
+     * Test: 20190308004116128086
+     *
+     * <p>
+     * Type: End-To-End Throughput Test.
+     * </p>
+     *
+     * <p>
+     * Case: Hard Connection Limit Exceeded.
+     * </p>
+     */
+    @Test
+    public void test20190308004116128086 ()
+    {
+        System.out.println("Test: 20190308004116128086");
+        fail();
+    }
+
+    /**
+     * Test: 20190308004116128116
+     *
+     * <p>
+     * Type: End-To-End Throughput Test.
+     * </p>
+     *
+     * <p>
+     * Case: Uplink Bandwidth Rate-Limiting.
+     * </p>
+     */
+    @Test
+    public void test20190308004116128116 ()
+    {
+        System.out.println("Test: 20190308004116128116");
+        fail();
+    }
+
+    /**
+     * Test: 20190308004116128144
+     *
+     * <p>
+     * Type: End-To-End Throughput Test.
+     * </p>
+     *
+     * <p>
+     * Case: Downlink Bandwidth Rate-Limiting.
+     * </p>
+     */
+    @Test
+    public void test20190308004116128144 ()
+    {
+        System.out.println("Test: 20190308004116128144");
+        fail();
+    }
 }

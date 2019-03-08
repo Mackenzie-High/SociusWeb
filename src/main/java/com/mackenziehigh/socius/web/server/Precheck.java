@@ -16,15 +16,14 @@
 package com.mackenziehigh.socius.web.server;
 
 import com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest;
-import java.util.Objects;
-import java.util.function.Predicate;
+import java.util.OptionalInt;
 
 /**
  * Checks a partial HTTP message for authorization, relevance, etc.
  */
-interface Precheck
+public interface Precheck
 {
-    enum DecisionType
+    public enum ActionType
     {
         /**
          * Meaning: Accept the HTTP request, unconditionally.
@@ -47,18 +46,11 @@ interface Precheck
         FORWARD
     }
 
-    public static final class Decision
+    public interface Action
     {
-        public final Precheck.DecisionType type;
+        public ActionType action ();
 
-        public final int statusCode;
-
-        private Decision (final Precheck.DecisionType result,
-                          final int statusCode)
-        {
-            this.type = result;
-            this.statusCode = statusCode;
-        }
+        public OptionalInt status ();
     }
 
     /**
@@ -73,53 +65,5 @@ interface Precheck
      * @param http contains the initial header information of the request.
      * @return a result indicating whether to accept or deny the request.
      */
-    public Decision check (ServerSideHttpRequest http);
-
-    public static Precheck accept (final Predicate<ServerSideHttpRequest> condition)
-    {
-        return request -> condition.test(request)
-                ? new Decision(DecisionType.ACCEPT, 0)
-                : new Decision(DecisionType.FORWARD, 0);
-    }
-
-    public static Precheck deny (final Predicate<ServerSideHttpRequest> condition)
-    {
-        return request -> condition.test(request)
-                ? new Decision(DecisionType.DENY, 0)
-                : new Decision(DecisionType.FORWARD, 0);
-    }
-
-    public static Precheck reject (final Predicate<ServerSideHttpRequest> condition,
-                                   final int status)
-    {
-        return request -> condition.test(request)
-                ? new Decision(DecisionType.REJECT, status)
-                : new Decision(DecisionType.FORWARD, 0);
-    }
-
-    public static Precheck forward ()
-    {
-        return request -> new Decision(DecisionType.FORWARD, 0);
-    }
-
-    public static Precheck deny ()
-    {
-        return request -> new Decision(DecisionType.DENY, 0);
-    }
-
-    public static Precheck compose (final Precheck outer,
-                                    final Precheck inner)
-    {
-        Objects.requireNonNull(outer, "outer");
-        Objects.requireNonNull(inner, "inner");
-
-        return (request) ->
-        {
-            final Decision outerDecision = outer.check(request);
-            final Decision returnedDecision = outerDecision.type != DecisionType.FORWARD
-                    ? outerDecision
-                    : inner.check(request);
-            return returnedDecision;
-        };
-    }
+    public Action check (ServerSideHttpRequest http);
 }

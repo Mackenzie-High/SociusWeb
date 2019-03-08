@@ -1,0 +1,6 @@
+
+echo "Hello World"
+
+curl ${address}/echo
+
+exit 3
