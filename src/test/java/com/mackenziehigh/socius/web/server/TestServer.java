@@ -5,6 +5,7 @@ import com.google.protobuf.ByteString;
 import com.mackenziehigh.cascade.Cascade;
 import com.mackenziehigh.cascade.Cascade.Stage;
 import com.mackenziehigh.cascade.Cascade.Stage.Actor;
+import com.mackenziehigh.socius.flow.RoundRobin;
 import com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest;
 import com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse;
 import java.io.IOException;
@@ -17,7 +18,7 @@ import java.time.Duration;
  */
 public final class TestServer
 {
-    private final Stage stage = Cascade.newStage();
+    private final Stage stage = Cascade.newStage(4);
 
     private final WebServer server;
 
@@ -121,7 +122,16 @@ public final class TestServer
         final Actor<ServerSideHttpRequest, ServerSideHttpResponse> echo = stage.newActor().withScript(this::slashEcho).create();
         final Actor<ServerSideHttpRequest, ServerSideHttpResponse> sleep = stage.newActor().withScript(this::slashSleep).create();
         final Actor<ServerSideHttpRequest, ServerSideHttpResponse> add = stage.newActor().withScript(this::slashAdd).create();
-        final Actor<ServerSideHttpRequest, ServerSideHttpResponse> zero = stage.newActor().withScript(this::slashZero).create();
+        final Actor<ServerSideHttpRequest, ServerSideHttpResponse> zero0 = stage.newActor().withScript(this::slashZero).create();
+        final Actor<ServerSideHttpRequest, ServerSideHttpResponse> zero1 = stage.newActor().withScript(this::slashZero).create();
+        final Actor<ServerSideHttpRequest, ServerSideHttpResponse> zero2 = stage.newActor().withScript(this::slashZero).create();
+        final Actor<ServerSideHttpRequest, ServerSideHttpResponse> zero3 = stage.newActor().withScript(this::slashZero).create();
+
+        final RoundRobin<ServerSideHttpRequest> rr = RoundRobin.newRoundRobin(stage, 4);
+        rr.dataOut(0).connect(zero0.input());
+        rr.dataOut(1).connect(zero1.input());
+        rr.dataOut(2).connect(zero2.input());
+        rr.dataOut(3).connect(zero3.input());
 
         /**
          * Connect the web-service end-points to the server.
@@ -135,8 +145,13 @@ public final class TestServer
         server.requestsOut().connect(add.input());
         server.responsesIn().connect(add.output());
         //
-        server.requestsOut().connect(zero.input());
-        server.responsesIn().connect(zero.output());
+        //server.requestsOut().connect(zero.input());
+        //server.responsesIn().connect(zero.output());
+        server.requestsOut().connect(rr.dataIn());
+        server.responsesIn().connect(zero0.output());
+        server.responsesIn().connect(zero1.output());
+        server.responsesIn().connect(zero2.output());
+        server.responsesIn().connect(zero3.output());
 
         /**
          * Bind the server to the server socket and begin serving.
