@@ -1,18 +1,15 @@
 package com.mackenziehigh.socius.web.server;
 
-import com.google.common.io.ByteStreams;
-import com.google.common.io.Resources;
+import com.google.common.base.Strings;
 import com.google.protobuf.ByteString;
 import com.mackenziehigh.cascade.Cascade;
 import com.mackenziehigh.cascade.Cascade.Stage;
 import com.mackenziehigh.cascade.Cascade.Stage.Actor;
 import com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest;
 import com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse;
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import java.time.Duration;
 
 /**
  * An instance of this class is a web-application that is
@@ -27,9 +24,10 @@ public final class TestServer
     public TestServer (final WebServer server)
     {
         this.server = server;
+        this.stage.addErrorHandler(ex -> System.out.println(ex));
     }
 
-    private ServerSideHttpResponse echoService (final ServerSideHttpRequest request)
+    private ServerSideHttpResponse slashEcho (final ServerSideHttpRequest request)
     {
         if (request.getPath().equals("/echo") == false)
         {
@@ -49,66 +47,102 @@ public final class TestServer
         return response;
     }
 
-    private void start ()
+    private ServerSideHttpResponse slashZero (final ServerSideHttpRequest request)
+    {
+        if (request.getPath().equals("/zero") == false)
+        {
+            return null;
+        }
+
+        final int count = Integer.parseInt(request.getParametersMap().get("count").getValues(0));
+        final byte[] bytes = Strings.repeat("0", count).getBytes(StandardCharsets.US_ASCII);
+
+        final ServerSideHttpResponse response = ServerSideHttpResponse
+                .newBuilder()
+                .setRequest(request)
+                .setContentType("text/plain")
+                .setStatus(200)
+                .setBody(ByteString.copyFrom(bytes))
+                .build();
+
+        return response;
+    }
+
+    private ServerSideHttpResponse slashSleep (final ServerSideHttpRequest request)
+            throws InterruptedException
+    {
+        if (request.getPath().equals("/sleep") == false)
+        {
+            return null;
+        }
+
+        final long millis = Integer.parseInt(request.getParametersMap().get("period").getValues(0));
+        Thread.sleep(millis);
+
+        final ServerSideHttpResponse response = ServerSideHttpResponse
+                .newBuilder()
+                .setRequest(request)
+                .setContentType("text/plain")
+                .setStatus(200)
+                .setBody(ByteString.copyFromUtf8("SleepComplete\n"))
+                .build();
+
+        return response;
+    }
+
+    private ServerSideHttpResponse slashAdd (final ServerSideHttpRequest request)
+    {
+        if (request.getPath().equals("/add") == false)
+        {
+            return null;
+        }
+
+        final long X = Integer.parseInt(request.getParametersMap().get("x").getValues(0));
+        final long Y = Integer.parseInt(request.getParametersMap().get("y").getValues(0));
+        final long Z = X + Y;
+
+        final ServerSideHttpResponse response = ServerSideHttpResponse
+                .newBuilder()
+                .setRequest(request)
+                .setContentType("text/plain")
+                .setStatus(200)
+                .setBody(ByteString.copyFromUtf8(Long.toString(Z)))
+                .build();
+
+        return response;
+    }
+
+    public void start ()
             throws InterruptedException
     {
         /**
          * Create the actors that are web-service end-points.
          */
-        final Actor<ServerSideHttpRequest, ServerSideHttpResponse> echo = stage.newActor().withScript(this::echoService).create();
+        final Actor<ServerSideHttpRequest, ServerSideHttpResponse> echo = stage.newActor().withScript(this::slashEcho).create();
+        final Actor<ServerSideHttpRequest, ServerSideHttpResponse> sleep = stage.newActor().withScript(this::slashSleep).create();
+        final Actor<ServerSideHttpRequest, ServerSideHttpResponse> add = stage.newActor().withScript(this::slashAdd).create();
+        final Actor<ServerSideHttpRequest, ServerSideHttpResponse> zero = stage.newActor().withScript(this::slashZero).create();
 
         /**
          * Connect the web-service end-points to the server.
          */
         server.requestsOut().connect(echo.input());
         server.responsesIn().connect(echo.output());
+        //
+        server.requestsOut().connect(sleep.input());
+        server.responsesIn().connect(sleep.output());
+        //
+        server.requestsOut().connect(add.input());
+        server.responsesIn().connect(add.output());
+        //
+        server.requestsOut().connect(zero.input());
+        server.responsesIn().connect(zero.output());
 
         /**
          * Bind the server to the server socket and begin serving.
          */
         server.start();
         Thread.sleep(2_000);
-    }
-
-    public int runTest (final String name)
-            throws IOException,
-                   InterruptedException
-    {
-        start();
-
-        /**
-         * Read-in the test-script.
-         */
-        final URL path = Resources.getResource(name);
-        String script = Resources.toString(path, StandardCharsets.UTF_8);
-        final String address = server.getBindAddress() + ":" + server.getPort();
-        script = script.replace("${address}", address);
-
-        /**
-         * Write-out the test-script into a temporary BASH file.
-         */
-        final File temp = Files.createTempFile(name, ".sh").toFile();
-        Files.write(temp.toPath(), script.getBytes(StandardCharsets.UTF_8));
-
-        /**
-         * Execute the test-script.
-         */
-        final String[] command = new String[2];
-        command[0] = "bash";
-        command[1] = temp.getAbsolutePath();
-        final Process process = Runtime.getRuntime().exec(command);
-        final int returnCode = process.waitFor();
-        System.out.println(returnCode);
-        System.out.println(new String(ByteStreams.toByteArray(process.getInputStream())));
-        System.err.println(new String(ByteStreams.toByteArray(process.getErrorStream())));
-
-        /**
-         * Shutdown the server, etc.
-         */
-        server.stop();
-        stage.close();
-
-        return returnCode;
     }
 
     public static void main (String[] args)
@@ -118,11 +152,13 @@ public final class TestServer
         final WebServer server = WebServer
                 .newWebServer()
                 .withDefaultSettings()
-                .withPredicateAccept()
+                .withPrecheckAccept()
+                .withConnectionTimeout(Duration.ofSeconds(60))
+                .withResponseTimeout(Duration.ofSeconds(30))
+                .withSlowUplinkTimeout(Duration.ofSeconds(1))
                 .build();
 
         final TestServer s = new TestServer(server);
-        s.runTest("Test0001.txt");
-
+        s.start();
     }
 }

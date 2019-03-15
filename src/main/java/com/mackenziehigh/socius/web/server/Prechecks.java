@@ -124,13 +124,13 @@ public final class Prechecks
     /**
      * Create a predicate that causes any HTTP request, which violates a given condition, to be rejected.
      *
-     * @param condition returns true, if the HTTP request should be rejected.
      * @param status is the HTTP response code that will be used in the rejection response.
+     * @param condition returns true, if the HTTP request should be rejected.
      * @return the new predicate.
      * @throws IllegalArgumentException if the status is not a 4xx or 5xx response code.
      */
-    public static Precheck reject (final Predicate<ServerSideHttpRequest> condition,
-                                   final int status)
+    public static Precheck reject (final int status,
+                                   final Predicate<ServerSideHttpRequest> condition)
     {
         final Precheck reject = reject(status);
         final Precheck conditional = request -> condition.test(request)

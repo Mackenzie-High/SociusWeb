@@ -335,7 +335,7 @@ final class Translator
          * Always include an HTTP 1.1 compatible header to close the connection.
          * Since the response is HTTP 1.0, this is strictly optional.
          */
-        netty.headers().set("connection", "close");
+        netty.headers().set("Connection", "close");
 
         /**
          * Header: Content-Type.response
@@ -384,9 +384,9 @@ final class Translator
         final String message = "<head> <meta http-equiv=\"refresh\" content=\"5; URL=\"/" + status.code() + ".html\" /> </head>\r\n";
         final ByteBuf content = Unpooled.copiedBuffer(message.getBytes(StandardCharsets.US_ASCII));
         final FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_0, status, content);
-        response.headers().set("connection", "close");
-        response.headers().set("content-type", "text/html");
-        response.headers().set("content-length", message.length());
+        response.headers().set("Connection", "close");
+        response.headers().set("Content-Type", "text/html");
+        response.headers().set("Content-Length", message.length());
         return response;
     }
 
@@ -406,7 +406,7 @@ final class Translator
         final String message = "<head> <meta http-equiv=\"refresh\" content=\"5; URL=\"/" + status + ".html\" /> </head>\r\n";
 
         final web_m.ServerSideHttpResponse response = web_m.ServerSideHttpResponse.newBuilder()
-                .addHeaders(web_m.HttpHeader.newBuilder().setKey("connection").addValues("close"))
+                .addHeaders(web_m.HttpHeader.newBuilder().setKey("Connection").addValues("close"))
                 .setContentType("text/html")
                 .setTimestamp(System.currentTimeMillis())
                 .setStatus(status)

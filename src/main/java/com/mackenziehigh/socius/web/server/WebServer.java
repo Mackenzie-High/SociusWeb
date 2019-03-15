@@ -39,6 +39,7 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpContentCompressor;
 import io.netty.handler.codec.http.HttpContentDecompressor;
 import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseEncoder;
@@ -47,7 +48,6 @@ import io.netty.handler.traffic.GlobalChannelTrafficShapingHandler;
 import java.io.Closeable;
 import java.net.InetSocketAddress;
 import java.time.Duration;
-import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -185,7 +185,7 @@ public final class WebServer
 
     private final Precheck prechecks;
 
-    private final ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+    private final ScheduledExecutorService service = Executors.newScheduledThreadPool(8);
 
     private final Stage stage = Cascade.newExecutorStage(service).addErrorHandler(ex -> serverLogger().onException(ex));
 
@@ -200,7 +200,7 @@ public final class WebServer
      */
     private final Translator translator;
 
-    private final Router router = new Router(stage);
+    private final Correlator router;
 
     /**
      * This flag will be set to true, when start() is called.
@@ -218,6 +218,14 @@ public final class WebServer
     private volatile ChannelFuture shutdownHook;
 
     private final Initializer initializer;
+
+    private final AtomicLong uplinkTimeoutCounter = new AtomicLong();
+
+    private final AtomicLong downlinkTimeoutCounter = new AtomicLong();
+
+    private final AtomicLong responseTimeoutCounter = new AtomicLong();
+
+    private final AtomicLong connectionTimeoutCounter = new AtomicLong();
 
     /**
      * Sole Constructor.
@@ -270,6 +278,8 @@ public final class WebServer
 
         this.translator = new Translator(serverName, serverId, replyTo);
         this.initializer = new Initializer();
+
+        this.router = new Correlator(service, responseTimeout);
     }
 
     private ServerLogger serverLogger ()
@@ -282,9 +292,29 @@ public final class WebServer
      *
      * @return the initializer that initializes each channel.
      */
-    final Initializer initializer ()
+    final ChannelInitializer<SocketChannel> initializer ()
     {
         return initializer;
+    }
+
+    public long getUplinkTimeoutCount ()
+    {
+        return uplinkTimeoutCounter.get();
+    }
+
+    public long getDownlinkTimeoutCount ()
+    {
+        return downlinkTimeoutCounter.get();
+    }
+
+    public long getResponseTimeoutCount ()
+    {
+        return responseTimeoutCounter.get();
+    }
+
+    public long getConnectionTimeoutCount ()
+    {
+        return connectionTimeoutCounter.get();
     }
 
     /**
@@ -816,7 +846,7 @@ public final class WebServer
          *
          */
         private final class Prechecker
-                extends MessageToMessageDecoder<FullHttpRequest>
+                extends MessageToMessageDecoder<HttpRequest>
         {
             private final InetSocketAddress remoteAddress;
 
@@ -831,7 +861,7 @@ public final class WebServer
 
             @Override
             protected void decode (final ChannelHandlerContext ctx,
-                                   final FullHttpRequest msg,
+                                   final HttpRequest msg,
                                    final List<Object> out)
             {
                 try
@@ -1186,14 +1216,6 @@ public final class WebServer
             service.schedule(onConnectionTimeout, connectionTimeout.toMillis(), TimeUnit.MILLISECONDS);
 
             /**
-             * If a response is not sent back to the client within the given Response Timeout limit,
-             * then close the connection upon sending an appropriate default response.
-             * Technically, this timer task will always execute; however,
-             * the task is harmless, if the response was already sent.
-             */
-            service.schedule(WebServer.this::closeStaleConnections, responseTimeout.toMillis(), TimeUnit.MILLISECONDS);
-
-            /**
              * If there are more connections open than the soft-limit allows,
              * then go ahead and close this new connection,
              * but send a meaningful HTTP response to the client.
@@ -1231,18 +1253,6 @@ public final class WebServer
         {
             connectionCount.decrementAndGet();
             logger.onDisconnect();
-        }
-    }
-
-    private void closeStaleConnections ()
-    {
-        try
-        {
-            router.closeStaleConnections(Instant.MIN);
-        }
-        catch (Throwable ex)
-        {
-            serverLogger.onException(ex);
         }
     }
 
@@ -1836,7 +1846,7 @@ public final class WebServer
          *
          * @return this.
          */
-        public Builder withPredicateAccept ()
+        public Builder withPrecheckAccept ()
         {
             return withPrecheck(Prechecks.accept(x -> true));
         }

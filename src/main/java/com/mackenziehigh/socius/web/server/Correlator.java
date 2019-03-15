@@ -15,7 +15,9 @@
  */
 package com.mackenziehigh.socius.web.server;
 
+import com.google.common.base.Verify;
 import com.google.common.collect.Maps;
+import com.mackenziehigh.cascade.Cascade;
 import com.mackenziehigh.cascade.Cascade.Stage;
 import com.mackenziehigh.cascade.Cascade.Stage.Actor;
 import com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest;
@@ -24,16 +26,21 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Comparator;
 import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
-final class Router
+final class Correlator
 {
+    private final ScheduledExecutorService service;
+
+    private final Duration responseTimeout;
+
     /**
      * This map maps correlation UUIDs of requests to consumer functions
      * that will be used to process the corresponding responses.
@@ -51,11 +58,6 @@ final class Router
     private final Map<String, Conversation> connections = Maps.newConcurrentMap();
 
     /**
-     * This queue is used to remove stale connections from the map of connections.
-     */
-    private final Queue<Conversation> responseTimeoutQueue = new PriorityQueue<>(Conversation.COMPARATOR);
-
-    /**
      * This processor will be used to send HTTP requests out of the server,
      * so that external handler actors can process the requests.
      */
@@ -67,10 +69,14 @@ final class Router
      */
     public final Actor<ServerSideHttpResponse, ServerSideHttpResponse> responsesIn;
 
-    public Router (final Stage stage)
+    public Correlator (final ScheduledExecutorService service,
+                   final Duration responseTimeout)
     {
+        final Stage stage = Cascade.newExecutorStage(service);
         this.requestsOut = stage.newActor().withScript(this::onRequest).create();
         this.responsesIn = stage.newActor().withScript(this::onResponse).create();
+        this.responseTimeout = responseTimeout;
+        this.service = service;
     }
 
     public SimpleChannelInboundHandler<ServerSideHttpRequest> newHandler ()
@@ -106,29 +112,28 @@ final class Router
     private void open (final ServerSideHttpRequest request,
                        final Consumer<ServerSideHttpResponse> callback)
     {
-        synchronized (this)
-        {
-            final String correlationId = request.getCorrelationId();
+        final String correlationId = request.getCorrelationId();
 
-            if (connections.containsKey(correlationId))
-            {
-                return;
-            }
+        Verify.verify(!connections.containsKey(correlationId));
 
-            /**
-             * Create the response handler that will be used to route
-             * the corresponding HTTP Response, if and when it occurs.
-             */
-            final Conversation connection = new Conversation(correlationId, callback);
-            responseTimeoutQueue.add(connection);
-            connections.put(correlationId, connection);
+        /**
+         * Create the response handler that will be used to route
+         * the corresponding HTTP Response, if and when it occurs.
+         */
+        final Conversation connection = new Conversation(correlationId, callback);
+        connections.put(correlationId, connection);
 
-            /**
-             * Send the HTTP Request to the external actors,
-             * so they can form an HTTP Response.
-             */
-            requestsOut.input().send(request);
-        }
+        /**
+         * If a response is not received before the response-timeout expires,
+         * then we will need to generate a default error-response.
+         */
+        service.schedule(() -> connection.closeStaleConnection(), responseTimeout.toMillis(), TimeUnit.MILLISECONDS);
+
+        /**
+         * Send the HTTP Request to the external actors,
+         * so they can form an HTTP Response.
+         */
+        requestsOut.input().send(request);
     }
 
     private ServerSideHttpRequest onRequest (final ServerSideHttpRequest request)
@@ -199,28 +204,6 @@ final class Router
     }
 
     /**
-     * Close any open connections that were created before the given limit.
-     *
-     * @param limit specifies the maximum age of any open connections.
-     */
-    public void closeStaleConnections (final Instant limit)
-    {
-        while (responseTimeoutQueue.isEmpty() == false)
-        {
-            final Conversation conn = responseTimeoutQueue.peek();
-
-            if (conn.creationTime.isBefore(limit))
-            {
-                conn.closeStaleConnection();
-            }
-            else
-            {
-                break;
-            }
-        }
-    }
-
-    /**
      * Representation of client-server connection.
      */
     private static final class Conversation
@@ -257,8 +240,11 @@ final class Router
 
         public void closeStaleConnection ()
         {
-            final ServerSideHttpResponse response = Translator.newErrorResponseGPB(HttpResponseStatus.REQUEST_TIMEOUT.code());
-            respondWith(response);
+            if (sent.get() == false)
+            {
+                final ServerSideHttpResponse response = Translator.newErrorResponseGPB(HttpResponseStatus.REQUEST_TIMEOUT.code());
+                respondWith(response);
+            }
         }
     }
 }
