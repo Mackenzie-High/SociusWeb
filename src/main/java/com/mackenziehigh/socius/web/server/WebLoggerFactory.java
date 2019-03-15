@@ -16,8 +16,10 @@
 package com.mackenziehigh.socius.web.server;
 
 /**
- * Unit Test.
+ *
  */
-public final class RouterTest
+@FunctionalInterface
+public interface WebLoggerFactory
 {
+    public WebLogger newConnectionLogger ();
 }

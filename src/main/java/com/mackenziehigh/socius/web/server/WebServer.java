@@ -123,9 +123,7 @@ public final class WebServer
 
     public static final int WORKER_THREAD_COUNT = 1;
 
-    private final ServerLogger serverLogger;
-
-    private final ConnectionLoggerFactory connectionLogger;
+    private final WebLogger serverLogger;
 
     private final String serverId = UUID.randomUUID().toString();
 
@@ -235,7 +233,6 @@ public final class WebServer
     private WebServer (final Builder builder)
     {
         this.serverLogger = builder.builderServerLogger;
-        this.connectionLogger = builder.builderConnectionLogger;
         this.serverName = builder.builderServerName;
         this.replyTo = builder.builderReplyTo;
         this.bindAddress = builder.builderBindAddress;
@@ -282,7 +279,7 @@ public final class WebServer
         this.router = new Correlator(service, responseTimeout);
     }
 
-    private ServerLogger serverLogger ()
+    private WebLogger serverLogger ()
     {
         return serverLogger;
     }
@@ -959,12 +956,12 @@ public final class WebServer
         @Override
         protected void initChannel (final SocketChannel channel)
         {
-            final ConnectionLogger channelLogger = ConnectionLoggers.newSafeLogger(connectionLogger.newConnectionLogger());
+            final WebLogger channelLogger = WebLoggers.newSafeLogger(serverLogger.extend());
 
             /**
              * Configure the connection-specific logger.
              */
-            channelLogger.setRemoteAddess(channel.remoteAddress().toString()); // TODO
+            channelLogger.setRemoteAddess(channel.remoteAddress().toString(), channel.remoteAddress().getPort()); // TODO
             channelLogger.onConnect();
 
             /**
@@ -1249,7 +1246,7 @@ public final class WebServer
             channel.close();
         }
 
-        private void onClose (final ConnectionLogger logger)
+        private void onClose (final WebLogger logger)
         {
             connectionCount.decrementAndGet();
             logger.onDisconnect();
@@ -1271,9 +1268,7 @@ public final class WebServer
      */
     public static final class Builder
     {
-        private ServerLogger builderServerLogger = ServerLoggers.newNullLogger();
-
-        private ConnectionLoggerFactory builderConnectionLogger = () -> ConnectionLoggers.newNullLogger();
+        private WebLogger builderServerLogger = WebLoggers.newNullLogger();
 
         private String builderServerName = DEFAULT_SERVER_NAME; // Deliberately, set by default.
 
@@ -1343,8 +1338,7 @@ public final class WebServer
          */
         public Builder withDefaultSettings ()
         {
-            this.withServerLogger(ServerLoggers.newNullLogger());
-            this.withConnectionLogger(() -> ConnectionLoggers.newNullLogger());
+            this.withServerLogger(WebLoggers.newNullLogger());
             this.withServerName(DEFAULT_SERVER_NAME);
             this.withReplyTo(DEFAULT_REPLY_TO);
             this.withBindAddress(DEFAULT_BIND_ADDRESS);
@@ -1386,26 +1380,14 @@ public final class WebServer
         }
 
         /**
-         * Specify the connection-specific logger to use.
+         * Specify the logger to use.
          *
-         * @param logger will create a logger for each connection.
+         * @param logger will be used by the server and extended for each connection.
          * @return this.
          */
-        public Builder withServerLogger (final ServerLogger logger)
+        public Builder withServerLogger (final WebLogger logger)
         {
             builderServerLogger = Objects.requireNonNull(logger, "logger");
-            return this;
-        }
-
-        /**
-         * Specify the server-wide logger to use.
-         *
-         * @param logger will be used by the web-server.
-         * @return this.
-         */
-        public Builder withConnectionLogger (final ConnectionLoggerFactory logger)
-        {
-            builderConnectionLogger = Objects.requireNonNull(logger, "logger");
             return this;
         }
 
@@ -1963,7 +1945,6 @@ public final class WebServer
         public WebServer build ()
         {
             requireSetting("Server Logger", builderServerLogger);
-            requireSetting("Connection Logger", builderConnectionLogger);
             requireSetting("Server Name", builderServerName);
             requireSetting("Reply To", builderReplyTo);
             requireSetting("Bind Address", builderBindAddress);
