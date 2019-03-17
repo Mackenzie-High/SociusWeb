@@ -896,7 +896,7 @@ public final class WebServer
                      */
                     final ServerSideHttpRequest prefix = translator.prefixOf(remoteAddress, localAddress, msg);
 
-                    final RequestFilter.Action decision = prechecks.check(prefix);
+                    final RequestFilter.Action decision = prechecks.apply(prefix);
 
                     if (decision.action() == RequestFilter.ActionType.ACCEPT)
                     {

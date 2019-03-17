@@ -40,8 +40,8 @@ public interface RequestFilter
          */
         DENY,
         /**
-         * Meaning: Forward the HTTP request to the next pre-check,
-         * because this pre-check was unable to accept or deny the HTTP request.
+         * Meaning: Forward the HTTP request to the next filter,
+         * because this filter was unable to accept or deny the HTTP request.
          */
         FORWARD
     }
@@ -65,5 +65,5 @@ public interface RequestFilter
      * @param http contains the initial header information of the request.
      * @return a result indicating whether to accept or deny the request.
      */
-    public Action check (ServerSideHttpRequest http);
+    public Action apply (ServerSideHttpRequest http);
 }

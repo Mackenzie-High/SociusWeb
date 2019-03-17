@@ -23,10 +23,17 @@ import java.util.OptionalInt;
 import java.util.function.Predicate;
 
 /**
- * Utility methods for <code>Precheck</code>s.
+ * Utility methods for <code>RequestFilter</code>s.
  */
 public final class RequestFilters
 {
+    /**
+     * Prevent Instantiation.
+     */
+    private RequestFilters ()
+    {
+        // Pass.
+    }
 
     /**
      * The ACCEPT action-type does not, itself, cause an HTTP response;
@@ -88,11 +95,11 @@ public final class RequestFilters
         }
     };
 
-    private static final RequestFilter PRECHECK_ACCEPT = request -> ACCEPT;
+    private static final RequestFilter FILTER_ACCEPT = request -> ACCEPT;
 
-    private static final RequestFilter PRECHECK_DENY = request -> DENY;
+    private static final RequestFilter FILTER_DENY = request -> DENY;
 
-    private static final RequestFilter PRECHECK_FORWARD = request -> FORWARD;
+    private static final RequestFilter FILTER_FORWARD = request -> FORWARD;
 
     /**
      * Create a predicate that causes any HTTP request to be accepted.
@@ -101,7 +108,7 @@ public final class RequestFilters
      */
     public static RequestFilter accept ()
     {
-        return PRECHECK_ACCEPT;
+        return FILTER_ACCEPT;
     }
 
     /**
@@ -122,7 +129,7 @@ public final class RequestFilters
      */
     public static RequestFilter deny ()
     {
-        return PRECHECK_DENY;
+        return FILTER_DENY;
     }
 
     /**
@@ -149,8 +156,8 @@ public final class RequestFilters
     {
         final RequestFilter reject = reject(status);
         final RequestFilter conditional = request -> condition.test(request)
-                ? reject.check(request)
-                : forward().check(request);
+                ? reject.apply(request)
+                : forward().apply(request);
         return conditional;
     }
 
@@ -193,15 +200,14 @@ public final class RequestFilters
      * Create a predicate that always forwards.
      *
      * <p>
-     * This predicate is of limited utility,
-     * except within the server itself.
+     * This predicate is of limited utility, except within the server itself.
      * </p>
      *
      * @return the new predicate.
      */
     public static RequestFilter forward ()
     {
-        return PRECHECK_FORWARD;
+        return FILTER_FORWARD;
     }
 
     /**
@@ -220,9 +226,10 @@ public final class RequestFilters
 
         return (request) ->
         {
-            final Action inner = first.check(request);
-            final Action outer = inner.action() == ActionType.FORWARD ? second.check(request) : inner;
+            final Action inner = first.apply(request);
+            final Action outer = inner.action() == ActionType.FORWARD ? second.apply(request) : inner;
             return outer;
         };
     }
+
 }
