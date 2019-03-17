@@ -12,16 +12,13 @@ import java.util.Objects;
 public final class SafeWebLogger
         implements WebLogger
 {
+    public static final WebLogger NULL_LOGGER = new BaseWebLogger();
+
     private final WebLogger delegate;
 
-    private SafeWebLogger (final WebLogger delegate)
+    public SafeWebLogger (final WebLogger delegate)
     {
         this.delegate = Objects.requireNonNull(delegate, "delegate");
-    }
-
-    public static WebLogger create (final WebLogger logger)
-    {
-        return new SafeWebLogger(logger);
     }
 
     /**
@@ -32,11 +29,11 @@ public final class SafeWebLogger
     {
         try
         {
-            return create(delegate.extend());
+            return new SafeWebLogger(delegate.extend());
         }
         catch (Throwable ex)
         {
-            return NullWebLogger.create();
+            return NULL_LOGGER;
         }
     }
 
@@ -52,7 +49,7 @@ public final class SafeWebLogger
         }
         catch (Throwable ex)
         {
-            catchAndLog(ex);
+            pass();
         }
     }
 
@@ -68,7 +65,7 @@ public final class SafeWebLogger
         }
         catch (Throwable ex)
         {
-            catchAndLog(ex);
+            pass();
         }
     }
 
@@ -85,7 +82,7 @@ public final class SafeWebLogger
         }
         catch (Throwable ex)
         {
-            catchAndLog(ex);
+            pass();
         }
     }
 
@@ -102,7 +99,7 @@ public final class SafeWebLogger
         }
         catch (Throwable ex)
         {
-            catchAndLog(ex);
+            pass();
         }
     }
 
@@ -118,7 +115,7 @@ public final class SafeWebLogger
         }
         catch (Throwable ex)
         {
-            catchAndLog(ex);
+            pass();
         }
     }
 
@@ -135,7 +132,7 @@ public final class SafeWebLogger
         }
         catch (Throwable ex)
         {
-            catchAndLog(ex);
+            pass();
         }
     }
 
@@ -151,7 +148,7 @@ public final class SafeWebLogger
         }
         catch (Throwable ex)
         {
-            catchAndLog(ex);
+            pass();
         }
     }
 
@@ -167,7 +164,7 @@ public final class SafeWebLogger
         }
         catch (Throwable ex)
         {
-            catchAndLog(ex);
+            pass();
         }
     }
 
@@ -184,7 +181,7 @@ public final class SafeWebLogger
         }
         catch (Throwable ex)
         {
-            catchAndLog(ex);
+            pass();
         }
     }
 
@@ -200,7 +197,7 @@ public final class SafeWebLogger
         }
         catch (Throwable ex)
         {
-            catchAndLog(ex);
+            pass();
         }
     }
 
@@ -216,7 +213,7 @@ public final class SafeWebLogger
         }
         catch (Throwable ex)
         {
-            catchAndLog(ex);
+            pass();
         }
     }
 
@@ -232,7 +229,7 @@ public final class SafeWebLogger
         }
         catch (Throwable ex)
         {
-            catchAndLog(ex);
+            pass();
         }
     }
 
@@ -248,7 +245,7 @@ public final class SafeWebLogger
         }
         catch (Throwable ex)
         {
-            catchAndLog(ex);
+            pass();
         }
     }
 
@@ -264,7 +261,7 @@ public final class SafeWebLogger
         }
         catch (Throwable ex)
         {
-            catchAndLog(ex);
+            pass();
         }
     }
 
@@ -293,15 +290,4 @@ public final class SafeWebLogger
         // Pass.
     }
 
-    private void catchAndLog (final Throwable ex)
-    {
-        try
-        {
-            onException(ex);
-        }
-        catch (Exception e)
-        {
-            pass();
-        }
-    }
 }

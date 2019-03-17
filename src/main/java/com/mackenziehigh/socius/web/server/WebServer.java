@@ -21,10 +21,11 @@ import com.mackenziehigh.cascade.Cascade.Stage.Actor.Input;
 import com.mackenziehigh.cascade.Cascade.Stage.Actor.Output;
 import com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest;
 import com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse;
-import com.mackenziehigh.socius.web.server.loggers.NullWebLogger;
+import com.mackenziehigh.socius.web.server.filters.RequestFilter;
+import com.mackenziehigh.socius.web.server.filters.RequestFilters;
+import com.mackenziehigh.socius.web.server.loggers.DefaultWebLogger;
 import com.mackenziehigh.socius.web.server.loggers.SafeWebLogger;
 import com.mackenziehigh.socius.web.server.loggers.WebLogger;
-import com.mackenziehigh.socius.web.server.filters.RequestFilters;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.AdaptiveRecvByteBufAllocator;
 import io.netty.channel.Channel;
@@ -59,8 +60,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-import com.mackenziehigh.socius.web.server.filters.RequestFilter;
 
 /**
  * A non-blocking HTTP server based on the Netty framework,
@@ -192,7 +193,7 @@ public final class WebServer
 
     private final Stage stage = Cascade.newExecutorStage(service).addErrorHandler(ex -> serverLogger().onException(ex));
 
-    private final AtomicLong connectionCount = new AtomicLong();
+    private final AtomicInteger connectionCount = new AtomicInteger();
 
     private final AdaptiveRecvByteBufAllocator recvBufferAllocator;
 
@@ -788,7 +789,14 @@ public final class WebServer
         private final class SlowUplinkDetector
                 extends MessageToMessageDecoder<FullHttpRequest>
         {
+            private final WebLogger logger;
+
             private final AtomicBoolean slowUplinkTimeoutExpired = new AtomicBoolean(false);
+
+            public SlowUplinkDetector (final WebLogger logger)
+            {
+                this.logger = logger;
+            }
 
             @Override
             protected void decode (final ChannelHandlerContext ctx,
@@ -805,6 +813,7 @@ public final class WebServer
             {
                 if (slowUplinkTimeoutExpired.compareAndSet(false, true))
                 {
+                    logger.onUplinkTimeout();
                     closeWithNoResponse(channel);
                 }
             }
@@ -816,6 +825,13 @@ public final class WebServer
         private final class SlowDownlinkDetector
                 extends MessageToMessageEncoder<HttpResponse>
         {
+            private final WebLogger logger;
+
+            public SlowDownlinkDetector (final WebLogger logger)
+            {
+                this.logger = logger;
+            }
+
             @Override
             protected void encode (final ChannelHandlerContext ctx,
                                    final HttpResponse msg,
@@ -839,6 +855,7 @@ public final class WebServer
             {
                 if (channel.isOpen())
                 {
+                    logger.onDownlinkTimeout();
                     closeWithNoResponse(channel);
                 }
             }
@@ -850,13 +867,17 @@ public final class WebServer
         private final class Prechecker
                 extends MessageToMessageDecoder<HttpRequest>
         {
+            private final WebLogger logger;
+
             private final InetSocketAddress remoteAddress;
 
             private final InetSocketAddress localAddress;
 
-            public Prechecker (final InetSocketAddress remoteAddress,
+            public Prechecker (final WebLogger logger,
+                               final InetSocketAddress remoteAddress,
                                final InetSocketAddress localAddress)
             {
+                this.logger = logger;
                 this.remoteAddress = remoteAddress;
                 this.localAddress = localAddress;
             }
@@ -879,21 +900,25 @@ public final class WebServer
 
                     if (decision.action() == RequestFilter.ActionType.ACCEPT)
                     {
+                        logger.onAccepted(prefix);
                         out.add(msg);
                     }
                     else if (decision.action() == RequestFilter.ActionType.REJECT)
                     {
                         final int statusCode = decision.status().orElse(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
+                        // logger.onRejected(prefix, response); // TODO
                         sendErrorAndClose(ctx.channel(), statusCode);
                     }
                     else // DENY, FORWARD never occurs.
                     {
+                        logger.onDenied(prefix);
                         closeWithNoResponse(ctx.channel());
                     }
                 }
                 catch (Throwable e)
                 {
-                    serverLogger.onException(e); // TODO: channel logger
+                    logger.onException(e);
+//                    logger.onDenied(request); TODO
                     closeWithNoResponse(ctx.channel());
                 }
             }
@@ -976,7 +1001,7 @@ public final class WebServer
              * Keep track of how many connections are open.
              */
             // TODO: HAndle more safely
-            final long connectionNumber = connectionCount.incrementAndGet();
+            final int connectionNumber = connectionCount.incrementAndGet();
 
             /**
              * If there are more connections open than the hard-limit allows,
@@ -989,7 +1014,7 @@ public final class WebServer
              */
             if (connectionNumber >= hardConnectionLimit)
             {
-                // TODO: Log it
+                channelLogger.onTooManyConnections(connectionNumber);
                 closeWithNoResponse(channel);
                 return;
             }
@@ -1079,7 +1104,7 @@ public final class WebServer
              * Downlink Input: (1) HTTP Response.
              * Downlink Output: (1) HTTP Response.
              */
-            channel.pipeline().addLast(new SlowDownlinkDetector());
+            channel.pipeline().addLast(new SlowDownlinkDetector(channelLogger));
 
             /**
              * The HTTP Content Decompressor converts incoming HTTP Content objects,
@@ -1122,7 +1147,7 @@ public final class WebServer
              * Downlink Input: Pass-through.
              * Downlink Output: Pass-through.
              */
-            channel.pipeline().addLast(new Prechecker(channel.remoteAddress(), channel.localAddress()));
+            channel.pipeline().addLast(new Prechecker(channelLogger, channel.remoteAddress(), channel.localAddress()));
 
             /**
              * The HTTP Object Aggregator will convert a stream of incoming HTTP Request, HTTP Content,
@@ -1155,7 +1180,7 @@ public final class WebServer
              * Downlink Input: Pass-through.
              * Downlink Output: Pass-through.
              */
-            final SlowUplinkDetector slowUplinkDetector = new SlowUplinkDetector();
+            final SlowUplinkDetector slowUplinkDetector = new SlowUplinkDetector(channelLogger);
             channel.pipeline().addLast(slowUplinkDetector);
             service.schedule(() -> slowUplinkDetector.onSlowUplinkTimeout(channel), SlowUplinkTimeout.toMillis(), TimeUnit.MILLISECONDS);
 
@@ -1204,6 +1229,7 @@ public final class WebServer
             {
                 if (channel.isOpen())
                 {
+                    channelLogger.onConnectionTimeout();
                     closeWithNoResponse(channel);
                 }
             };
@@ -1231,6 +1257,7 @@ public final class WebServer
             if (connectionNumber >= softConnectionLimit)
             {
                 // TODO: log it
+                channelLogger.onTooManyConnections(connectionNumber);
                 sendErrorAndClose(channel, HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
                 return;
             }
@@ -1272,7 +1299,7 @@ public final class WebServer
      */
     public static final class Builder
     {
-        private WebLogger builderServerLogger = new NullWebLogger();
+        private WebLogger builderServerLogger = new DefaultWebLogger();
 
         private String builderServerName = DEFAULT_SERVER_NAME; // Deliberately, set by default.
 
@@ -1342,7 +1369,7 @@ public final class WebServer
          */
         public Builder withDefaultSettings ()
         {
-            this.withLogger(new NullWebLogger());
+            this.withLogger(new DefaultWebLogger());
             this.withServerName(DEFAULT_SERVER_NAME);
             this.withReplyTo(DEFAULT_REPLY_TO);
             this.withBindAddress(DEFAULT_BIND_ADDRESS);
@@ -1392,7 +1419,7 @@ public final class WebServer
         public Builder withLogger (final WebLogger logger)
         {
             builderServerLogger = Objects.requireNonNull(logger, "logger");
-            builderServerLogger = SafeWebLogger.create(logger);
+            builderServerLogger = new SafeWebLogger(logger);
             return this;
         }
 

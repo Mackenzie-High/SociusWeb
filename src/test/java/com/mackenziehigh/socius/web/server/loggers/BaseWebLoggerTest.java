@@ -11,9 +11,9 @@ import org.junit.Test;
  * Thus, admittedly, this unit-test just makes the code coverage happy.
  * </p>
  */
-public final class NullWebLoggerTest
+public final class BaseWebLoggerTest
 {
-    private final NullWebLogger logger = NullWebLogger.create();
+    private final BaseWebLogger logger = new BaseWebLogger();
 
     /**
      * Test: 20190316225041694886

@@ -9,34 +9,19 @@ import java.net.InetSocketAddress;
  *
  * <p>
  * This class is intentionally non-final in order to facilitate
- * sub-classing and selective overriding of the methods herein.
+ * sub-classing and selective overriding of the methods herein,
+ * such that the overriding methods will actually perform logging.
  * </p>
  */
-public class NullWebLogger
+public class BaseWebLogger
         implements WebLogger
 {
-    private static final NullWebLogger instance = new NullWebLogger();
-
     /**
      * This constructor is public to allow sub-classing.
      */
-    public NullWebLogger ()
+    public BaseWebLogger ()
     {
         // Pass.
-    }
-
-    /**
-     * Factory Method.
-     *
-     * <p>
-     * This method always returns the same object.
-     * </p>
-     *
-     * @return the new logger.
-     */
-    public static NullWebLogger create ()
-    {
-        return instance;
     }
 
     /**

@@ -21,7 +21,6 @@ import com.mackenziehigh.socius.web.server.filters.RequestFilter.ActionType;
 import java.util.Objects;
 import java.util.OptionalInt;
 import java.util.function.Predicate;
-import com.mackenziehigh.socius.web.server.filters.RequestFilter;
 
 /**
  * Utility methods for <code>Precheck</code>s.
@@ -146,7 +145,7 @@ public final class RequestFilters
      * @throws IllegalArgumentException if the status is not a 4xx or 5xx response code.
      */
     public static RequestFilter reject (final int status,
-                                   final Predicate<ServerSideHttpRequest> condition)
+                                        final Predicate<ServerSideHttpRequest> condition)
     {
         final RequestFilter reject = reject(status);
         final RequestFilter conditional = request -> condition.test(request)
@@ -214,7 +213,7 @@ public final class RequestFilters
      * @return the new combined predicate.
      */
     public static RequestFilter chain (final RequestFilter first,
-                                  final RequestFilter second)
+                                       final RequestFilter second)
     {
         Objects.requireNonNull(first, "first");
         Objects.requireNonNull(second, "second");

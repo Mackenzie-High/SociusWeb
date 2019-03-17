@@ -13,6 +13,10 @@ import org.junit.Test;
  */
 public final class SafeWebLoggerTest
 {
+    private final CountingWebLogger counter = CountingWebLogger.create();
+
+    private final SafeWebLogger safeCounter = new SafeWebLogger(counter);
+
     /**
      * Test: 20190316225041694886
      *
@@ -25,7 +29,7 @@ public final class SafeWebLoggerTest
     {
         final AtomicBoolean executed = new AtomicBoolean(false);
 
-        final WebLogger logger = new NullWebLogger()
+        final WebLogger logger = new BaseWebLogger()
         {
             @Override
             public WebLogger extend ()
@@ -36,7 +40,7 @@ public final class SafeWebLoggerTest
 
         };
 
-        final WebLogger wrapper = SafeWebLogger.create(logger);
+        final WebLogger wrapper = new SafeWebLogger(logger);
 
         /**
          * This method should not throw an exception,
@@ -50,7 +54,7 @@ public final class SafeWebLoggerTest
          * If an exception occurs, the method cannot be allowed to fail.
          * Thus, the default null-logger is returned.
          */
-        assertSame(NullWebLogger.create(), extended);
+        assertSame(SafeWebLogger.NULL_LOGGER, extended);
     }
 
     /**
@@ -65,7 +69,7 @@ public final class SafeWebLoggerTest
     {
         final AtomicBoolean executed = new AtomicBoolean(false);
 
-        final WebLogger logger = new NullWebLogger()
+        final WebLogger logger = new BaseWebLogger()
         {
             @Override
             public void onStarted (WebServer server)
@@ -76,7 +80,7 @@ public final class SafeWebLoggerTest
 
         };
 
-        final WebLogger wrapper = SafeWebLogger.create(logger);
+        final WebLogger wrapper = new SafeWebLogger(logger);
 
         /**
          * This method should not throw an exception,
@@ -98,7 +102,7 @@ public final class SafeWebLoggerTest
     {
         final AtomicBoolean executed = new AtomicBoolean(false);
 
-        final WebLogger logger = new NullWebLogger()
+        final WebLogger logger = new BaseWebLogger()
         {
             @Override
             public void onStopped ()
@@ -109,7 +113,7 @@ public final class SafeWebLoggerTest
 
         };
 
-        final WebLogger wrapper = SafeWebLogger.create(logger);
+        final WebLogger wrapper = new SafeWebLogger(logger);
 
         /**
          * This method should not throw an exception,
@@ -131,7 +135,7 @@ public final class SafeWebLoggerTest
     {
         final AtomicBoolean executed = new AtomicBoolean(false);
 
-        final WebLogger logger = new NullWebLogger()
+        final WebLogger logger = new BaseWebLogger()
         {
             @Override
             public void onConnect (InetSocketAddress local,
@@ -142,7 +146,7 @@ public final class SafeWebLoggerTest
             }
         };
 
-        final WebLogger wrapper = SafeWebLogger.create(logger);
+        final WebLogger wrapper = new SafeWebLogger(logger);
 
         /**
          * This method should not throw an exception,
@@ -164,7 +168,7 @@ public final class SafeWebLoggerTest
     {
         final AtomicBoolean executed = new AtomicBoolean(false);
 
-        final WebLogger logger = new NullWebLogger()
+        final WebLogger logger = new BaseWebLogger()
         {
             @Override
             public void onDisconnect (InetSocketAddress local,
@@ -175,7 +179,7 @@ public final class SafeWebLoggerTest
             }
         };
 
-        final WebLogger wrapper = SafeWebLogger.create(logger);
+        final WebLogger wrapper = new SafeWebLogger(logger);
 
         /**
          * This method should not throw an exception,
@@ -197,7 +201,7 @@ public final class SafeWebLoggerTest
     {
         final AtomicBoolean executed = new AtomicBoolean(false);
 
-        final WebLogger logger = new NullWebLogger()
+        final WebLogger logger = new BaseWebLogger()
         {
             @Override
             public void onAccepted (ServerSideHttpRequest request)
@@ -207,7 +211,7 @@ public final class SafeWebLoggerTest
             }
         };
 
-        final WebLogger wrapper = SafeWebLogger.create(logger);
+        final WebLogger wrapper = new SafeWebLogger(logger);
 
         /**
          * This method should not throw an exception,
@@ -229,7 +233,7 @@ public final class SafeWebLoggerTest
     {
         final AtomicBoolean executed = new AtomicBoolean(false);
 
-        final WebLogger logger = new NullWebLogger()
+        final WebLogger logger = new BaseWebLogger()
         {
             @Override
             public void onRejected (ServerSideHttpRequest request,
@@ -240,7 +244,7 @@ public final class SafeWebLoggerTest
             }
         };
 
-        final WebLogger wrapper = SafeWebLogger.create(logger);
+        final WebLogger wrapper = new SafeWebLogger(logger);
 
         /**
          * This method should not throw an exception,
@@ -262,7 +266,7 @@ public final class SafeWebLoggerTest
     {
         final AtomicBoolean executed = new AtomicBoolean(false);
 
-        final WebLogger logger = new NullWebLogger()
+        final WebLogger logger = new BaseWebLogger()
         {
             @Override
             public void onDenied (ServerSideHttpRequest request)
@@ -272,7 +276,7 @@ public final class SafeWebLoggerTest
             }
         };
 
-        final WebLogger wrapper = SafeWebLogger.create(logger);
+        final WebLogger wrapper = new SafeWebLogger(logger);
 
         /**
          * This method should not throw an exception,
@@ -294,7 +298,7 @@ public final class SafeWebLoggerTest
     {
         final AtomicBoolean executed = new AtomicBoolean(false);
 
-        final WebLogger logger = new NullWebLogger()
+        final WebLogger logger = new BaseWebLogger()
         {
             @Override
             public void onRequest (ServerSideHttpRequest request)
@@ -304,7 +308,7 @@ public final class SafeWebLoggerTest
             }
         };
 
-        final WebLogger wrapper = SafeWebLogger.create(logger);
+        final WebLogger wrapper = new SafeWebLogger(logger);
 
         /**
          * This method should not throw an exception,
@@ -326,7 +330,7 @@ public final class SafeWebLoggerTest
     {
         final AtomicBoolean executed = new AtomicBoolean(false);
 
-        final WebLogger logger = new NullWebLogger()
+        final WebLogger logger = new BaseWebLogger()
         {
             @Override
             public void onResponse (ServerSideHttpRequest request,
@@ -337,7 +341,7 @@ public final class SafeWebLoggerTest
             }
         };
 
-        final WebLogger wrapper = SafeWebLogger.create(logger);
+        final WebLogger wrapper = new SafeWebLogger(logger);
 
         /**
          * This method should not throw an exception,
@@ -359,7 +363,7 @@ public final class SafeWebLoggerTest
     {
         final AtomicBoolean executed = new AtomicBoolean(false);
 
-        final WebLogger logger = new NullWebLogger()
+        final WebLogger logger = new BaseWebLogger()
         {
             @Override
             public void onUplinkTimeout ()
@@ -369,7 +373,7 @@ public final class SafeWebLoggerTest
             }
         };
 
-        final WebLogger wrapper = SafeWebLogger.create(logger);
+        final WebLogger wrapper = new SafeWebLogger(logger);
 
         /**
          * This method should not throw an exception,
@@ -391,7 +395,7 @@ public final class SafeWebLoggerTest
     {
         final AtomicBoolean executed = new AtomicBoolean(false);
 
-        final WebLogger logger = new NullWebLogger()
+        final WebLogger logger = new BaseWebLogger()
         {
             @Override
             public void onDownlinkTimeout ()
@@ -401,7 +405,7 @@ public final class SafeWebLoggerTest
             }
         };
 
-        final WebLogger wrapper = SafeWebLogger.create(logger);
+        final WebLogger wrapper = new SafeWebLogger(logger);
 
         /**
          * This method should not throw an exception,
@@ -423,7 +427,7 @@ public final class SafeWebLoggerTest
     {
         final AtomicBoolean executed = new AtomicBoolean(false);
 
-        final WebLogger logger = new NullWebLogger()
+        final WebLogger logger = new BaseWebLogger()
         {
             @Override
             public void onResponseTimeout ()
@@ -433,7 +437,7 @@ public final class SafeWebLoggerTest
             }
         };
 
-        final WebLogger wrapper = SafeWebLogger.create(logger);
+        final WebLogger wrapper = new SafeWebLogger(logger);
 
         /**
          * This method should not throw an exception,
@@ -455,7 +459,7 @@ public final class SafeWebLoggerTest
     {
         final AtomicBoolean executed = new AtomicBoolean(false);
 
-        final WebLogger logger = new NullWebLogger()
+        final WebLogger logger = new BaseWebLogger()
         {
             @Override
             public void onConnectionTimeout ()
@@ -465,7 +469,7 @@ public final class SafeWebLoggerTest
             }
         };
 
-        final WebLogger wrapper = SafeWebLogger.create(logger);
+        final WebLogger wrapper = new SafeWebLogger(logger);
 
         /**
          * This method should not throw an exception,
@@ -487,7 +491,7 @@ public final class SafeWebLoggerTest
     {
         final AtomicBoolean executed = new AtomicBoolean(false);
 
-        final WebLogger logger = new NullWebLogger()
+        final WebLogger logger = new BaseWebLogger()
         {
             @Override
             public void onTooManyConnections (int count)
@@ -497,7 +501,7 @@ public final class SafeWebLoggerTest
             }
         };
 
-        final WebLogger wrapper = SafeWebLogger.create(logger);
+        final WebLogger wrapper = new SafeWebLogger(logger);
 
         /**
          * This method should not throw an exception,
@@ -519,7 +523,7 @@ public final class SafeWebLoggerTest
     {
         final AtomicBoolean executed = new AtomicBoolean(false);
 
-        final WebLogger logger = new NullWebLogger()
+        final WebLogger logger = new BaseWebLogger()
         {
             @Override
             public void onException (Throwable cause)
@@ -529,7 +533,7 @@ public final class SafeWebLoggerTest
             }
         };
 
-        final WebLogger wrapper = SafeWebLogger.create(logger);
+        final WebLogger wrapper = new SafeWebLogger(logger);
 
         /**
          * This method should not throw an exception,
@@ -537,6 +541,249 @@ public final class SafeWebLoggerTest
          */
         wrapper.onException(null);
         assertTrue(executed.get());
+    }
+
+    /**
+     * Test: 20190316225041694886C
+     *
+     * <p>
+     * Method: <code>extend()</code>
+     * </p>
+     */
+    @Test
+    public void test20190316225041694886C ()
+    {
+        assertEquals(0, counter.countExtend());
+        final WebLogger extended = safeCounter.extend();
+        assertNotSame(safeCounter, extended);
+        assertNotNull(extended);
+        assertTrue(extended instanceof SafeWebLogger);
+        assertEquals(1, counter.countExtend());
+    }
+
+    /**
+     * Test: 20190316225041694992C
+     *
+     * <p>
+     * Method: <code>onStarted()</code>
+     * </p>
+     */
+    @Test
+    public void test20190316225041694992C ()
+    {
+        assertEquals(0, counter.countOnStarted());
+        safeCounter.onStarted(null);
+        assertEquals(1, counter.countOnStarted());
+    }
+
+    /**
+     * Test: 20190316225041695023C
+     *
+     * <p>
+     * Method: <code>onStopped()</code>
+     * </p>
+     */
+    @Test
+    public void test20190316225041695023C ()
+    {
+        assertEquals(0, counter.countOnStopped());
+        safeCounter.onStopped();
+        assertEquals(1, counter.countOnStopped());
+    }
+
+    /**
+     * Test: 20190316225041695050C
+     *
+     * <p>
+     * Method: <code>onConnect()</code>
+     * </p>
+     */
+    @Test
+    public void test20190316225041695050C ()
+    {
+        assertEquals(0, counter.countOnConnect());
+        safeCounter.onConnect(null, null);
+        assertEquals(1, counter.countOnConnect());
+    }
+
+    /**
+     * Test: 20190316225041695077C
+     *
+     * <p>
+     * Method: <code>onDisconnect()</code>
+     * </p>
+     */
+    @Test
+    public void test20190316225041695077C ()
+    {
+        assertEquals(0, counter.countOnDisconnect());
+        safeCounter.onDisconnect(null, null);
+        assertEquals(1, counter.countOnDisconnect());
+    }
+
+    /**
+     * Test: 20190316225041695100C
+     *
+     * <p>
+     * Method: <code>onAccepted()</code>
+     * </p>
+     */
+    @Test
+    public void test20190316225041695100C ()
+    {
+        assertEquals(0, counter.countOnAccepted());
+        safeCounter.onAccepted(null);
+        assertEquals(1, counter.countOnAccepted());
+    }
+
+    /**
+     * Test: 20190316225041695123C
+     *
+     * <p>
+     * Method: <code>onRejected()</code>
+     * </p>
+     */
+    @Test
+    public void test20190316225041695123C ()
+    {
+        assertEquals(0, counter.countOnRejected());
+        safeCounter.onRejected(null, null);
+        assertEquals(1, counter.countOnRejected());
+    }
+
+    /**
+     * Test: 20190316225041695150C
+     *
+     * <p>
+     * Method: <code>onDenied()</code>
+     * </p>
+     */
+    @Test
+    public void test20190316225041695150C ()
+    {
+        assertEquals(0, counter.countOnDenied());
+        safeCounter.onDenied(null);
+        assertEquals(1, counter.countOnDenied());
+    }
+
+    /**
+     * Test: 20190316225041695174C
+     *
+     * <p>
+     * Method: <code>onRequest()</code>
+     * </p>
+     */
+    @Test
+    public void test20190316225041695174C ()
+    {
+        assertEquals(0, counter.countOnRequest());
+        safeCounter.onRequest(null);
+        assertEquals(1, counter.countOnRequest());
+    }
+
+    /**
+     * Test: 20190316225041695196C
+     *
+     * <p>
+     * Method: <code>onResponse()</code>
+     * </p>
+     */
+    @Test
+    public void test20190316225041695196C ()
+    {
+        assertEquals(0, counter.countOnResponse());
+        safeCounter.onResponse(null, null);
+        assertEquals(1, counter.countOnResponse());
+    }
+
+    /**
+     * Test: 20190316231039944835C
+     *
+     * <p>
+     * Method: <code>onUplinkTimeout()</code>
+     * </p>
+     */
+    @Test
+    public void test20190316231039944835C ()
+    {
+        assertEquals(0, counter.countOnUplinkTimeout());
+        safeCounter.onUplinkTimeout();
+        assertEquals(1, counter.countOnUplinkTimeout());
+    }
+
+    /**
+     * Test: 20190316231039944862C
+     *
+     * <p>
+     * Method: <code>onDownlinkTimeout()</code>
+     * </p>
+     */
+    @Test
+    public void test20190316231039944862C ()
+    {
+        assertEquals(0, counter.countOnDownlinkTimeout());
+        safeCounter.onDownlinkTimeout();
+        assertEquals(1, counter.countOnDownlinkTimeout());
+    }
+
+    /**
+     * Test: 20190316231039944885C
+     *
+     * <p>
+     * Method: <code>onResponseTimeout</code>
+     * </p>
+     */
+    @Test
+    public void test20190316231039944885C ()
+    {
+        assertEquals(0, counter.countOnResponseTimeout());
+        safeCounter.onResponseTimeout();
+        assertEquals(1, counter.countOnResponseTimeout());
+    }
+
+    /**
+     * Test: 20190316231039944909C
+     *
+     * <p>
+     * Method: <code>onConnectionTimeout</code>
+     * </p>
+     */
+    @Test
+    public void test20190316231039944909C ()
+    {
+        assertEquals(0, counter.countOnConnectionTimeout());
+        safeCounter.onConnectionTimeout();
+        assertEquals(1, counter.countOnConnectionTimeout());
+    }
+
+    /**
+     * Test: 20190316231039944930C
+     *
+     * <p>
+     * Method: <code>onTooManyConnections()</code>
+     * </p>
+     */
+    @Test
+    public void test20190316231039944930C ()
+    {
+        assertEquals(0, counter.countOnTooManyConnections());
+        safeCounter.onTooManyConnections(0);
+        assertEquals(1, counter.countOnTooManyConnections());
+    }
+
+    /**
+     * Test: 20190316231039944949C
+     *
+     * <p>
+     * Method: <code>onException</code>
+     * </p>
+     */
+    @Test
+    public void test20190316231039944949C ()
+    {
+        assertEquals(0, counter.countOnException());
+        safeCounter.onException(null);
+        assertEquals(1, counter.countOnException());
     }
 
 }
