@@ -182,7 +182,7 @@ public final class TestServer
         final WebServer server = WebServer
                 .newWebServer()
                 .withDefaultSettings()
-                .withPrecheckAccept()
+                .withAcceptFilter()
                 .withConnectionTimeout(Duration.ofSeconds(60))
                 .withResponseTimeout(Duration.ofSeconds(30))
                 .withSlowUplinkTimeout(Duration.ofSeconds(1))

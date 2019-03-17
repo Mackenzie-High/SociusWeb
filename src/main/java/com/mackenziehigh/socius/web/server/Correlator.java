@@ -27,8 +27,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import java.time.Duration;
-import java.time.Instant;
-import java.util.Comparator;
 import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -70,7 +68,7 @@ final class Correlator
     public final Actor<ServerSideHttpResponse, ServerSideHttpResponse> responsesIn;
 
     public Correlator (final ScheduledExecutorService service,
-                   final Duration responseTimeout)
+                       final Duration responseTimeout)
     {
         final Stage stage = Cascade.newExecutorStage(service);
         this.requestsOut = stage.newActor().withScript(this::onRequest).create();
@@ -208,10 +206,6 @@ final class Correlator
      */
     private static final class Conversation
     {
-        public static final Comparator<Conversation> COMPARATOR = (x, y) -> x.creationTime.compareTo(y.creationTime);
-
-        public final Instant creationTime = Instant.now();
-
         public final Consumer<ServerSideHttpResponse> output;
 
         public final String correlationId;

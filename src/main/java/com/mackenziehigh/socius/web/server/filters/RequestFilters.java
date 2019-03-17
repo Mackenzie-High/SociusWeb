@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mackenziehigh.socius.web.server;
+package com.mackenziehigh.socius.web.server.filters;
 
 import com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest;
-import com.mackenziehigh.socius.web.server.Precheck.Action;
-import com.mackenziehigh.socius.web.server.Precheck.ActionType;
+import com.mackenziehigh.socius.web.server.filters.RequestFilter.Action;
+import com.mackenziehigh.socius.web.server.filters.RequestFilter.ActionType;
 import java.util.Objects;
 import java.util.OptionalInt;
 import java.util.function.Predicate;
+import com.mackenziehigh.socius.web.server.filters.RequestFilter;
 
 /**
  * Utility methods for <code>Precheck</code>s.
  */
-public final class Prechecks
+public final class RequestFilters
 {
 
     /**
@@ -33,10 +34,10 @@ public final class Prechecks
      * therefore, we can use a constant representation,
      * because no status-code is needed.
      */
-    private static final Action ACCEPT = new Precheck.Action()
+    private static final Action ACCEPT = new RequestFilter.Action()
     {
         @Override
-        public Precheck.ActionType action ()
+        public RequestFilter.ActionType action ()
         {
             return ActionType.ACCEPT;
         }
@@ -53,10 +54,10 @@ public final class Prechecks
      * therefore, we can use a constant representation,
      * because no status-code is needed.
      */
-    private static final Action DENY = new Precheck.Action()
+    private static final Action DENY = new RequestFilter.Action()
     {
         @Override
-        public Precheck.ActionType action ()
+        public RequestFilter.ActionType action ()
         {
             return ActionType.DENY;
         }
@@ -73,10 +74,10 @@ public final class Prechecks
      * therefore, we can use a constant representation,
      * because no status-code is needed.
      */
-    private static final Action FORWARD = new Precheck.Action()
+    private static final Action FORWARD = new RequestFilter.Action()
     {
         @Override
-        public Precheck.ActionType action ()
+        public RequestFilter.ActionType action ()
         {
             return ActionType.FORWARD;
         }
@@ -88,18 +89,18 @@ public final class Prechecks
         }
     };
 
-    private static final Precheck PRECHECK_ACCEPT = request -> ACCEPT;
+    private static final RequestFilter PRECHECK_ACCEPT = request -> ACCEPT;
 
-    private static final Precheck PRECHECK_DENY = request -> DENY;
+    private static final RequestFilter PRECHECK_DENY = request -> DENY;
 
-    private static final Precheck PRECHECK_FORWARD = request -> FORWARD;
+    private static final RequestFilter PRECHECK_FORWARD = request -> FORWARD;
 
     /**
      * Create a predicate that causes any HTTP request to be accepted.
      *
      * @return the new predicate.
      */
-    public static Precheck accept ()
+    public static RequestFilter accept ()
     {
         return PRECHECK_ACCEPT;
     }
@@ -110,7 +111,7 @@ public final class Prechecks
      * @param condition returns true, if the HTTP request should be accepted.
      * @return the new predicate.
      */
-    public static Precheck accept (final Predicate<ServerSideHttpRequest> condition)
+    public static RequestFilter accept (final Predicate<ServerSideHttpRequest> condition)
     {
         return request -> condition.test(request) ? ACCEPT : FORWARD;
     }
@@ -120,7 +121,7 @@ public final class Prechecks
      *
      * @return the new predicate.
      */
-    public static Precheck deny ()
+    public static RequestFilter deny ()
     {
         return PRECHECK_DENY;
     }
@@ -131,7 +132,7 @@ public final class Prechecks
      * @param condition returns true, if the HTTP request should be denied.
      * @return the new predicate.
      */
-    public static Precheck deny (final Predicate<ServerSideHttpRequest> condition)
+    public static RequestFilter deny (final Predicate<ServerSideHttpRequest> condition)
     {
         return request -> condition.test(request) ? DENY : FORWARD;
     }
@@ -144,11 +145,11 @@ public final class Prechecks
      * @return the new predicate.
      * @throws IllegalArgumentException if the status is not a 4xx or 5xx response code.
      */
-    public static Precheck reject (final int status,
+    public static RequestFilter reject (final int status,
                                    final Predicate<ServerSideHttpRequest> condition)
     {
-        final Precheck reject = reject(status);
-        final Precheck conditional = request -> condition.test(request)
+        final RequestFilter reject = reject(status);
+        final RequestFilter conditional = request -> condition.test(request)
                 ? reject.check(request)
                 : forward().check(request);
         return conditional;
@@ -161,7 +162,7 @@ public final class Prechecks
      * @return the new predicate.
      * @throws IllegalArgumentException if the status is not a 4xx or 5xx response code.
      */
-    public static Precheck reject (final int status)
+    public static RequestFilter reject (final int status)
     {
         if (status < 400 || status >= 600)
         {
@@ -199,7 +200,7 @@ public final class Prechecks
      *
      * @return the new predicate.
      */
-    public static Precheck forward ()
+    public static RequestFilter forward ()
     {
         return PRECHECK_FORWARD;
     }
@@ -212,8 +213,8 @@ public final class Prechecks
      * if and only if, the first predicate was inconclusive.
      * @return the new combined predicate.
      */
-    public static Precheck chain (final Precheck first,
-                                  final Precheck second)
+    public static RequestFilter chain (final RequestFilter first,
+                                  final RequestFilter second)
     {
         Objects.requireNonNull(first, "first");
         Objects.requireNonNull(second, "second");

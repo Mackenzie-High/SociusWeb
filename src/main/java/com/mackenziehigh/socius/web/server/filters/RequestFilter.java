@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mackenziehigh.socius.web.server;
+package com.mackenziehigh.socius.web.server.filters;
 
 import com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest;
 import java.util.OptionalInt;
@@ -21,7 +21,7 @@ import java.util.OptionalInt;
 /**
  * Checks a partial HTTP message for authorization, relevance, etc.
  */
-public interface Precheck
+public interface RequestFilter
 {
     public enum ActionType
     {

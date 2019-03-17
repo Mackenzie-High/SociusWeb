@@ -21,6 +21,10 @@ import com.mackenziehigh.cascade.Cascade.Stage.Actor.Input;
 import com.mackenziehigh.cascade.Cascade.Stage.Actor.Output;
 import com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest;
 import com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse;
+import com.mackenziehigh.socius.web.server.loggers.NullWebLogger;
+import com.mackenziehigh.socius.web.server.loggers.SafeWebLogger;
+import com.mackenziehigh.socius.web.server.loggers.WebLogger;
+import com.mackenziehigh.socius.web.server.filters.RequestFilters;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.AdaptiveRecvByteBufAllocator;
 import io.netty.channel.Channel;
@@ -56,6 +60,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
+import com.mackenziehigh.socius.web.server.filters.RequestFilter;
 
 /**
  * A non-blocking HTTP server based on the Netty framework,
@@ -181,7 +186,7 @@ public final class WebServer
 
     private final boolean hasShutdownHook;
 
-    private final Precheck prechecks;
+    private final RequestFilter prechecks;
 
     private final ScheduledExecutorService service = Executors.newScheduledThreadPool(8);
 
@@ -260,7 +265,7 @@ public final class WebServer
         this.responseTimeout = builder.builderResponseTimeout;
         this.connectionTimeout = builder.builderConnectionTimeout;
         this.hasShutdownHook = builder.builderShutdownHook;
-        this.prechecks = Prechecks.chain(builder.builderPrechecks, Prechecks.deny());
+        this.prechecks = RequestFilters.chain(builder.builderPrechecks, RequestFilters.deny());
 
         this.recvBufferAllocator = new AdaptiveRecvByteBufAllocator(recvAllocatorMin, recvAllocatorInitial, recvAllocatorMax);
         this.recvBufferAllocator.maxMessagesPerRead(maxMessagesPerRead);
@@ -677,7 +682,7 @@ public final class WebServer
     {
         if (started.compareAndSet(false, true))
         {
-            serverLogger.onStart();
+            serverLogger.onStarted(this);
             final Thread thread = new Thread(this::run);
             thread.start();
         }
@@ -754,7 +759,7 @@ public final class WebServer
             // Delayed tasks (timeout tasks) can delay shutdown.
             // Therefore, we must use shutdownNow().
             service.shutdownNow();
-            serverLogger.onStop();
+            serverLogger.onStopped();
         }
     }
 
@@ -870,13 +875,13 @@ public final class WebServer
                      */
                     final ServerSideHttpRequest prefix = translator.prefixOf(remoteAddress, localAddress, msg);
 
-                    final Precheck.Action decision = prechecks.check(prefix);
+                    final RequestFilter.Action decision = prechecks.check(prefix);
 
-                    if (decision.action() == Precheck.ActionType.ACCEPT)
+                    if (decision.action() == RequestFilter.ActionType.ACCEPT)
                     {
                         out.add(msg);
                     }
-                    else if (decision.action() == Precheck.ActionType.REJECT)
+                    else if (decision.action() == RequestFilter.ActionType.REJECT)
                     {
                         final int statusCode = decision.status().orElse(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
                         sendErrorAndClose(ctx.channel(), statusCode);
@@ -956,18 +961,16 @@ public final class WebServer
         @Override
         protected void initChannel (final SocketChannel channel)
         {
-            final WebLogger channelLogger = WebLoggers.newSafeLogger(serverLogger.extend());
-
             /**
              * Configure the connection-specific logger.
              */
-            channelLogger.setRemoteAddess(channel.remoteAddress().toString(), channel.remoteAddress().getPort()); // TODO
-            channelLogger.onConnect();
+            final WebLogger channelLogger = serverLogger.extend();
+            channelLogger.onConnect(channel.localAddress(), channel.remoteAddress());
 
             /**
              * The logger, etc, will need to be notified when the connection closes.
              */
-            channel.closeFuture().addListener(x -> onClose(channelLogger));
+            channel.closeFuture().addListener(x -> onClose(channel, channelLogger));
 
             /**
              * Keep track of how many connections are open.
@@ -1246,10 +1249,11 @@ public final class WebServer
             channel.close();
         }
 
-        private void onClose (final WebLogger logger)
+        private void onClose (final SocketChannel channel,
+                              final WebLogger logger)
         {
             connectionCount.decrementAndGet();
-            logger.onDisconnect();
+            logger.onDisconnect(channel.localAddress(), channel.remoteAddress());
         }
     }
 
@@ -1268,7 +1272,7 @@ public final class WebServer
      */
     public static final class Builder
     {
-        private WebLogger builderServerLogger = WebLoggers.newNullLogger();
+        private WebLogger builderServerLogger = new NullWebLogger();
 
         private String builderServerName = DEFAULT_SERVER_NAME; // Deliberately, set by default.
 
@@ -1324,7 +1328,7 @@ public final class WebServer
 
         private boolean builderShutdownHook = false;
 
-        private Precheck builderPrechecks = Prechecks.forward();
+        private RequestFilter builderPrechecks = RequestFilters.forward();
 
         private Builder ()
         {
@@ -1338,7 +1342,7 @@ public final class WebServer
          */
         public Builder withDefaultSettings ()
         {
-            this.withServerLogger(WebLoggers.newNullLogger());
+            this.withLogger(new NullWebLogger());
             this.withServerName(DEFAULT_SERVER_NAME);
             this.withReplyTo(DEFAULT_REPLY_TO);
             this.withBindAddress(DEFAULT_BIND_ADDRESS);
@@ -1385,9 +1389,10 @@ public final class WebServer
          * @param logger will be used by the server and extended for each connection.
          * @return this.
          */
-        public Builder withServerLogger (final WebLogger logger)
+        public Builder withLogger (final WebLogger logger)
         {
             builderServerLogger = Objects.requireNonNull(logger, "logger");
+            builderServerLogger = SafeWebLogger.create(logger);
             return this;
         }
 
@@ -1828,9 +1833,9 @@ public final class WebServer
          *
          * @return this.
          */
-        public Builder withPrecheckAccept ()
+        public Builder withAcceptFilter ()
         {
-            return withPrecheck(Prechecks.accept(x -> true));
+            return withRequestFilter(RequestFilters.accept(x -> true));
         }
 
         /**
@@ -1840,10 +1845,10 @@ public final class WebServer
          * @param check may cause the HTTP request to be accepted, rejected, or denied.
          * @return this.
          */
-        public Builder withPrecheck (final Precheck check)
+        public Builder withRequestFilter (final RequestFilter check)
         {
             Objects.requireNonNull(check, "check");
-            builderPrechecks = Prechecks.chain(builderPrechecks, check);
+            builderPrechecks = RequestFilters.chain(builderPrechecks, check);
             return this;
 
         }

@@ -15,6 +15,7 @@
  */
 package com.mackenziehigh.socius.web.server;
 
+import com.mackenziehigh.socius.web.server.filters.RequestFilters;
 import com.google.common.base.Strings;
 import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
@@ -376,8 +377,8 @@ public final class WebServerTest
                 .newWebServer()
                 .withDefaultSettings()
                 .withBindAddress("127.0.42.7")
-                .withPrecheck(Prechecks.deny(x -> x.getPath().contains("zero")))
-                .withPrecheckAccept()
+                .withRequestFilter(RequestFilters.deny(x -> x.getPath().contains("zero")))
+                .withAcceptFilter()
                 .build();
 
         final TestServer server = new TestServer(engine);
@@ -411,8 +412,8 @@ public final class WebServerTest
                 .newWebServer()
                 .withDefaultSettings()
                 .withBindAddress("127.0.42.8")
-                .withPrecheck(Prechecks.accept(x -> (2 / (1 - 1)) == 0)) // div by zero
-                .withPrecheckAccept()
+                .withRequestFilter(RequestFilters.accept(x -> (2 / (1 - 1)) == 0)) // div by zero
+                .withAcceptFilter()
                 .build();
 
         final TestServer server = new TestServer(engine);
@@ -445,8 +446,8 @@ public final class WebServerTest
                 .newWebServer()
                 .withDefaultSettings()
                 .withBindAddress("127.0.42.9")
-                .withPrecheck(Prechecks.reject(403, x -> x.getPath().contains("zero")))
-                .withPrecheckAccept()
+                .withRequestFilter(RequestFilters.reject(403, x -> x.getPath().contains("zero")))
+                .withAcceptFilter()
                 .build();
 
         final TestServer server = new TestServer(engine);
@@ -485,7 +486,7 @@ public final class WebServerTest
                 .newWebServer()
                 .withDefaultSettings()
                 .withBindAddress("127.0.42.10")
-                .withPrecheckAccept()
+                .withAcceptFilter()
                 .build();
 
         final TestServer server = new TestServer(engine);
@@ -529,7 +530,7 @@ public final class WebServerTest
                 .newWebServer()
                 .withDefaultSettings()
                 .withBindAddress("127.0.42.11")
-                .withPrecheckAccept()
+                .withAcceptFilter()
                 .build();
 
         final TestServer server = new TestServer(engine);
@@ -689,7 +690,7 @@ public final class WebServerTest
                 .newWebServer()
                 .withDefaultSettings()
                 .withBindAddress("127.0.42.12")
-                .withPrecheckAccept()
+                .withAcceptFilter()
                 .withMaxInitialLineSize(1024)
                 .build();
 
