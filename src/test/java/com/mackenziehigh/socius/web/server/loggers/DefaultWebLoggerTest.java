@@ -1,3 +1,18 @@
+/*
+ * Copyright 2019 Michael Mackenzie High
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.mackenziehigh.socius.web.server.loggers;
 
 import com.mackenziehigh.socius.web.messages.web_m.HttpProtocol;
@@ -199,12 +214,7 @@ public final class DefaultWebLoggerTest
                 .setProtocol(HTTP_PROTOCOL)
                 .build();
 
-        final ServerSideHttpResponse response = ServerSideHttpResponse
-                .newBuilder()
-                .setStatus(499)
-                .build();
-
-        logger.onRejected(request, response);
+        logger.onRejected(request, 499);
 
         expect("Rejected Request");
         expect("RequestMethod: GET");
@@ -270,68 +280,14 @@ public final class DefaultWebLoggerTest
     @Test
     public void test20190316225041695196 ()
     {
-        final long requestTime = System.currentTimeMillis();
-        final long responseTime = requestTime + 12345;
-
-        final ServerSideHttpRequest request = ServerSideHttpRequest
-                .newBuilder()
-                .setTimestamp(requestTime)
-                .setMethod("GET")
-                .setUri("/index.html")
-                .setProtocol(HTTP_PROTOCOL)
-                .build();
-
-        final ServerSideHttpResponse response = ServerSideHttpResponse
-                .newBuilder()
-                .setTimestamp(responseTime)
-                .setStatus(499)
-                .build();
-
-        logger.onResponse(request, response);
-
-        expect("Dispatch Response");
-        expect("RequestMethod: GET");
-        expect("RequestURI: /index.html");
-        expect("RequestProtocol: HTTP/1.0");
-        expect("ResponseStatus: 499");
-        expect("ResponseTimeMillis: " + (responseTime - requestTime));
-    }
-
-    /**
-     * Test: 20190316225041695196NT
-     *
-     * <p>
-     * Method: <code>onResponse()</code>
-     * </p>
-     *
-     * <p>
-     * Case: No Timestamp in Response.
-     * </p>
-     */
-    @Test
-    public void test20190316225041695196NT ()
-    {
-        final long requestTime = System.currentTimeMillis();
-
-        final ServerSideHttpRequest request = ServerSideHttpRequest
-                .newBuilder()
-                .setTimestamp(requestTime)
-                .setMethod("GET")
-                .setUri("/index.html")
-                .setProtocol(HTTP_PROTOCOL)
-                .build();
-
         final ServerSideHttpResponse response = ServerSideHttpResponse
                 .newBuilder()
                 .setStatus(499)
                 .build();
 
-        logger.onResponse(request, response);
+        logger.onResponse(response);
 
         expect("Dispatch Response");
-        expect("RequestMethod: GET");
-        expect("RequestURI: /index.html");
-        expect("RequestProtocol: HTTP/1.0");
         expect("ResponseStatus: 499");
     }
 

@@ -15,28 +15,33 @@
  */
 package com.mackenziehigh.socius.web.server;
 
-import com.google.common.base.Verify;
 import com.google.common.collect.Maps;
-import com.mackenziehigh.cascade.Cascade;
 import com.mackenziehigh.cascade.Cascade.Stage;
 import com.mackenziehigh.cascade.Cascade.Stage.Actor;
 import com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest;
 import com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
+import com.mackenziehigh.socius.web.server.loggers.WebLogger;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 
+/**
+ * An instance of this class provides the point of contact between
+ * the web-server itself and the third-party actors connected thereto.
+ */
 final class Correlator
 {
     private final ScheduledExecutorService service;
 
+    /**
+     * If a response is not received within this time-limit,
+     * then a default response will be sent to the client.
+     */
     private final Duration responseTimeout;
 
     /**
@@ -53,7 +58,7 @@ final class Correlator
      * which will indicate that the connection timed-out.
      * </p>
      */
-    private final Map<String, Conversation> connections = Maps.newConcurrentMap();
+    private final Map<String, OpenConnection> connections = Maps.newConcurrentMap();
 
     /**
      * This processor will be used to send HTTP requests out of the server,
@@ -67,59 +72,50 @@ final class Correlator
      */
     public final Actor<ServerSideHttpResponse, ServerSideHttpResponse> responsesIn;
 
-    public Correlator (final ScheduledExecutorService service,
+    /**
+     * Keep a count of the responses could not be routed to an open connection.
+     * Expose this counter for use in the unit-tests.
+     */
+    final AtomicLong responseRoutingFailures = new AtomicLong();
+
+    public Correlator (final Stage stage,
+                       final ScheduledExecutorService service,
                        final Duration responseTimeout)
     {
-        final Stage stage = Cascade.newExecutorStage(service);
         this.requestsOut = stage.newActor().withScript(this::onRequest).create();
         this.responsesIn = stage.newActor().withScript(this::onResponse).create();
         this.responseTimeout = responseTimeout;
         this.service = service;
     }
 
-    public SimpleChannelInboundHandler<ServerSideHttpRequest> newHandler ()
-    {
-        final AtomicBoolean firstRequest = new AtomicBoolean();
-
-        return new SimpleChannelInboundHandler<ServerSideHttpRequest>()
-        {
-            @Override
-            protected void channelRead0 (final ChannelHandlerContext ctx,
-                                         final ServerSideHttpRequest msg)
-            {
-                if (firstRequest.compareAndSet(false, true))
-                {
-                    open(msg, response -> reply(ctx, response));
-                }
-            }
-
-            private void reply (final ChannelHandlerContext ctx,
-                                final ServerSideHttpResponse response)
-            {
-                ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
-            }
-        };
-    }
-
     /**
      * Begin managing a request-response exchange.
      *
+     * @param logger is the connection-specific logger.
      * @param request will be sent to the external actors, who will generate a response.
      * @param callback will be used to transmit the response to the client.
      */
-    private void open (final ServerSideHttpRequest request,
-                       final Consumer<ServerSideHttpResponse> callback)
+    public void dispatch (final WebLogger logger,
+                          final ServerSideHttpRequest request,
+                          final Consumer<ServerSideHttpResponse> callback)
     {
         final String correlationId = request.getCorrelationId();
 
-        Verify.verify(!connections.containsKey(correlationId));
+        /**
+         * Do not allow a connection to be opened with
+         * the same UUID as an existing connection.
+         */
+        if (connections.containsKey(correlationId))
+        {
+            return;
+        }
 
         /**
          * Create the response handler that will be used to route
          * the corresponding HTTP Response, if and when it occurs.
          */
-        final Conversation connection = new Conversation(correlationId, callback);
-        connections.put(correlationId, connection);
+        final OpenConnection connection = new OpenConnection(logger, correlationId, callback);
+        connections.putIfAbsent(correlationId, connection);
 
         /**
          * If a response is not received before the response-timeout expires,
@@ -174,48 +170,50 @@ final class Correlator
              * Therefore, we will not be able to find the relevant client-server connection.
              * Drop the response silently.
              */
+            responseRoutingFailures.incrementAndGet();
             return;
         }
 
         /**
-         * This consumer will take the response and send it to the client.
-         * This consumer is a one-shot operation.
+         * Find the connection that correlates to the given response.
          */
-        final Conversation connection = connections.get(correlationId);
+        final OpenConnection connection = connections.get(correlationId);
 
-        /**
-         * If a response was already transmitted, then the connection was already closed.
-         * Alternatively, the external handlers may be broadcasting responses to multiple
-         * servers in a publish-subscribe like manner. Consequently, we may have been
-         * given a response that does not correlate to one of our connections.
-         * In either case, just silently drop the response.
-         */
         if (connection == null)
         {
-            return;
+            /**
+             * If a response was already transmitted, then the connection was already closed.
+             * Alternatively, the external handlers may be broadcasting responses to multiple
+             * servers in a publish-subscribe like manner. Consequently, we may have been
+             * given a response that does not correlate to one of our connections.
+             * In either case, just silently drop the response.
+             */
+            responseRoutingFailures.incrementAndGet();
         }
-
-        /**
-         * Send the HTTP Response to the client.
-         */
-        connection.respondWith(response);
+        else
+        {
+            /**
+             * Send the HTTP Response to the client and cause the connection to be closed thereafter.
+             */
+            connection.respondWith(response);
+        }
     }
 
-    /**
-     * Representation of client-server connection.
-     */
-    private static final class Conversation
+    private static final class OpenConnection
     {
+        private final WebLogger logger;
+
         public final Consumer<ServerSideHttpResponse> output;
 
         public final String correlationId;
 
         private final AtomicBoolean sent = new AtomicBoolean();
 
-        public Conversation (final String correlationId,
-                             final Consumer<ServerSideHttpResponse> onResponse)
+        public OpenConnection (final WebLogger logger,
+                               final String correlationId,
+                               final Consumer<ServerSideHttpResponse> onResponse)
         {
-
+            this.logger = logger;
             this.correlationId = correlationId;
             this.output = onResponse;
         }
@@ -228,16 +226,23 @@ final class Correlator
              */
             if (sent.compareAndSet(false, true))
             {
+                logger.onResponse(response);
                 output.accept(response);
             }
         }
 
         public void closeStaleConnection ()
         {
-            if (sent.get() == false)
+            /**
+             * Sending a response is a one-shot operation.
+             * Do not allow duplicate responses.
+             */
+            if (sent.compareAndSet(false, true))
             {
                 final ServerSideHttpResponse response = Translator.newErrorResponseGPB(HttpResponseStatus.REQUEST_TIMEOUT.code());
-                respondWith(response);
+                logger.onResponseTimeout();
+                logger.onResponse(response);
+                output.accept(response);
             }
         }
     }

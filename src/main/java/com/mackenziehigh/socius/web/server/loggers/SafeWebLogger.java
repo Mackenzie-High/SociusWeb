@@ -124,11 +124,11 @@ public final class SafeWebLogger
      */
     @Override
     public void onRejected (final web_m.ServerSideHttpRequest request,
-                            final web_m.ServerSideHttpResponse response)
+                            final int status)
     {
         try
         {
-            delegate.onRejected(request, response);
+            delegate.onRejected(request, status);
         }
         catch (Throwable ex)
         {
@@ -172,12 +172,11 @@ public final class SafeWebLogger
      * {@inheritDoc}
      */
     @Override
-    public void onResponse (final web_m.ServerSideHttpRequest request,
-                            final web_m.ServerSideHttpResponse response)
+    public void onResponse (final web_m.ServerSideHttpResponse response)
     {
         try
         {
-            delegate.onResponse(request, response);
+            delegate.onResponse(response);
         }
         catch (Throwable ex)
         {

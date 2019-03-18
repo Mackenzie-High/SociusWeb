@@ -15,8 +15,8 @@ public final class ChainWebLogger
 
     private final WebLogger logger2;
 
-    private ChainWebLogger (final WebLogger logger1,
-                            final WebLogger logger2)
+    public ChainWebLogger (final WebLogger logger1,
+                           final WebLogger logger2)
     {
         this.logger1 = Objects.requireNonNull(logger1, "logger1");
         this.logger2 = Objects.requireNonNull(logger2, "logger2");
@@ -101,10 +101,10 @@ public final class ChainWebLogger
      */
     @Override
     public void onRejected (final web_m.ServerSideHttpRequest request,
-                            final web_m.ServerSideHttpResponse response)
+                            final int status)
     {
-        logger1.onRejected(request, response);
-        logger2.onRejected(request, response);
+        logger1.onRejected(request, status);
+        logger2.onRejected(request, status);
     }
 
     /**
@@ -131,11 +131,10 @@ public final class ChainWebLogger
      * {@inheritDoc}
      */
     @Override
-    public void onResponse (final web_m.ServerSideHttpRequest request,
-                            final web_m.ServerSideHttpResponse response)
+    public void onResponse (final web_m.ServerSideHttpResponse response)
     {
-        logger1.onResponse(request, response);
-        logger2.onResponse(request, response);
+        logger1.onResponse(response);
+        logger2.onResponse(response);
     }
 
     /**

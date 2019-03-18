@@ -1,3 +1,18 @@
+/*
+ * Copyright 2019 Michael Mackenzie High
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.mackenziehigh.socius.web.server.loggers;
 
 import com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest;
@@ -237,7 +252,7 @@ public final class SafeWebLoggerTest
         {
             @Override
             public void onRejected (ServerSideHttpRequest request,
-                                    ServerSideHttpResponse response)
+                                    final int status)
             {
                 executed.set(true);
                 throw new Error();
@@ -250,7 +265,7 @@ public final class SafeWebLoggerTest
          * This method should not throw an exception,
          * because the wrapper suppressed the exception.
          */
-        wrapper.onRejected(null, null);
+        wrapper.onRejected(null, 0);
         assertTrue(executed.get());
     }
 
@@ -333,8 +348,7 @@ public final class SafeWebLoggerTest
         final WebLogger logger = new BaseWebLogger()
         {
             @Override
-            public void onResponse (ServerSideHttpRequest request,
-                                    ServerSideHttpResponse response)
+            public void onResponse (ServerSideHttpResponse response)
             {
                 executed.set(true);
                 throw new Error();
@@ -347,7 +361,7 @@ public final class SafeWebLoggerTest
          * This method should not throw an exception,
          * because the wrapper suppressed the exception.
          */
-        wrapper.onResponse(null, null);
+        wrapper.onResponse(null);
         assertTrue(executed.get());
     }
 
@@ -647,7 +661,7 @@ public final class SafeWebLoggerTest
     public void test20190316225041695123C ()
     {
         assertEquals(0, counter.countOnRejected());
-        safeCounter.onRejected(null, null);
+        safeCounter.onRejected(null, 0);
         assertEquals(1, counter.countOnRejected());
     }
 
@@ -692,7 +706,7 @@ public final class SafeWebLoggerTest
     public void test20190316225041695196C ()
     {
         assertEquals(0, counter.countOnResponse());
-        safeCounter.onResponse(null, null);
+        safeCounter.onResponse(null);
         assertEquals(1, counter.countOnResponse());
     }
 

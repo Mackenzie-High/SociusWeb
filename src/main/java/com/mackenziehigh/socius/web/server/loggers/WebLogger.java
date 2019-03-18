@@ -102,10 +102,10 @@ public interface WebLogger
      * </p>
      *
      * @param request is an incoming (partial) HTTP request.
-     * @param response is the default response that will be sent due to the rejection.
+     * @param status is the HTTP status-code used in the rejection response.
      */
     public void onRejected (ServerSideHttpRequest request,
-                            ServerSideHttpResponse response);
+                            int status);
 
     /**
      * This method is invoked, if an incoming HTTP request is deemed
@@ -140,7 +140,7 @@ public interface WebLogger
      *
      * <p>
      * This method is only invoked given responses from connected actors and/or response-timeouts.
-     * This method is not invoked when the response is due to a pre-check rejection
+     * This method is not invoked when the response is due to a request-filter rejection
      * or any other phase of the reception pipeline.
      * </p>
      *
@@ -148,11 +148,9 @@ public interface WebLogger
      * This method is invoked on the same instance as <code>connect()</code>.
      * </p>
      *
-     * @param request is the originating (fully-translated) HTTP request.
      * @param response is the response that will be sent to the client.
      */
-    public void onResponse (ServerSideHttpRequest request,
-                            ServerSideHttpResponse response);
+    public void onResponse (ServerSideHttpResponse response);
 
     /**
      * This method is invoked, if the connection shall be closed due to an uplink-timeout expiration.

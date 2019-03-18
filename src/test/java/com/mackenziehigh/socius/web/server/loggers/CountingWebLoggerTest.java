@@ -126,7 +126,7 @@ public final class CountingWebLoggerTest
     public void test20190316225041695123 ()
     {
         assertEquals(0, logger.countOnRejected());
-        logger.onRejected(null, null);
+        logger.onRejected(null, 0);
         assertEquals(1, logger.countOnRejected());
     }
 
@@ -171,7 +171,7 @@ public final class CountingWebLoggerTest
     public void test20190316225041695196 ()
     {
         assertEquals(0, logger.countOnResponse());
-        logger.onResponse(null, null);
+        logger.onResponse(null);
         assertEquals(1, logger.countOnResponse());
     }
 

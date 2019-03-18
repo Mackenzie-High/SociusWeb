@@ -85,7 +85,7 @@ public class BaseWebLogger
      */
     @Override
     public void onRejected (final web_m.ServerSideHttpRequest request,
-                            final web_m.ServerSideHttpResponse response)
+                            final int status)
     {
         pass();
     }
@@ -112,8 +112,7 @@ public class BaseWebLogger
      * {@inheritDoc}
      */
     @Override
-    public void onResponse (final web_m.ServerSideHttpRequest request,
-                            final web_m.ServerSideHttpResponse response)
+    public void onResponse (final web_m.ServerSideHttpResponse response)
     {
         pass();
     }

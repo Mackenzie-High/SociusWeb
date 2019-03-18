@@ -286,7 +286,7 @@ public final class CountingWebLogger
      */
     @Override
     public void onRejected (final ServerSideHttpRequest request,
-                            final ServerSideHttpResponse response)
+                            final int status)
     {
         countOnRejected.incrementAndGet();
     }
@@ -313,8 +313,7 @@ public final class CountingWebLogger
      * {@inheritDoc}
      */
     @Override
-    public void onResponse (final ServerSideHttpRequest request,
-                            final ServerSideHttpResponse response)
+    public void onResponse (final ServerSideHttpResponse response)
     {
         countOnResponse.incrementAndGet();
     }

@@ -130,13 +130,13 @@ public class DefaultWebLogger
      */
     @Override
     public void onRejected (final ServerSideHttpRequest request,
-                            final ServerSideHttpResponse response)
+                            final int status)
     {
         log(String.format("Rejected Request"));
         log(String.format("RequestMethod: %s", request.getMethod()));
         log(String.format("RequestURI: %s", request.getUri()));
         log(String.format("RequestProtocol: %s", request.getProtocol().getText()));
-        log(String.format("ResponseStatus: %s", response.getStatus()));
+        log(String.format("ResponseStatus: %s", status));
     }
 
     /**
@@ -164,20 +164,10 @@ public class DefaultWebLogger
      * {@inheritDoc}
      */
     @Override
-    public void onResponse (final ServerSideHttpRequest request,
-                            final ServerSideHttpResponse response)
+    public void onResponse (final ServerSideHttpResponse response)
     {
         log(String.format("Dispatch Response"));
-        log(String.format("RequestMethod: %s", request.getMethod()));
-        log(String.format("RequestURI: %s", request.getUri()));
-        log(String.format("RequestProtocol: %s", request.getProtocol().getText()));
         log(String.format("ResponseStatus: %s", response.getStatus()));
-
-        if (response.hasTimestamp())
-        {
-            final long responseTime = response.getTimestamp() - request.getTimestamp();
-            log(String.format("ResponseTimeMillis: %s", responseTime));
-        }
     }
 
     /**

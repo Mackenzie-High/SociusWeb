@@ -30,10 +30,12 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.AdaptiveRecvByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -189,7 +191,7 @@ public final class WebServer
 
     private final RequestFilter prechecks;
 
-    private final ScheduledExecutorService service = Executors.newScheduledThreadPool(8);
+    private final ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
 
     private final Stage stage = Cascade.newExecutorStage(service).addErrorHandler(ex -> serverLogger().onException(ex));
 
@@ -282,7 +284,7 @@ public final class WebServer
         this.translator = new Translator(serverName, serverId, replyTo);
         this.initializer = new Initializer();
 
-        this.router = new Correlator(service, responseTimeout);
+        this.router = new Correlator(stage, service, responseTimeout);
     }
 
     private WebLogger serverLogger ()
@@ -887,14 +889,25 @@ public final class WebServer
                                    final HttpRequest msg,
                                    final List<Object> out)
             {
+                /**
+                 * Convert the Netty-based request to a GPB-based request.
+                 * Some parts of the request will be omitted,
+                 * as they are not needed at this stage.
+                 */
+                final ServerSideHttpRequest prefix;
+
                 try
                 {
-                    /**
-                     * Convert the Netty-based request to a GPB-based request.
-                     * Some parts of the request will be omitted,
-                     * as they are not needed at this stage.
-                     */
-                    final ServerSideHttpRequest prefix = translator.prefixOf(remoteAddress, localAddress, msg);
+                    prefix = translator.prefixOf(remoteAddress, localAddress, msg);
+                }
+                catch (Throwable ex)
+                {
+                    logger.onException(ex);
+                    return;
+                }
+
+                try
+                {
 
                     final RequestFilter.Action decision = prechecks.apply(prefix);
 
@@ -906,19 +919,19 @@ public final class WebServer
                     else if (decision.action() == RequestFilter.ActionType.REJECT)
                     {
                         final int statusCode = decision.status().orElse(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
-                        // logger.onRejected(prefix, response); // TODO
+                        logger.onRejected(prefix, statusCode);
                         sendErrorAndClose(ctx.channel(), statusCode);
                     }
                     else // DENY, FORWARD never occurs.
                     {
-                        logger.onDenied(prefix);
                         closeWithNoResponse(ctx.channel());
+                        logger.onDenied(prefix);
                     }
                 }
-                catch (Throwable e)
+                catch (Throwable ex)
                 {
-                    logger.onException(e);
-//                    logger.onDenied(request); TODO
+                    logger.onException(ex);
+                    logger.onDenied(prefix);
                     closeWithNoResponse(ctx.channel());
                 }
             }
@@ -952,7 +965,7 @@ public final class WebServer
                     final ServerSideHttpRequest request = translator.requestToGPB(remoteAddress, localAddress, msg);
                     out.add(request);
                 }
-                catch (Throwable e)
+                catch (Throwable ex)
                 {
                     sendErrorAndClose(ctx.channel(), HttpResponseStatus.BAD_REQUEST.code());
                 }
@@ -980,6 +993,30 @@ public final class WebServer
                 {
                     sendErrorAndClose(ctx.channel(), HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
                 }
+            }
+        }
+
+        private final class CorrelatorHub
+                extends SimpleChannelInboundHandler<ServerSideHttpRequest>
+        {
+            private final WebLogger logger;
+
+            public CorrelatorHub (final WebLogger logger)
+            {
+                this.logger = logger;
+            }
+
+            @Override
+            protected void channelRead0 (final ChannelHandlerContext ctx,
+                                         final ServerSideHttpRequest msg)
+            {
+                router.dispatch(logger, msg, response -> onReply(ctx, response));
+            }
+
+            private void onReply (final ChannelHandlerContext ctx,
+                                  final ServerSideHttpResponse response)
+            {
+                ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
             }
         }
 
@@ -1209,7 +1246,7 @@ public final class WebServer
             channel.pipeline().addLast(new TranslationEncoder());
 
             /**
-             * The Router coordinates the transmission of incoming HTTP requests
+             * The Correlator coordinates the transmission of incoming HTTP requests
              * to the connected (external) actors, and the reception of responses
              * from those connected (external) actors.
              *
@@ -1219,7 +1256,7 @@ public final class WebServer
              * Downlink Input: None.
              * Downlink Output: (1) Socius GPB-based Full HTTP Response.
              */
-            channel.pipeline().addLast(router.newHandler());
+            channel.pipeline().addLast(new CorrelatorHub(channelLogger));
 
             /**
              * If the connection is open for too long, then go ahead and close
