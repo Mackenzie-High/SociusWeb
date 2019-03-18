@@ -63,7 +63,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * A non-blocking HTTP server based on the Netty framework,
@@ -225,14 +224,6 @@ public final class WebServer
 
     private final Initializer initializer;
 
-    private final AtomicLong uplinkTimeoutCounter = new AtomicLong();
-
-    private final AtomicLong downlinkTimeoutCounter = new AtomicLong();
-
-    private final AtomicLong responseTimeoutCounter = new AtomicLong();
-
-    private final AtomicLong connectionTimeoutCounter = new AtomicLong();
-
     /**
      * Sole Constructor.
      *
@@ -300,26 +291,6 @@ public final class WebServer
     final ChannelInitializer<SocketChannel> initializer ()
     {
         return initializer;
-    }
-
-    public long getUplinkTimeoutCount ()
-    {
-        return uplinkTimeoutCounter.get();
-    }
-
-    public long getDownlinkTimeoutCount ()
-    {
-        return downlinkTimeoutCounter.get();
-    }
-
-    public long getResponseTimeoutCount ()
-    {
-        return responseTimeoutCounter.get();
-    }
-
-    public long getConnectionTimeoutCount ()
-    {
-        return connectionTimeoutCounter.get();
     }
 
     /**
