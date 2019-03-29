@@ -234,7 +234,7 @@ public final class Example
 ### Query Server
 
 ```bash
-curl -k "http://127.0.0.1:8080"
+curl -k "https://127.0.0.1:8080"
 ```
 
 # Encoding
