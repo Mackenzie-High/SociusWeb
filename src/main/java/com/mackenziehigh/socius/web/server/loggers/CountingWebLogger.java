@@ -349,15 +349,6 @@ public final class CountingWebLogger
      * {@inheritDoc}
      */
     @Override
-    public void onConnectionTimeout ()
-    {
-        countOnConnectionTimeout.incrementAndGet();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void onTooManyConnections (final int count)
     {
         countOnTooManyConnections.incrementAndGet();

@@ -62,10 +62,6 @@ public class DefaultWebLogger
         log(String.format("RecvBufferMaxSize: %s", server.getRecvBufferMaxSize()));
         log(String.format("SoftConnectionLimit: %s", server.getSoftConnectionLimit()));
         log(String.format("HardConnectionLimit: %s", server.getHardConnectionLimit()));
-        log(String.format("MaxServerUplinkBandwidth: %s", server.getMaxServerUplinkBandwidth()));
-        log(String.format("MaxServerDownlinkBandwidth: %s", server.getMaxServerDownlinkBandwidth()));
-        log(String.format("MaxConnectionUplinkBandwidth: %s", server.getMaxConnectionUplinkBandwidth()));
-        log(String.format("MaxConnectionDownlinkBandwidth: %s", server.getMaxConnectionDownlinkBandwidth()));
         log(String.format("MaxPauseTime: %s", server.getMaxPauseTime()));
         log(String.format("MaxRequestSize: %s", server.getMaxRequestSize()));
         log(String.format("MaxInitialLineSize: %s", server.getMaxInitialLineSize()));
@@ -74,10 +70,9 @@ public class DefaultWebLogger
         log(String.format("CompressionWindowBits: %s", server.getCompressionWindowBits()));
         log(String.format("CompressionMemoryLevel: %s", server.getCompressionMemoryLevel()));
         log(String.format("CompressionThreshold: %s", server.getCompressionThreshold()));
-        log(String.format("SlowUplinkTimeout: %s", server.getSlowUplinkTimeout()));
-        log(String.format("SlowDownlinkTimeout: %s", server.getSlowDownlinkTimeout()));
+        log(String.format("UplinkTimeout: %s", server.getUplinkTimeout()));
+        log(String.format("DownlinkTimeout: %s", server.getDownlinkTimeout()));
         log(String.format("ResponseTimeout: %s", server.getResponseTimeout()));
-        log(String.format("ConnectionTimeout: %s", server.getConnectionTimeout()));
     }
 
     /**
@@ -195,15 +190,6 @@ public class DefaultWebLogger
     public void onResponseTimeout ()
     {
         log(String.format("Response Timeout Expired"));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void onConnectionTimeout ()
-    {
-        log(String.format("Connection Timeout Expired"));
     }
 
     /**

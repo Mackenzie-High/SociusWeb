@@ -16,11 +16,10 @@
 package com.mackenziehigh.socius.web.server;
 
 import com.mackenziehigh.socius.web.server.filters.RequestFilters;
-import com.google.common.base.Strings;
+import com.mackenziehigh.socius.web.server.loggers.ChainWebLogger;
+import com.mackenziehigh.socius.web.server.loggers.CountingWebLogger;
+import com.mackenziehigh.socius.web.server.loggers.DefaultWebLogger;
 import java.time.Duration;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import static junit.framework.Assert.*;
 import org.junit.Test;
 
@@ -29,6 +28,11 @@ import org.junit.Test;
  */
 public final class WebServerTest
 {
+    private final CountingWebLogger counter = CountingWebLogger.create();
+
+    private final DefaultWebLogger slogger = new DefaultWebLogger();
+
+    private final ChainWebLogger logger = new ChainWebLogger(counter, slogger);
 
     /**
      * Test: 20190303101911066030
@@ -56,10 +60,6 @@ public final class WebServerTest
         assertEquals(WebServer.DEFAULT_RECV_ALLOCATOR_MIN, server.getRecvBufferMinSize());
         assertEquals(WebServer.DEFAULT_SOFT_CONNECTION_LIMIT, server.getSoftConnectionLimit());
         assertEquals(WebServer.DEFAULT_HARD_CONNECTION_LIMIT, server.getHardConnectionLimit());
-        assertEquals(WebServer.DEFAULT_SERVER_UPLINK_BANDWIDTH, server.getMaxServerUplinkBandwidth());
-        assertEquals(WebServer.DEFAULT_SERVER_DOWNLINK_BANDWIDTH, server.getMaxServerDownlinkBandwidth());
-        assertEquals(WebServer.DEFAULT_CONNECTION_UPLINK_BANDWIDTH, server.getMaxConnectionUplinkBandwidth());
-        assertEquals(WebServer.DEFAULT_CONNECTION_DOWNLINK_BANDWIDTH, server.getMaxConnectionDownlinkBandwidth());
         assertEquals(WebServer.DEFAULT_MAX_PAUSE_TIME, server.getMaxPauseTime());
         assertEquals(WebServer.DEFAULT_MAX_REQUEST_SIZE, server.getMaxRequestSize());
         assertEquals(WebServer.DEFAULT_MAX_INITIAL_LINE_SIZE, server.getMaxInitialLineSize());
@@ -68,10 +68,9 @@ public final class WebServerTest
         assertEquals(WebServer.DEFAULT_COMPRESSION_WINDOW_BITS, server.getCompressionWindowBits());
         assertEquals(WebServer.DEFAULT_COMPRESSION_MEMORY_LEVEL, server.getCompressionMemoryLevel());
         assertEquals(WebServer.DEFAULT_COMPRESSION_THRESHOLD, server.getCompressionThreshold());
-        assertEquals(WebServer.DEFAULT_SLOW_UPLINK_TIMEOUT, server.getSlowUplinkTimeout());
-        assertEquals(WebServer.DEFAULT_SLOW_DOWNLINK_TIMEOUT, server.getSlowDownlinkTimeout());
+        assertEquals(WebServer.DEFAULT_SLOW_UPLINK_TIMEOUT, server.getUplinkTimeout());
+        assertEquals(WebServer.DEFAULT_SLOW_DOWNLINK_TIMEOUT, server.getDownlinkTimeout());
         assertEquals(WebServer.DEFAULT_RESPONSE_TIMEOUT, server.getResponseTimeout());
-        assertEquals(WebServer.DEFAULT_CONNECTION_TIMEOUT, server.getConnectionTimeout());
     }
 
     /**
@@ -94,10 +93,6 @@ public final class WebServerTest
                 .withRecvBufferAllocator(31, 33, 37)
                 .withSoftConnectionLimit(41)
                 .withHardConnectionLimit(43)
-                .withMaxServerUplinkBandwidth(47)
-                .withMaxServerDownlinkBandwidth(49)
-                .withMaxConnectionUplinkBandwidth(51)
-                .withMaxConnectionDownlinkBandwidth(53)
                 .withMaxPauseTime(Duration.ofSeconds(57))
                 .withMaxRequestSize(61)
                 .withMaxInitialLineSize(63)
@@ -106,10 +101,10 @@ public final class WebServerTest
                 .withCompressionWindowBits(WebServer.DEFAULT_COMPRESSION_WINDOW_BITS - 2)
                 .withCompressionMemoryLevel(WebServer.DEFAULT_COMPRESSION_MEMORY_LEVEL - 2)
                 .withCompressionThreshold(71)
-                .withSlowUplinkTimeout(Duration.ofSeconds(73))
-                .withSlowDownlinkTimeout(Duration.ofSeconds(79))
+                .withUplinkTimeout(Duration.ofSeconds(73))
+                .withDownlinkTimeout(Duration.ofSeconds(79))
                 .withResponseTimeout(Duration.ofSeconds(83))
-                .withConnectionTimeout(Duration.ofSeconds(87))
+                .withUnsecureSockets()
                 .build();
 
         assertEquals("Voyager", server.getServerName());
@@ -122,10 +117,6 @@ public final class WebServerTest
         assertEquals(37, server.getRecvBufferMaxSize());
         assertEquals(41, server.getSoftConnectionLimit());
         assertEquals(43, server.getHardConnectionLimit());
-        assertEquals(47, server.getMaxServerUplinkBandwidth());
-        assertEquals(49, server.getMaxServerDownlinkBandwidth());
-        assertEquals(51, server.getMaxConnectionUplinkBandwidth());
-        assertEquals(53, server.getMaxConnectionDownlinkBandwidth());
         assertEquals(Duration.ofSeconds(57), server.getMaxPauseTime());
         assertEquals(61, server.getMaxRequestSize());
         assertEquals(63, server.getMaxInitialLineSize());
@@ -134,121 +125,130 @@ public final class WebServerTest
         assertEquals(13, server.getCompressionWindowBits());
         assertEquals(6, server.getCompressionMemoryLevel());
         assertEquals(71, server.getCompressionThreshold());
-        assertEquals(Duration.ofSeconds(73), server.getSlowUplinkTimeout());
-        assertEquals(Duration.ofSeconds(79), server.getSlowDownlinkTimeout());
+        assertEquals(Duration.ofSeconds(73), server.getUplinkTimeout());
+        assertEquals(Duration.ofSeconds(79), server.getDownlinkTimeout());
         assertEquals(Duration.ofSeconds(83), server.getResponseTimeout());
-        assertEquals(Duration.ofSeconds(87), server.getConnectionTimeout());
+        assertFalse(server.isSecure());
     }
 
-//    /**
-//     * Test: 20190308002223203440
-//     *
-//     * <p>
-//     * Type: End-To-End Throughput Test.
-//     * </p>
-//     *
-//     * <p>
-//     * Case: Basic Throughput.
-//     * </p>
-//     *
-//     * @throws java.lang.InterruptedException
-//     */
-//    @Test
-//    public void test20190308002223203440 ()
-//            throws Throwable
-//    {
-//        final WebServer engine = WebServer
-//                .newWebServer()
-//                .withDefaultSettings()
-//                .withBindAddress("127.0.42.1")
-//                .withPrecheckAccept()
-//                .build();
-//
-//        final TestServer server = new TestServer(engine);
-//        server.start();
-//
-//        final SocketTester tester = new SocketTester("127.0.42.1", 8080);
-//        tester.sendln("GET /sleep?period=1 HTTP/1.1");
-//        tester.sendln();
-//        tester.recvln("HTTP/1.0 200 OK");
-//        tester.recvln("Connection: close");
-//        tester.recvln("Content-Type: text/plain");
-//        tester.recvln("Content-Length: 14");
-//        tester.recvln();
-//        tester.recv("SleepComplete\n");
-//        tester.closed();
-//    }
-//    /**
-//     * Test: 20190308002223203558
-//     *
-//     * <p>
-//     * Type: End-To-End Throughput Test.
-//     * </p>
-//     *
-//     * <p>
-//     * Case: Uplink Timeout.
-//     * </p>
-//     *
-//     * @throws java.lang.Throwable
-//     */
-//    @Test
-//    public void test20190308002223203558 ()
-//            throws Throwable
-//    {
-//        final WebServer engine = WebServer
-//                .newWebServer()
-//                .withDefaultSettings()
-//                .withBindAddress("127.0.42.3")
-//                .withPrecheckAccept()
-//                .withSlowUplinkTimeout(Duration.ofSeconds(1))
-//                .withConnectionTimeout(Duration.ofSeconds(60))
-//                .withResponseTimeout(Duration.ofSeconds(60))
-//                .build();
-//
-//        final TestServer server = new TestServer(engine);
-//        server.start();
-//
-//        final SocketTester tester = new SocketTester("127.0.42.3", 8080);
-//        tester.sendln("GET");
-//        tester.closed();
-//    }
-//    /**
-//     * Test: 20190308002223203594
-//     *
-//     * <p>
-//     * Type: End-To-End Throughput Test.
-//     * </p>
-//     *
-//     * <p>
-//     * Case: Downlink Timeout.
-//     * </p>
-//     *
-//     * @throws java.lang.Throwable
-//     */
-//    @Test
-//    public void test20190308002223203594 ()
-//            throws Throwable
-//    {
-//        final WebServer engine = WebServer
-//                .newWebServer()
-//                .withDefaultSettings()
-//                .withBindAddress("127.0.42.4")
-//                .withPrecheckAccept()
-//                .withSlowDownlinkTimeout(Duration.ofSeconds(1))
-//                .withConnectionTimeout(Duration.ofSeconds(60))
-//                .withResponseTimeout(Duration.ofSeconds(60))
-//                .build();
-//
-//        final TestServer server = new TestServer(engine);
-//        server.start();
-//
-//        final SocketTester tester = new SocketTester("127.0.42.4", 8080);
-//        tester.sendln("GET /zero?count=3200100 HTTP/1.1");
-//        tester.sendln();
-//        tester.recvln("HTTP/1.0 200 OK");
-//        tester.sleep(2_000);
-//        tester.closed();
-//    }
+    /**
+     * Test: 20190308002223203440
+     *
+     * <p>
+     * Type: End-To-End Throughput Test.
+     * </p>
+     *
+     * <p>
+     * Case: Basic Throughput.
+     * </p>
+     *
+     * @throws java.lang.InterruptedException
+     */
+    @Test
+    public void test20190308002223203440 ()
+            throws Throwable
+    {
+        final WebServer engine = WebServer
+                .newWebServer()
+                .withDefaultSettings()
+                .withBindAddress("127.0.42.1")
+                .withRequestFilter(RequestFilters.accept())
+                .withLogger(logger)
+                .build();
+
+        assertEquals(0, counter.countOnRequest());
+        assertEquals(0, counter.countOnResponse());
+
+        final TestServer server = new TestServer(engine);
+        server.start();
+
+        final SocketTester tester = new SocketTester("127.0.42.1", 8080);
+        tester.sendln("GET /sleep?period=1 HTTP/1.1");
+        tester.sendln();
+        tester.recvln("HTTP/1.0 200 OK");
+        tester.recvln("Connection: close");
+        tester.recvln("Content-Type: text/plain");
+        tester.recvln("Content-Length: 14");
+        tester.recvln();
+        tester.recv("SleepComplete\n");
+        tester.closed();
+
+        assertEquals(1, counter.countOnRequest());
+        assertEquals(1, counter.countOnResponse());
+    }
+
+    /**
+     * Test: 20190308002223203558
+     *
+     * <p>
+     * Type: End-To-End Throughput Test.
+     * </p>
+     *
+     * <p>
+     * Case: Uplink Timeout.
+     * </p>
+     *
+     * @throws java.lang.Throwable
+     */
+    @Test
+    public void test20190308002223203558 ()
+            throws Throwable
+    {
+        final WebServer engine = WebServer
+                .newWebServer()
+                .withDefaultSettings()
+                .withBindAddress("127.0.42.3")
+                .withRequestFilter(RequestFilters.accept())
+                .withUplinkTimeout(Duration.ofMillis(1))
+                .withResponseTimeout(Duration.ofSeconds(60))
+                .build();
+
+        final TestServer server = new TestServer(engine);
+        server.start();
+
+        final SocketTester tester = new SocketTester("127.0.42.3", 8080);
+        tester.sendln("GET");
+        tester.sleep(100);
+        tester.closed();
+    }
+
+    /**
+     * Test: 20190308002223203594
+     *
+     * <p>
+     * Type: End-To-End Throughput Test.
+     * </p>
+     *
+     * <p>
+     * Case: Downlink Timeout.
+     * </p>
+     *
+     * @throws java.lang.Throwable
+     */
+    @Test
+    public void test20190308002223203594 ()
+            throws Throwable
+    {
+        final WebServer engine = WebServer
+                .newWebServer()
+                .withDefaultSettings()
+                .withBindAddress("127.0.42.4")
+                .withRequestFilter(RequestFilters.accept())
+                .withDownlinkTimeout(Duration.ofMillis(1))
+                .withResponseTimeout(Duration.ofSeconds(60))
+                .build();
+
+        final TestServer server = new TestServer(engine);
+        server.start();
+
+        final SocketTester tester = new SocketTester("127.0.42.4", 8080);
+        tester.sendln("GET /zero?count=3200100 HTTP/1.1");
+        tester.sendln();
+        tester.recvln("HTTP/1.0 200 OK");
+        tester.sleep(100);
+        tester.closed();
+    }
+
 //    /**
 //     * Test: 20190308002223203627
 //     *
@@ -324,72 +324,70 @@ public final class WebServerTest
 //        tester.closed();
 //
 //    }
-    /**
-     * Test: 20190308002223203722
-     *
-     * <p>
-     * Type: End-To-End Throughput Test.
-     * </p>
-     *
-     * <p>
-     * Case: Request denied due to the default pre-check rule.
-     * </p>
-     *
-     * @throws java.lang.Throwable
-     */
-    @Test
-    public void test20190308002223203722 ()
-            throws Throwable
-    {
-        final WebServer engine = WebServer
-                .newWebServer()
-                .withDefaultSettings()
-                .withBindAddress("127.0.42.6")
-                .build();
-
-        final TestServer server = new TestServer(engine);
-        server.start();
-
-        final SocketTester tester = new SocketTester("127.0.42.6", 8080);
-        tester.sendln("GET /zero?count=1 HTTP/1.1");
-        tester.sendln();
-        tester.closed();
-    }
-
-    /**
-     * Test: 20190308002223203750
-     *
-     * <p>
-     * Type: End-To-End Throughput Test.
-     * </p>
-     *
-     * <p>
-     * Case: Request denied due to custom pre-check rule.
-     * </p>
-     *
-     * @throws java.lang.Throwable
-     */
-    @Test
-    public void test20190308002223203750 ()
-            throws Throwable
-    {
-        final WebServer engine = WebServer
-                .newWebServer()
-                .withDefaultSettings()
-                .withBindAddress("127.0.42.7")
-                .withRequestFilter(RequestFilters.deny(x -> x.getPath().contains("zero")))
-                .withAcceptFilter()
-                .build();
-
-        final TestServer server = new TestServer(engine);
-        server.start();
-
-        final SocketTester tester = new SocketTester("127.0.42.7", 8080);
-        tester.sendln("GET /zero?count=17 HTTP/1.1");
-        tester.sendln();
-        tester.closed();
-    }
-
+//    /**
+//     * Test: 20190308002223203722
+//     *
+//     * <p>
+//     * Type: End-To-End Throughput Test.
+//     * </p>
+//     *
+//     * <p>
+//     * Case: Request denied due to the default pre-check rule.
+//     * </p>
+//     *
+//     * @throws java.lang.Throwable
+//     */
+//    @Test
+//    public void test20190308002223203722 ()
+//            throws Throwable
+//    {
+//        final WebServer engine = WebServer
+//                .newWebServer()
+//                .withDefaultSettings()
+//                .withBindAddress("127.0.42.6")
+//                .build();
+//
+//        final TestServer server = new TestServer(engine);
+//        server.start();
+//
+//        final SocketTester tester = new SocketTester("127.0.42.6", 8080);
+//        tester.sendln("GET /zero?count=1 HTTP/1.1");
+//        tester.sendln();
+//        tester.closed();
+//    }
+//    /**
+//     * Test: 20190308002223203750
+//     *
+//     * <p>
+//     * Type: End-To-End Throughput Test.
+//     * </p>
+//     *
+//     * <p>
+//     * Case: Request denied due to custom pre-check rule.
+//     * </p>
+//     *
+//     * @throws java.lang.Throwable
+//     */
+//    @Test
+//    public void test20190308002223203750 ()
+//            throws Throwable
+//    {
+//        final WebServer engine = WebServer
+//                .newWebServer()
+//                .withDefaultSettings()
+//                .withBindAddress("127.0.42.7")
+//                .withRequestFilter(RequestFilters.deny(x -> x.getPath().contains("zero")))
+//                .withAcceptFilter()
+//                .build();
+//
+//        final TestServer server = new TestServer(engine);
+//        server.start();
+//
+//        final SocketTester tester = new SocketTester("127.0.42.7", 8080);
+//        tester.sendln("GET /zero?count=17 HTTP/1.1");
+//        tester.sendln();
+//        tester.closed();
+//    }
     /**
      * Test: 20190308003051428365
      *
@@ -465,116 +463,115 @@ public final class WebServerTest
         tester.closed();
     }
 
-    /**
-     * Test: 20190308002223203806
-     *
-     * <p>
-     * Type: End-To-End Throughput Test.
-     * </p>
-     *
-     * <p>
-     * Case: Sequential Requests.
-     * </p>
-     *
-     * @throws java.lang.Throwable
-     */
-    @Test
-    public void test20190308002223203806 ()
-            throws Throwable
-    {
-        final WebServer engine = WebServer
-                .newWebServer()
-                .withDefaultSettings()
-                .withBindAddress("127.0.42.10")
-                .withAcceptFilter()
-                .build();
-
-        final TestServer server = new TestServer(engine);
-        server.start();
-
-        for (int i = 0; i < 100; i++)
-        {
-            final SocketTester tester = new SocketTester("127.0.42.10", 8080);
-            tester.sendln("GET /zero?count=3 HTTP/1.1");
-            tester.sendln();
-            tester.recvln("HTTP/1.0 200 OK");
-            tester.recvln("Connection: close");
-            tester.recvln("Content-Type: text/plain");
-            tester.recvln("Content-Length: 3");
-            tester.recvln();
-            tester.recv("000");
-            tester.closed();
-        }
-    }
-
-    /**
-     * Test: 20190308002223203832
-     *
-     * <p>
-     * Type: End-To-End Throughput Test.
-     * </p>
-     *
-     * <p>
-     * Case: Parallel Requests.
-     * </p>
-     *
-     * @throws java.lang.Throwable
-     */
-    @Test
-    public void test20190308002223203832 ()
-            throws Throwable
-    {
-        final ExecutorService service = Executors.newFixedThreadPool(16);
-
-        final WebServer engine = WebServer
-                .newWebServer()
-                .withDefaultSettings()
-                .withBindAddress("127.0.42.11")
-                .withAcceptFilter()
-                .build();
-
-        final TestServer server = new TestServer(engine);
-        server.start();
-
-        final CountDownLatch latch = new CountDownLatch(128);
-
-        final Runnable client = () ->
-        {
-            try
-            {
-                for (int i = 0; i < 10; i++)
-                {
-                    final SocketTester tester = new SocketTester("127.0.42.11", 8080);
-                    tester.sendln("GET /zero?count=3 HTTP/1.1");
-                    tester.sendln();
-                    tester.recvln("HTTP/1.0 200 OK");
-                    tester.recvln("Connection: close");
-                    tester.recvln("Content-Type: text/plain");
-                    tester.recvln("Content-Length: 3");
-                    tester.recvln();
-                    tester.recv("000");
-                    tester.closed();
-                }
-            }
-            catch (Throwable ex)
-            {
-                fail(ex.getMessage());
-            }
-            finally
-            {
-                latch.countDown();
-            }
-        };
-
-        for (int i = 0; i < 128; i++)
-        {
-            service.submit(client);
-        }
-
-        latch.await();
-
-        service.shutdown();
-    }
+//    /**
+//     * Test: 20190308002223203806
+//     *
+//     * <p>
+//     * Type: End-To-End Throughput Test.
+//     * </p>
+//     *
+//     * <p>
+//     * Case: Sequential Requests.
+//     * </p>
+//     *
+//     * @throws java.lang.Throwable
+//     */
+//    @Test
+//    public void test20190308002223203806 ()
+//            throws Throwable
+//    {
+//        final WebServer engine = WebServer
+//                .newWebServer()
+//                .withDefaultSettings()
+//                .withBindAddress("127.0.42.10")
+//                .withAcceptFilter()
+//                .build();
+//
+//        final TestServer server = new TestServer(engine);
+//        server.start();
+//
+//        for (int i = 0; i < 100; i++)
+//        {
+//            final SocketTester tester = new SocketTester("127.0.42.10", 8080);
+//            tester.sendln("GET /zero?count=3 HTTP/1.1");
+//            tester.sendln();
+//            tester.recvln("HTTP/1.0 200 OK");
+//            tester.recvln("Connection: close");
+//            tester.recvln("Content-Type: text/plain");
+//            tester.recvln("Content-Length: 3");
+//            tester.recvln();
+//            tester.recv("000");
+//            tester.closed();
+//        }
+//    }
+//    /**
+//     * Test: 20190308002223203832
+//     *
+//     * <p>
+//     * Type: End-To-End Throughput Test.
+//     * </p>
+//     *
+//     * <p>
+//     * Case: Parallel Requests.
+//     * </p>
+//     *
+//     * @throws java.lang.Throwable
+//     */
+//    @Test
+//    public void test20190308002223203832 ()
+//            throws Throwable
+//    {
+//        final ExecutorService service = Executors.newFixedThreadPool(16);
+//
+//        final WebServer engine = WebServer
+//                .newWebServer()
+//                .withDefaultSettings()
+//                .withBindAddress("127.0.42.11")
+//                .withAcceptFilter()
+//                .build();
+//
+//        final TestServer server = new TestServer(engine);
+//        server.start();
+//
+//        final CountDownLatch latch = new CountDownLatch(128);
+//
+//        final Runnable client = () ->
+//        {
+//            try
+//            {
+//                for (int i = 0; i < 10; i++)
+//                {
+//                    final SocketTester tester = new SocketTester("127.0.42.11", 8080);
+//                    tester.sendln("GET /zero?count=3 HTTP/1.1");
+//                    tester.sendln();
+//                    tester.recvln("HTTP/1.0 200 OK");
+//                    tester.recvln("Connection: close");
+//                    tester.recvln("Content-Type: text/plain");
+//                    tester.recvln("Content-Length: 3");
+//                    tester.recvln();
+//                    tester.recv("000");
+//                    tester.closed();
+//                }
+//            }
+//            catch (Throwable ex)
+//            {
+//                fail(ex.getMessage());
+//            }
+//            finally
+//            {
+//                latch.countDown();
+//            }
+//        };
+//
+//        for (int i = 0; i < 128; i++)
+//        {
+//            service.submit(client);
+//        }
+//
+//        latch.await();
+//
+//        service.shutdown();
+//    }
 //
 //    /**
 //     * Test: 20190308003051428434
@@ -648,7 +645,6 @@ public final class WebServerTest
 //        fail();
 //    }
 //
-
 //    /**
 //     * Test: 20190308003457842710
 //     *
@@ -669,49 +665,48 @@ public final class WebServerTest
 //        fail();
 //    }
 //
-    /**
-     * Test: 20190308003457842738
-     *
-     * <p>
-     * Type: End-To-End Throughput Test.
-     * </p>
-     *
-     * <p>
-     * Case: Initial Line Too Large.
-     * </p>
-     *
-     * @throws java.lang.InterruptedException
-     */
-    @Test
-    public void test20190308003457842738 ()
-            throws Throwable
-    {
-        final WebServer engine = WebServer
-                .newWebServer()
-                .withDefaultSettings()
-                .withBindAddress("127.0.42.12")
-                .withAcceptFilter()
-                .withMaxInitialLineSize(1024)
-                .build();
-
-        final TestServer server = new TestServer(engine);
-        server.start();
-
-        final String tooLong = Strings.repeat("1", 2048);
-
-        final SocketTester tester = new SocketTester("127.0.42.12", 8080);
-        tester.sendln(String.format("GET /zero?count=%s HTTP/1.1", tooLong));
-        tester.sendln();
-        tester.readAndPrint();
-        tester.recvln("HTTP/1.0 400 Bad Request");
-        tester.recvln("Connection: close");
-        tester.recvln("Content-Type: text/html");
-        tester.recvln("Content-Length: 74");
-        tester.recvln();
-        tester.recvln("<head> <meta http-equiv=\"refresh\" content=\"5; URL=\"/400.html\" /> </head>");
-        tester.closed();
-    }
-
+//    /**
+//     * Test: 20190308003457842738
+//     *
+//     * <p>
+//     * Type: End-To-End Throughput Test.
+//     * </p>
+//     *
+//     * <p>
+//     * Case: Initial Line Too Large.
+//     * </p>
+//     *
+//     * @throws java.lang.InterruptedException
+//     */
+//    @Test
+//    public void test20190308003457842738 ()
+//            throws Throwable
+//    {
+//        final WebServer engine = WebServer
+//                .newWebServer()
+//                .withDefaultSettings()
+//                .withBindAddress("127.0.42.12")
+//                .withAcceptFilter()
+//                .withMaxInitialLineSize(1024)
+//                .build();
+//
+//        final TestServer server = new TestServer(engine);
+//        server.start();
+//
+//        final String tooLong = Strings.repeat("1", 2048);
+//
+//        final SocketTester tester = new SocketTester("127.0.42.12", 8080);
+//        tester.sendln(String.format("GET /zero?count=%s HTTP/1.1", tooLong));
+//        tester.sendln();
+//        tester.readAndPrint();
+//        tester.recvln("HTTP/1.0 400 Bad Request");
+//        tester.recvln("Connection: close");
+//        tester.recvln("Content-Type: text/html");
+//        tester.recvln("Content-Length: 74");
+//        tester.recvln();
+//        tester.recvln("<head> <meta http-equiv=\"refresh\" content=\"5; URL=\"/400.html\" /> </head>");
+//        tester.closed();
+//    }
 //    /**
 //     * Test: 20190308003654044008
 //     *

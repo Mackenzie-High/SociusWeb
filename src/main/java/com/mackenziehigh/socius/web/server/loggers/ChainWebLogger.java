@@ -171,16 +171,6 @@ public final class ChainWebLogger
      * {@inheritDoc}
      */
     @Override
-    public void onConnectionTimeout ()
-    {
-        logger1.onConnectionTimeout();
-        logger2.onConnectionTimeout();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void onTooManyConnections (final int count)
     {
         logger1.onTooManyConnections(count);

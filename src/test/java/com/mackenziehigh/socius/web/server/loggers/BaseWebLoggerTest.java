@@ -200,19 +200,6 @@ public final class BaseWebLoggerTest
     }
 
     /**
-     * Test: 20190316231039944909
-     *
-     * <p>
-     * Method: <code>onConnectionTimeout</code>
-     * </p>
-     */
-    @Test
-    public void test20190316231039944909 ()
-    {
-        logger.onConnectionTimeout();
-    }
-
-    /**
      * Test: 20190316231039944930
      *
      * <p>

@@ -148,15 +148,6 @@ public class BaseWebLogger
      * {@inheritDoc}
      */
     @Override
-    public void onConnectionTimeout ()
-    {
-        pass();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void onTooManyConnections (final int count)
     {
         pass();

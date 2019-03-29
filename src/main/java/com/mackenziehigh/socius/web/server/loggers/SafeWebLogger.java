@@ -236,22 +236,6 @@ public final class SafeWebLogger
      * {@inheritDoc}
      */
     @Override
-    public void onConnectionTimeout ()
-    {
-        try
-        {
-            delegate.onConnectionTimeout();
-        }
-        catch (Throwable ex)
-        {
-            pass();
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void onTooManyConnections (final int count)
     {
         try

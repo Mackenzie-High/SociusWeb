@@ -100,10 +100,6 @@ public final class DefaultWebLoggerTest
         expect("RecvBufferMaxSize: " + server.getRecvBufferMaxSize());
         expect("SoftConnectionLimit: " + server.getSoftConnectionLimit());
         expect("HardConnectionLimit: " + server.getHardConnectionLimit());
-        expect("MaxServerUplinkBandwidth: " + server.getMaxServerUplinkBandwidth());
-        expect("MaxServerDownlinkBandwidth: " + server.getMaxServerDownlinkBandwidth());
-        expect("MaxConnectionUplinkBandwidth: " + server.getMaxConnectionUplinkBandwidth());
-        expect("MaxConnectionDownlinkBandwidth: " + server.getMaxConnectionDownlinkBandwidth());
         expect("MaxPauseTime: " + server.getMaxPauseTime());
         expect("MaxRequestSize: " + server.getMaxRequestSize());
         expect("MaxInitialLineSize: " + server.getMaxInitialLineSize());
@@ -112,10 +108,9 @@ public final class DefaultWebLoggerTest
         expect("CompressionWindowBits: " + server.getCompressionWindowBits());
         expect("CompressionMemoryLevel: " + server.getCompressionMemoryLevel());
         expect("CompressionThreshold: " + server.getCompressionThreshold());
-        expect("SlowUplinkTimeout: " + server.getSlowUplinkTimeout());
-        expect("SlowDownlinkTimeout: " + server.getSlowDownlinkTimeout());
+        expect("UplinkTimeout: " + server.getUplinkTimeout());
+        expect("DownlinkTimeout: " + server.getDownlinkTimeout());
         expect("ResponseTimeout: " + server.getResponseTimeout());
-        expect("ConnectionTimeout: " + server.getConnectionTimeout());
     }
 
     /**
@@ -334,21 +329,6 @@ public final class DefaultWebLoggerTest
         logger.onResponseTimeout();
 
         expect("Response Timeout Expired");
-    }
-
-    /**
-     * Test: 20190316231039944909
-     *
-     * <p>
-     * Method: <code>onConnectionTimeout</code>
-     * </p>
-     */
-    @Test
-    public void test20190316231039944909 ()
-    {
-        logger.onConnectionTimeout();
-
-        expect("Connection Timeout Expired");
     }
 
     /**

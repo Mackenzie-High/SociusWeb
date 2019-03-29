@@ -99,6 +99,8 @@ final class Correlator
                           final ServerSideHttpRequest request,
                           final Consumer<ServerSideHttpResponse> callback)
     {
+        logger.onRequest(request);
+
         final String correlationId = request.getCorrelationId();
 
         /**

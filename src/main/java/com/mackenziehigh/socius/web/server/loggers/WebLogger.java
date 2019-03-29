@@ -180,15 +180,6 @@ public interface WebLogger
     public void onResponseTimeout ();
 
     /**
-     * This method is invoked, if the connection shall be closed due to an connection-timeout expiration.
-     *
-     * <p>
-     * This method is invoked on the same instance as <code>connect()</code>.
-     * </p>
-     */
-    public void onConnectionTimeout ();
-
-    /**
      * This method is invoked whenever a connection is rejected,
      * because too many connections are currently open.
      *

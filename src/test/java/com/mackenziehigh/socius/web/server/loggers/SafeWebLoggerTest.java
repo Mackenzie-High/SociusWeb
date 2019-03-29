@@ -462,38 +462,6 @@ public final class SafeWebLoggerTest
     }
 
     /**
-     * Test: 20190316231039944909
-     *
-     * <p>
-     * Method: <code>onConnectionTimeout</code>
-     * </p>
-     */
-    @Test
-    public void test20190316231039944909 ()
-    {
-        final AtomicBoolean executed = new AtomicBoolean(false);
-
-        final WebLogger logger = new BaseWebLogger()
-        {
-            @Override
-            public void onConnectionTimeout ()
-            {
-                executed.set(true);
-                throw new Error();
-            }
-        };
-
-        final WebLogger wrapper = new SafeWebLogger(logger);
-
-        /**
-         * This method should not throw an exception,
-         * because the wrapper suppressed the exception.
-         */
-        wrapper.onConnectionTimeout();
-        assertTrue(executed.get());
-    }
-
-    /**
      * Test: 20190316231039944930
      *
      * <p>
@@ -753,21 +721,6 @@ public final class SafeWebLoggerTest
         assertEquals(0, counter.countOnResponseTimeout());
         safeCounter.onResponseTimeout();
         assertEquals(1, counter.countOnResponseTimeout());
-    }
-
-    /**
-     * Test: 20190316231039944909C
-     *
-     * <p>
-     * Method: <code>onConnectionTimeout</code>
-     * </p>
-     */
-    @Test
-    public void test20190316231039944909C ()
-    {
-        assertEquals(0, counter.countOnConnectionTimeout());
-        safeCounter.onConnectionTimeout();
-        assertEquals(1, counter.countOnConnectionTimeout());
     }
 
     /**

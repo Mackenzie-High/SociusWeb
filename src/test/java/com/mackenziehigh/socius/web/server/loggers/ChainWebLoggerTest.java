@@ -251,23 +251,6 @@ public final class ChainWebLoggerTest
     }
 
     /**
-     * Test: 20190316231039944909
-     *
-     * <p>
-     * Method: <code>onConnectionTimeout</code>
-     * </p>
-     */
-    @Test
-    public void test20190316231039944909 ()
-    {
-        assertEquals(0, logger1.countOnConnectionTimeout());
-        assertEquals(0, logger2.countOnConnectionTimeout());
-        logger.onConnectionTimeout();
-        assertEquals(1, logger1.countOnConnectionTimeout());
-        assertEquals(1, logger2.countOnConnectionTimeout());
-    }
-
-    /**
      * Test: 20190316231039944930
      *
      * <p>

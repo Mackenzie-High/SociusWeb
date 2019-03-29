@@ -221,21 +221,6 @@ public final class CountingWebLoggerTest
     }
 
     /**
-     * Test: 20190316231039944909
-     *
-     * <p>
-     * Method: <code>onConnectionTimeout</code>
-     * </p>
-     */
-    @Test
-    public void test20190316231039944909 ()
-    {
-        assertEquals(0, logger.countOnConnectionTimeout());
-        logger.onConnectionTimeout();
-        assertEquals(1, logger.countOnConnectionTimeout());
-    }
-
-    /**
      * Test: 20190316231039944930
      *
      * <p>
