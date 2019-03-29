@@ -58,7 +58,7 @@ public final class Example
 
         /**
          * Connect the actor to the server.
-         * The server will send request to the actor.
+         * The server will send requests to the actor.
          * The actor will then send responses to the server.
          */
         server.requestsOut().connect(webapp.input());
@@ -164,7 +164,7 @@ public final class Example
 
         /**
          * Connect the actor to the server.
-         * The server will send request to the actor.
+         * The server will send requests to the actor.
          * The actor will then send responses to the server.
          */
         server.requestsOut().connect(webapp.input());
