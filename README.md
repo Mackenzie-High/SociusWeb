@@ -255,11 +255,11 @@ curl -k "https://127.0.0.1:8080"
 
 ### Request Filter - Default
 
-### Precheck - ACCEPT
+### Request Filter - ACCEPT
 
-### Precheck - REJECT
+### Request Filter - REJECT
 
-### Precheck - DENY
+### Request Filter - DENY
 
 ## Max Request Size
 
@@ -277,23 +277,13 @@ curl -k "https://127.0.0.1:8080"
 
 ## Downlink Timeout
 
-## Connection Timeout
-
-## Server-wide Uplink Bandwidth Limit
-
-## Server-wide Downlink Bandwidth Limit
-
-## Connection-specific Uplink Bandwidth Limit
-
-## Connection-specific Downlink Bandwidth Limit
-
 # Loggers
 
 ## Server Loggers
 
 ## Connection Loggers
 
-# Why HTTP 1.0
+# Why HTTP 1.0 Responses
 
 TODO
 
