@@ -30,6 +30,7 @@ import io.netty.handler.codec.http.HttpVersion;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.UUID;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -38,6 +39,8 @@ import org.junit.Test;
  */
 public final class TranslatorTest
 {
+    private final String correlationId = UUID.randomUUID().toString();
+
     private final InetSocketAddress remoteAddress = InetSocketAddress.createUnresolved("127.0.0.1", 2995);
 
     private final InetSocketAddress localAddress = InetSocketAddress.createUnresolved("127.0.0.2", 2997);
@@ -102,7 +105,7 @@ public final class TranslatorTest
     public void test20190217102515063425 ()
     {
         final FullHttpRequest netty = newRequest();
-        final web_m.ServerSideHttpRequest gpb = translator.requestToGPB(remoteAddress, localAddress, netty);
+        final web_m.ServerSideHttpRequest gpb = translator.requestToGPB(correlationId, remoteAddress, localAddress, netty);
 
         assertTrue(gpb.hasBody());
         assertTrue(gpb.hasSequenceNumber());
@@ -115,6 +118,11 @@ public final class TranslatorTest
         assertEquals(serverId, gpb.getServerId());
         assertEquals(replyTo, gpb.getReplyTo());
         assertEquals((double) System.currentTimeMillis(), gpb.getTimestamp(), 60_000.0);
+
+        /**
+         * Correlation-ID.
+         */
+        assertEquals(correlationId, gpb.getCorrelationId());
 
         /**
          * Remote Address.
@@ -254,33 +262,13 @@ public final class TranslatorTest
     @Test
     public void test20190217125526819834 ()
     {
-        final web_m.ServerSideHttpRequest request1 = translator.requestToGPB(remoteAddress, localAddress, newRequest());
-        final web_m.ServerSideHttpRequest request2 = translator.requestToGPB(remoteAddress, localAddress, newRequest());
-        final web_m.ServerSideHttpRequest request3 = translator.requestToGPB(remoteAddress, localAddress, newRequest());
+        final web_m.ServerSideHttpRequest request1 = translator.requestToGPB(correlationId, remoteAddress, localAddress, newRequest());
+        final web_m.ServerSideHttpRequest request2 = translator.requestToGPB(correlationId, remoteAddress, localAddress, newRequest());
+        final web_m.ServerSideHttpRequest request3 = translator.requestToGPB(correlationId, remoteAddress, localAddress, newRequest());
 
         assertEquals(1, request1.getSequenceNumber());
         assertEquals(2, request2.getSequenceNumber());
         assertEquals(3, request3.getSequenceNumber());
-    }
-
-    /**
-     * Test: 20190217125651847530
-     *
-     * <p>
-     * Method: <code>requestToGPB</code>
-     * </p>
-     *
-     * <p>
-     * Case: Correlation-ID Changes.
-     * </p>
-     */
-    @Test
-    public void test20190217125651847530 ()
-    {
-        final web_m.ServerSideHttpRequest request1 = translator.requestToGPB(remoteAddress, localAddress, newRequest());
-        final web_m.ServerSideHttpRequest request2 = translator.requestToGPB(remoteAddress, localAddress, newRequest());
-
-        assertNotEquals(request1.getCorrelationId(), request2.getCorrelationId());
     }
 
     /**
@@ -300,7 +288,7 @@ public final class TranslatorTest
         final FullHttpRequest netty = newRequest();
         netty.headers().clear();
         netty.content().clear();
-        final web_m.ServerSideHttpRequest gpb = translator.requestToGPB(remoteAddress, localAddress, netty);
+        final web_m.ServerSideHttpRequest gpb = translator.requestToGPB(correlationId, remoteAddress, localAddress, netty);
 
         assertEquals(0, gpb.getContentLength());
         assertEquals(0, gpb.getBody().size());
@@ -322,8 +310,8 @@ public final class TranslatorTest
     {
         final FullHttpRequest full = newRequest();
         final HttpRequest partial = full;
-        final web_m.ServerSideHttpRequest fullGPB = translator.requestToGPB(remoteAddress, localAddress, full);
-        final web_m.ServerSideHttpRequest partialGPB = translator.prefixOf(remoteAddress, localAddress, partial);
+        final web_m.ServerSideHttpRequest fullGPB = translator.requestToGPB(correlationId, remoteAddress, localAddress, full);
+        final web_m.ServerSideHttpRequest partialGPB = translator.prefixOf(correlationId, remoteAddress, localAddress, partial);
 
         /**
          * Debug.
@@ -365,7 +353,8 @@ public final class TranslatorTest
          * Correlation ID.
          */
         assertTrue(fullGPB.hasCorrelationId());
-        assertFalse(partialGPB.hasCorrelationId());
+        assertTrue(partialGPB.hasCorrelationId());
+        assertEquals(fullGPB.getCorrelationId(), partialGPB.getCorrelationId());
 
         /**
          * Sequence Number.
@@ -461,11 +450,11 @@ public final class TranslatorTest
     @Test
     public void test20190217132919161946 ()
     {
-        final web_m.ServerSideHttpRequest request1 = translator.requestToGPB(remoteAddress, localAddress, newRequest());
-        translator.prefixOf(remoteAddress, localAddress, newRequest());
-        final web_m.ServerSideHttpRequest request2 = translator.requestToGPB(remoteAddress, localAddress, newRequest());
-        translator.prefixOf(remoteAddress, localAddress, newRequest());
-        final web_m.ServerSideHttpRequest request3 = translator.requestToGPB(remoteAddress, localAddress, newRequest());
+        final web_m.ServerSideHttpRequest request1 = translator.requestToGPB(correlationId, remoteAddress, localAddress, newRequest());
+        translator.prefixOf(correlationId, remoteAddress, localAddress, newRequest());
+        final web_m.ServerSideHttpRequest request2 = translator.requestToGPB(correlationId, remoteAddress, localAddress, newRequest());
+        translator.prefixOf(correlationId, remoteAddress, localAddress, newRequest());
+        final web_m.ServerSideHttpRequest request3 = translator.requestToGPB(correlationId, remoteAddress, localAddress, newRequest());
 
         assertEquals(1, request1.getSequenceNumber());
         assertEquals(2, request2.getSequenceNumber());

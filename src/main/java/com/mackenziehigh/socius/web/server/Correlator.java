@@ -20,13 +20,7 @@ import com.mackenziehigh.cascade.Cascade.Stage;
 import com.mackenziehigh.cascade.Cascade.Stage.Actor;
 import com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest;
 import com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse;
-import com.mackenziehigh.socius.web.server.loggers.WebLogger;
-import io.netty.handler.codec.http.HttpResponseStatus;
-import java.time.Duration;
 import java.util.Map;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 
@@ -36,14 +30,6 @@ import java.util.function.Consumer;
  */
 final class Correlator
 {
-    private final ScheduledExecutorService service;
-
-    /**
-     * If a response is not received within this time-limit,
-     * then a default response will be sent to the client.
-     */
-    private final Duration responseTimeout;
-
     /**
      * This map maps correlation UUIDs of requests to consumer functions
      * that will be used to process the corresponding responses.
@@ -58,7 +44,7 @@ final class Correlator
      * which will indicate that the connection timed-out.
      * </p>
      */
-    private final Map<String, OpenConnection> connections = Maps.newConcurrentMap();
+    private final Map<String, Consumer<ServerSideHttpResponse>> connections = Maps.newConcurrentMap();
 
     /**
      * This processor will be used to send HTTP requests out of the server,
@@ -78,31 +64,33 @@ final class Correlator
      */
     final AtomicLong responseRoutingFailures = new AtomicLong();
 
-    public Correlator (final Stage stage,
-                       final ScheduledExecutorService service,
-                       final Duration responseTimeout)
+    public Correlator (final Stage stage)
     {
         this.requestsOut = stage.newActor().withScript(this::onRequest).create();
         this.responsesIn = stage.newActor().withScript(this::onResponse).create();
-        this.responseTimeout = responseTimeout;
-        this.service = service;
+    }
+
+    /**
+     * Disregard any response(s) that subsequently arrive with the given Correlation-ID.
+     *
+     * @param correlationId identifies the request and the response.
+     */
+    public void disregard (final String correlationId)
+    {
+        connections.remove(correlationId);
     }
 
     /**
      * Begin managing a request-response exchange.
      *
-     * @param logger is the connection-specific logger.
+     * @param cid identifies the request and the response.
      * @param request will be sent to the external actors, who will generate a response.
      * @param callback will be used to transmit the response to the client.
      */
-    public void dispatch (final WebLogger logger,
+    public void dispatch (final String correlationId,
                           final ServerSideHttpRequest request,
                           final Consumer<ServerSideHttpResponse> callback)
     {
-        logger.onRequest(request);
-
-        final String correlationId = request.getCorrelationId();
-
         /**
          * Do not allow a connection to be opened with
          * the same UUID as an existing connection.
@@ -116,14 +104,7 @@ final class Correlator
          * Create the response handler that will be used to route
          * the corresponding HTTP Response, if and when it occurs.
          */
-        final OpenConnection connection = new OpenConnection(logger, correlationId, callback);
-        connections.putIfAbsent(correlationId, connection);
-
-        /**
-         * If a response is not received before the response-timeout expires,
-         * then we will need to generate a default error-response.
-         */
-        service.schedule(() -> connection.closeStaleConnection(), responseTimeout.toMillis(), TimeUnit.MILLISECONDS);
+        connections.putIfAbsent(correlationId, callback);
 
         /**
          * Send the HTTP Request to the external actors,
@@ -179,7 +160,7 @@ final class Correlator
         /**
          * Find the connection that correlates to the given response.
          */
-        final OpenConnection connection = connections.get(correlationId);
+        final Consumer<ServerSideHttpResponse> connection = connections.get(correlationId);
 
         if (connection == null)
         {
@@ -197,55 +178,7 @@ final class Correlator
             /**
              * Send the HTTP Response to the client and cause the connection to be closed thereafter.
              */
-            connection.respondWith(response);
-        }
-    }
-
-    private static final class OpenConnection
-    {
-        private final WebLogger logger;
-
-        public final Consumer<ServerSideHttpResponse> output;
-
-        public final String correlationId;
-
-        private final AtomicBoolean sent = new AtomicBoolean();
-
-        public OpenConnection (final WebLogger logger,
-                               final String correlationId,
-                               final Consumer<ServerSideHttpResponse> onResponse)
-        {
-            this.logger = logger;
-            this.correlationId = correlationId;
-            this.output = onResponse;
-        }
-
-        public void respondWith (final ServerSideHttpResponse response)
-        {
-            /**
-             * Sending a response is a one-shot operation.
-             * Do not allow duplicate responses.
-             */
-            if (sent.compareAndSet(false, true))
-            {
-                logger.onResponse(response);
-                output.accept(response);
-            }
-        }
-
-        public void closeStaleConnection ()
-        {
-            /**
-             * Sending a response is a one-shot operation.
-             * Do not allow duplicate responses.
-             */
-            if (sent.compareAndSet(false, true))
-            {
-                final ServerSideHttpResponse response = Translator.newErrorResponseGPB(HttpResponseStatus.REQUEST_TIMEOUT.code());
-                logger.onResponseTimeout();
-                logger.onResponse(response);
-                output.accept(response);
-            }
+            connection.accept(response);
         }
     }
 }

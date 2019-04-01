@@ -16,7 +16,6 @@
 package com.mackenziehigh.socius.web.server;
 
 import com.google.common.base.Strings;
-import com.google.common.io.Resources;
 import com.google.protobuf.ByteString;
 import com.mackenziehigh.cascade.Cascade;
 import com.mackenziehigh.cascade.Cascade.Stage;
@@ -28,17 +27,11 @@ import com.mackenziehigh.socius.web.server.loggers.DefaultWebLogger;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
-import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.time.Duration;
-import java.util.function.Supplier;
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLEngine;
 
 /**
  * An instance of this class is a web-application that is
@@ -197,30 +190,16 @@ public final class TestServer
                    KeyManagementException,
                    UnrecoverableKeyException
     {
-        final KeyStore kstore = KeyStore.getInstance("JKS");
-        kstore.load(Resources.asByteSource(Resources.getResource("ExampleKeystore.jks")).openBufferedStream(), "password".toCharArray());
-        final KeyManagerFactory kfact = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-        kfact.init(kstore, "letmein".toCharArray());
-        final KeyManager[] kman = kfact.getKeyManagers();
-        final SSLContext context = SSLContext.getInstance("TLS");
-        context.init(kman, null, null);
-        final Supplier<SSLEngine> esub = () ->
-        {
-            final SSLEngine engine = context.createSSLEngine();
-            engine.setUseClientMode(false);
-            return engine;
-        };
-
         final WebServer server = WebServer
                 .newWebServer()
                 .withDefaultSettings()
                 .withSoftConnectionLimit(100_000)
                 .withHardConnectionLimit(100_000)
                 .withAcceptFilter()
-                .withResponseTimeout(Duration.ofSeconds(30))
+                .withResponseTimeout(Duration.ofSeconds(5))
                 .withUplinkTimeout(Duration.ofSeconds(1))
                 .withLogger(new DefaultWebLogger())
-                .withSecureSockets(esub)
+                .withUnsecureSockets()
                 .build();
 
         final TestServer s = new TestServer(server);

@@ -58,8 +58,8 @@ public interface RequestFilter
      *
      * <p>
      * The request will not have a body, as it has not been read off the socket yet.
-     * Likewise, the request will not have a sequence-number or a correlation-Id,
-     * because those are only assigned to full requests that are accepted by the server.
+     * Likewise, the request will not have a sequence-number, because those are only
+     * assigned to full requests that are accepted by the server.
      * </p>
      *
      * @param http contains the initial header information of the request.

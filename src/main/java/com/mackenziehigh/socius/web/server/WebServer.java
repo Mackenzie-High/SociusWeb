@@ -28,7 +28,6 @@ import com.mackenziehigh.socius.web.server.loggers.SafeWebLogger;
 import com.mackenziehigh.socius.web.server.loggers.WebLogger;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.AdaptiveRecvByteBufAllocator;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -52,17 +51,11 @@ import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.ssl.SslHandler;
-import io.netty.handler.timeout.ReadTimeoutException;
-import io.netty.handler.timeout.ReadTimeoutHandler;
-import io.netty.handler.timeout.WriteTimeoutException;
-import io.netty.handler.timeout.WriteTimeoutHandler;
 import java.io.Closeable;
-import java.net.InetSocketAddress;
 import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
@@ -256,7 +249,7 @@ public final class WebServer
         this.secureSocketsEngine = builder.builderSecureSocketsEngine;
 
         this.translator = new Translator(serverName, serverId, replyTo);
-        this.router = new Correlator(stage, workerGroup, responseTimeout);
+        this.router = new Correlator(stage);
         this.initializer = new Initializer();
     }
 
@@ -691,27 +684,190 @@ public final class WebServer
     private final class Initializer
             extends ChannelInitializer<SocketChannel>
     {
+        @Override
+        protected void initChannel (final SocketChannel channel)
+        {
+            final Connection connection = new Connection(channel);
+            connection.init();
+        }
+    }
+
+    /**
+     * A connection between a single client and the server,
+     * which will handle exactly one request/response pair.
+     */
+    private final class Connection
+    {
+        /**
+         * The maximum chunk size, which is required by the HttpRequestDecoder,
+         * is always equal to the maximum request size, because the chunk
+         * size does not actually limit the client.
+         * Rather, if the max-chunk-size is smaller than a received chunk,
+         * then the decoder will break the chunk into smaller chunks.
+         * Since we aggregate all of the chunks into a single message,
+         * we do not need chunks broken down into smaller chunks,
+         * because it is pointless and wastes resources.
+         */
+        private final int maxChunkSize = maxRequestSize;
 
         /**
-         *
+         * If the client attempts to upload a chunked request
+         * that is larger than we are willing to accept,
+         * then automatically close the connection with
+         * an HTTP (417) (Expectation Failed) response.
          */
-        private final class Prechecker
-                extends MessageToMessageDecoder<HttpRequest>
+        private final boolean closeOnExpectationFailed = true;
+
+        private final boolean strictDecompression = false;
+
+        private final boolean validateHeaders = true;
+
+        /**
+         * This logger object is unique to this connection.
+         */
+        private final WebLogger connectionLogger = serverLogger.extend();
+
+        /**
+         * This string uniquely identifies the request/response pair.
+         * Since only a single request is performed per connection,
+         * this string also uniquely identifies the connection.
+         */
+        private final String correlationId = UUID.randomUUID().toString();
+
+        /**
+         * Netty-based representation of the connection.
+         */
+        private final SocketChannel channel;
+
+        /**
+         * This object converts incoming bytes to Netty-based multi-object HTTP requests.
+         */
+        private final HttpRequestDecoder httpDecoder = new HttpRequestDecoder(maxInitialLineSize,
+                                                                              maxHeaderSize,
+                                                                              maxChunkSize,
+                                                                              validateHeaders);
+
+        /**
+         * This object converts outgoing Netty-based multi-object HTTP responses to bytes.
+         */
+        private final HttpResponseEncoder httpEncoder = new HttpResponseEncoder();
+
+        /**
+         * This object decompresses incoming HTTP requests.
+         */
+        private final HttpContentDecompressor decompressor = new HttpContentDecompressor(strictDecompression);
+
+        /**
+         * This object compresses outgoing HTTP responses.
+         */
+        private final HttpContentCompressor compressor = new HttpContentCompressor(compressionLevel, compressionWindowBits, compressionMemoryLevel, compressionThreshold);
+
+        /**
+         * This object combines multi-object HTTP requests into single object full HTTP requests.
+         */
+        private final HttpObjectAggregator aggregator = new HttpObjectAggregator(maxRequestSize, closeOnExpectationFailed);
+
+        public Connection (final SocketChannel channel)
         {
-            private final WebLogger logger;
+            this.channel = channel;
+        }
 
-            private final InetSocketAddress remoteAddress;
-
-            private final InetSocketAddress localAddress;
-
-            public Prechecker (final WebLogger logger,
-                               final InetSocketAddress remoteAddress,
-                               final InetSocketAddress localAddress)
+        /**
+         * This object enforces the configured timeouts for the connection.
+         *
+         * <p>
+         * These timeouts are critical from a security and robustness perspective.
+         * Malicious clients may attempt to use slow writes or slow reads
+         * in order to exhaust the limited resources of the server.
+         * Likewise, if no response is generated in a timely manner,
+         * then the client will be sent a default response.
+         * </p>
+         */
+        private final TimeoutMachine timeoutTimer = new TimeoutMachine(workerGroup, uplinkTimeout, responseTimeout, uplinkTimeout)
+        {
+            @Override
+            public void onReadTimeout ()
             {
-                this.logger = logger;
-                this.remoteAddress = remoteAddress;
-                this.localAddress = localAddress;
+                connectionLogger.onUplinkTimeout();
+                closeWithNoResponse();
             }
+
+            @Override
+            public void onResponseTimeout ()
+            {
+                connectionLogger.onResponseTimeout();
+                sendErrorAndClose(HttpResponseStatus.REQUEST_TIMEOUT.code());
+            }
+
+            @Override
+            public void onWriteTimeout ()
+            {
+                connectionLogger.onDownlinkTimeout();
+                closeWithNoResponse();
+            }
+        };
+
+        /**
+         * This object detects when the HTTP request has been fully read-in.
+         */
+        private final MessageToMessageDecoder<FullHttpRequest> requestDetector = new MessageToMessageDecoder<FullHttpRequest>()
+        {
+            @Override
+            protected void decode (final ChannelHandlerContext ctx,
+                                   final FullHttpRequest msg,
+                                   final List<Object> out)
+            {
+                /**
+                 * Prevent the client from maliciously sending more bytes
+                 * after the end of the HTTP request, which could be exploited
+                 * to waste CPU and bandwidth resources on the server.
+                 */
+                channel.shutdownInput(); // TODO: Blocks further reads???
+
+                /**
+                 * The Response Timeout needs to be triggered to start.
+                 */
+                timeoutTimer.reactTo(TimeoutMachine.Events.READ_COMPLETE);
+
+                /**
+                 * Send the message through the rest of the pipeline.
+                 */
+                msg.retain();
+                out.add(msg);
+            }
+        };
+
+        /**
+         * This object detects when the final HTTP response has begun being written-out.
+         *
+         * <p>
+         * This object ensures that only one *final* response is sent to the client.
+         * Note, however, that several 100-Continue responses may be sent,
+         * as part of the reception of the request.
+         * </p>
+         */
+        private final MessageToMessageEncoder<FullHttpResponse> responseDetector = new MessageToMessageEncoder<FullHttpResponse>()
+        {
+            private final AtomicBoolean replied = new AtomicBoolean();
+
+            @Override
+            protected void encode (final ChannelHandlerContext ctx,
+                                   final FullHttpResponse msg,
+                                   final List<Object> out)
+            {
+                if (replied.compareAndSet(false, true))
+                {
+                    timeoutTimer.reactTo(TimeoutMachine.Events.RESPONSE_COMPLETE);
+                    out.add(msg);
+                }
+            }
+        };
+
+        /**
+         * This object applies the request-filters to the incoming HTTP request.
+         */
+        private final MessageToMessageDecoder<HttpRequest> prechecker = new MessageToMessageDecoder<HttpRequest>()
+        {
 
             @Override
             protected void decode (final ChannelHandlerContext ctx,
@@ -727,11 +883,11 @@ public final class WebServer
 
                 try
                 {
-                    prefix = translator.prefixOf(remoteAddress, localAddress, msg);
+                    prefix = translator.prefixOf(correlationId, channel.remoteAddress(), channel.localAddress(), msg);
                 }
                 catch (Throwable ex)
                 {
-                    logger.onException(ex);
+                    connectionLogger.onException(ex);
                     return;
                 }
 
@@ -742,47 +898,35 @@ public final class WebServer
 
                     if (decision.action() == RequestFilter.ActionType.ACCEPT)
                     {
-                        logger.onAccepted(prefix);
+                        connectionLogger.onAccepted(prefix);
                         out.add(msg);
                     }
                     else if (decision.action() == RequestFilter.ActionType.REJECT)
                     {
                         final int statusCode = decision.status().orElse(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
-                        logger.onRejected(prefix, statusCode);
-                        sendErrorAndClose(ctx.channel(), statusCode);
+                        connectionLogger.onRejected(prefix, statusCode);
+                        sendErrorAndClose(statusCode);
                     }
                     else // DENY, FORWARD never occurs.
                     {
-                        closeWithNoResponse(ctx.channel());
-                        logger.onDenied(prefix);
+                        closeWithNoResponse();
+                        connectionLogger.onDenied(prefix);
                     }
                 }
                 catch (Throwable ex)
                 {
-                    logger.onException(ex);
-                    logger.onDenied(prefix);
-                    closeWithNoResponse(ctx.channel());
+                    connectionLogger.onException(ex);
+                    connectionLogger.onDenied(prefix);
+                    closeWithNoResponse();
                 }
             }
-        }
+        };
 
         /**
-         * An decoder that translates Netty-based HTTP requests to GPB-based HTTP requests.
+         * This object translates Netty-based HTTP requests to GPB-based HTTP requests.
          */
-        private final class TranslationDecoder
-                extends MessageToMessageDecoder<FullHttpRequest>
+        private final MessageToMessageDecoder<FullHttpRequest> protoDecoder = new MessageToMessageDecoder<FullHttpRequest>()
         {
-
-            private final InetSocketAddress remoteAddress;
-
-            private final InetSocketAddress localAddress;
-
-            public TranslationDecoder (final InetSocketAddress remoteAddress,
-                                       final InetSocketAddress localAddress)
-            {
-                this.remoteAddress = remoteAddress;
-                this.localAddress = localAddress;
-            }
 
             @Override
             protected void decode (final ChannelHandlerContext ctx,
@@ -791,21 +935,21 @@ public final class WebServer
             {
                 try
                 {
-                    final ServerSideHttpRequest request = translator.requestToGPB(remoteAddress, localAddress, msg);
+                    final ServerSideHttpRequest request = translator.requestToGPB(correlationId, channel.remoteAddress(), channel.localAddress(), msg);
                     out.add(request);
                 }
                 catch (Throwable ex)
                 {
-                    sendErrorAndClose(ctx.channel(), HttpResponseStatus.BAD_REQUEST.code());
+                    connectionLogger.onException(ex);
+                    sendErrorAndClose(HttpResponseStatus.BAD_REQUEST.code());
                 }
             }
-        }
+        };
 
         /**
-         * An encoder that translates GPB-based HTTP responses to Netty-based HTTP responses.
+         * This object translates GPB-based HTTP responses to Netty-based HTTP responses.
          */
-        private final class TranslationEncoder
-                extends MessageToMessageEncoder<ServerSideHttpResponse>
+        private final MessageToMessageEncoder<ServerSideHttpResponse> protoEncoder = new MessageToMessageEncoder<ServerSideHttpResponse>()
         {
             @Override
             protected void encode (final ChannelHandlerContext ctx,
@@ -820,91 +964,83 @@ public final class WebServer
                 }
                 catch (Throwable ex)
                 {
-                    sendErrorAndClose(ctx.channel(), HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
+                    connectionLogger.onException(ex);
+                    sendErrorAndClose(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
                 }
             }
-        }
+        };
 
-        private final class CorrelatorHub
-                extends SimpleChannelInboundHandler<ServerSideHttpRequest>
+        /**
+         * This object routes incoming responses to the external actors
+         * and then routes the responses from those actors.
+         */
+        private final SimpleChannelInboundHandler<ServerSideHttpRequest> correlator = new SimpleChannelInboundHandler<ServerSideHttpRequest>()
         {
-            private final WebLogger logger;
-
-            public CorrelatorHub (final WebLogger logger)
-            {
-                this.logger = logger;
-            }
-
             @Override
             protected void channelRead0 (final ChannelHandlerContext ctx,
                                          final ServerSideHttpRequest msg)
             {
-                ctx.pipeline().remove("ReadTimeoutHandler");
-                ctx.pipeline().addLast("WriteTimeoutHandler", new WriteTimeoutHandler(downlinkTimeout.toNanos(), TimeUnit.NANOSECONDS));
-                router.dispatch(logger, msg, response -> onReply(ctx, response));
+                /**
+                 * Log that the request will not be out for processing by the actors.
+                 */
+                connectionLogger.onRequest(msg);
+
+                /**
+                 * Send the request out of the server for processing.
+                 */
+                router.dispatch(correlationId, msg, response -> onReply(ctx, response));
             }
 
             private void onReply (final ChannelHandlerContext ctx,
                                   final ServerSideHttpResponse response)
             {
-                ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
+                /**
+                 * Log that the response has been received from the external actors.
+                 */
+                connectionLogger.onResponse(response);
+
+                /**
+                 * Send the response to the client by passing it all the way through the pipeline.
+                 * If a response was already sent to the client, then this will have no real effect,
+                 * as this response will be deliberately and silently dropped.
+                 */
+                channel.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
             }
-        }
+        };
 
         /**
-         *
+         * This object logs any unhandled exceptions that occur in the pipeline.
          */
-        private final class ExceptionHandler
-                extends ChannelDuplexHandler
+        private final ChannelDuplexHandler exceptionHandler = new ChannelDuplexHandler()
         {
-
-            private final WebLogger logger;
-
-            public ExceptionHandler (final WebLogger logger)
-            {
-                this.logger = logger;
-            }
-
             @Override
             public void exceptionCaught (final ChannelHandlerContext ctx,
                                          final Throwable cause)
-                    throws Exception
             {
-                if (cause instanceof ReadTimeoutException)
-                {
-                    logger.onUplinkTimeout();
-                }
-                else if (cause instanceof WriteTimeoutException)
-                {
-                    logger.onDownlinkTimeout();
-                }
-                else
-                {
-                    logger.onException(cause);
-                    sendErrorAndClose(ctx.channel(), HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
-                }
+                connectionLogger.onException(cause);
+                sendErrorAndClose(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
             }
-        }
+        };
 
-        @Override
-        protected void initChannel (final SocketChannel channel)
+        /**
+         * Setup the Netty pipeline.
+         */
+        public void init ()
         {
-            /**
-             * Configure the connection-specific logger.
-             */
-            final WebLogger channelLogger = serverLogger.extend();
-            channelLogger.onConnect(channel.localAddress(), channel.remoteAddress());
-
             /**
              * The logger, etc, will need to be notified when the connection closes.
              */
-            channel.closeFuture().addListener(x -> onClose(channel, channelLogger));
+            channel.closeFuture().addListener(x -> onClose());
 
             /**
              * Keep track of how many connections are open.
              */
-            // TODO: HAndle more safely
             final int connectionNumber = connectionCount.incrementAndGet();
+
+            /**
+             * Configure the connection-specific logger.
+             */
+            connectionLogger.onConnect(channel.localAddress(), channel.remoteAddress());
 
             /**
              * If there are more connections open than the hard-limit allows,
@@ -917,34 +1053,15 @@ public final class WebServer
              */
             if (connectionNumber >= hardConnectionLimit)
             {
-                channelLogger.onTooManyConnections(connectionNumber);
-                closeWithNoResponse(channel);
+                connectionLogger.onTooManyConnections(connectionNumber);
+                closeWithNoResponse();
                 return;
             }
 
             /**
-             * The maximum chunk size, which is required by the HttpRequestDecoder,
-             * is always equal to the maximum request size, because the chunk
-             * size does not actually limit the client.
-             * Rather, if the max-chunk-size is smaller than a received chunk,
-             * then the decoder will break the chunk into smaller chunks.
-             * Since we aggregate all of the chunks into a single message,
-             * we do not need chunks broken down into smaller chunks,
-             * because it is pointless and wastes resources.
+             * Start the time that will detect slow reads, responses, and writes.
              */
-            final int maxChunkSize = maxRequestSize;
-
-            final boolean validateHeaders = true;
-
-            /**
-             * If the client attempts to upload a chunked request
-             * that is larger than we are willing to accept,
-             * then automatically close the connection with
-             * an HTTP (417) (Expectation Failed) response.
-             */
-            final boolean closeOnExpectationFailed = true;
-
-            final boolean strictDecompression = false;
+            timeoutTimer.reactTo(TimeoutMachine.Events.INIT);
 
             /**
              * If SSL/TLS is enabled, then add an SSL Handler,
@@ -973,10 +1090,7 @@ public final class WebServer
              * Downlink Input: Pass-through.
              * Downlink Output: Pass-through.
              */
-            channel.pipeline().addLast(new HttpRequestDecoder(maxInitialLineSize,
-                                                              maxHeaderSize,
-                                                              maxChunkSize,
-                                                              validateHeaders));
+            channel.pipeline().addLast(httpDecoder);
 
             /**
              * The HTTP Response Encoder converts outgoing HTTP responses into Byte Buffers,
@@ -988,7 +1102,7 @@ public final class WebServer
              * Downlink Input: (1) HTTP Response.
              * Downlink Output: (0 .. N) Byte Buffers.
              */
-            channel.pipeline().addLast(new HttpResponseEncoder());
+            channel.pipeline().addLast(httpEncoder);
 
             /**
              * The HTTP Content Decompressor converts incoming HTTP Content objects,
@@ -1001,7 +1115,7 @@ public final class WebServer
              * Downlink Input: Pass-through.
              * Downlink Output: Pass-through.
              */
-            channel.pipeline().addLast(new HttpContentDecompressor(strictDecompression));
+            channel.pipeline().addLast(decompressor);
 
             /**
              * The HTTP Content Compressor compresses outgoing HTTP Content objects,
@@ -1014,7 +1128,7 @@ public final class WebServer
              * Downlink Input: (1) HTTP Content.
              * Downlink Output: (1) HTTP Content.
              */
-            channel.pipeline().addLast(new HttpContentCompressor(compressionLevel, compressionWindowBits, compressionMemoryLevel, compressionThreshold));
+            channel.pipeline().addLast(compressor);
 
             /**
              * The checker applies the user-defined predicate verifications to the incoming HTTP Request object,
@@ -1031,7 +1145,7 @@ public final class WebServer
              * Downlink Input: Pass-through.
              * Downlink Output: Pass-through.
              */
-            channel.pipeline().addLast(new Prechecker(channelLogger, channel.remoteAddress(), channel.localAddress()));
+            channel.pipeline().addLast(prechecker);
 
             /**
              * The HTTP Object Aggregator will convert a stream of incoming HTTP Request, HTTP Content,
@@ -1044,27 +1158,37 @@ public final class WebServer
              * Uplink Output: (1) Full HTTP Request.
              *
              * Downlink Input: Pass-through.
-             * Downlink Output: Pass-through. TODO
+             * Downlink Output: Pass-through.
              */
-            channel.pipeline().addLast(new HttpObjectAggregator(maxRequestSize, closeOnExpectationFailed));
+            channel.pipeline().addLast(aggregator);
 
             /**
-             * The Slow Uplink Detector detects when the Full HTTP Request is received.
+             * The Request Detector will detect when the request has been fully read-in.
              *
-             * If the Slow Uplink Timeout expires before the detector detects that
-             * the request has been fully received, then the connection will be closed
-             * without sending any HTTP response to the client.
+             * At that point, the client will be prevented from sending more bytes,
+             * since that would be a potential attack vector (CPU usage exploit).
              *
-             * This is a defensive mechanism, which is intended to help defend against
-             * slow HTTP attacks that maliciously send a request at a very low data-rate.
+             * The uplink-timeout will be stopped, since the read is now complete.
+             * The response-timeout will be started, since the response is in-progress.
              *
-             * Uplink Input: (1) Netty-based Full HTTP Request.
-             * Uplink Output: (1) Netty-based Full HTTP Request.
+             * Uplink Input: (1) Full HTTP Request.
+             * Uplink Output: (1) Full HTTP Request.
              *
              * Downlink Input: Pass-through.
              * Downlink Output: Pass-through.
              */
-            channel.pipeline().addLast("ReadTimeoutHandler", new ReadTimeoutHandler(uplinkTimeout.toNanos(), TimeUnit.NANOSECONDS));
+            channel.pipeline().addLast(requestDetector);
+
+            /**
+             * The Response Detector will detect when the response has begun being written-out.
+             *
+             * Uplink Input: Pass-Through.
+             * Uplink Output: Pass-Through.
+             *
+             * Downlink Input: (1) Full HTTP Response.
+             * Downlink Output: (1) Full HTTP Response.
+             */
+            channel.pipeline().addLast(responseDetector);
 
             /**
              * The Translation Decoder converts an incoming Netty-based
@@ -1076,7 +1200,7 @@ public final class WebServer
              * Downlink Input: Pass-through.
              * Downlink Output: Pass-through.
              */
-            channel.pipeline().addLast(new TranslationDecoder(channel.remoteAddress(), channel.localAddress()));
+            channel.pipeline().addLast(protoDecoder);
 
             /**
              * The Translation Encoder converts a Socius GPB-based HTTP Response object
@@ -1088,7 +1212,7 @@ public final class WebServer
              * Downlink Input: (1) Socius GPB-based Full HTTP Response.
              * Downlink Output: (1) Netty-based Full HTTP Response.
              */
-            channel.pipeline().addLast(new TranslationEncoder());
+            channel.pipeline().addLast(protoEncoder);
 
             /**
              * The Correlator coordinates the transmission of incoming HTTP requests
@@ -1101,12 +1225,12 @@ public final class WebServer
              * Downlink Input: None.
              * Downlink Output: (1) Socius GPB-based Full HTTP Response.
              */
-            channel.pipeline().addLast(new CorrelatorHub(channelLogger));
+            channel.pipeline().addLast(correlator);
 
             /**
              * This handler will catch any unhandled exceptions from other handlers.
              */
-            channel.pipeline().addLast(new ExceptionHandler(serverLogger));
+            channel.pipeline().addLast(exceptionHandler);
 
             /**
              * If there are more connections open than the soft-limit allows,
@@ -1123,31 +1247,51 @@ public final class WebServer
              */
             if (connectionNumber >= softConnectionLimit)
             {
-                // TODO: log it
-                channelLogger.onTooManyConnections(connectionNumber);
-                sendErrorAndClose(channel, HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
+                // TODO: log it, right code?
+                connectionLogger.onTooManyConnections(connectionNumber);
+                sendErrorAndClose(HttpResponseStatus.TOO_MANY_REQUESTS.code());
                 return;
             }
         }
 
-        private void sendErrorAndClose (final Channel channel,
-                                        final int status)
+        /**
+         * Send a default error-response to the client and then close the connection.
+         *
+         * @param status is an HTTP status code.
+         */
+        private void sendErrorAndClose (final int status)
         {
             final ServerSideHttpResponse response = Translator.newErrorResponseGPB(status);
             channel.writeAndFlush(response);
             channel.close();
         }
 
-        private void closeWithNoResponse (final Channel channel)
+        /**
+         * Close the connection immediately without sending an HTTP response to the client.
+         */
+        private void closeWithNoResponse ()
         {
             channel.close();
         }
 
-        private void onClose (final SocketChannel channel,
-                              final WebLogger logger)
+        /**
+         * This method will be invoked when Netty closes the connection.
+         */
+        private void onClose ()
         {
             connectionCount.decrementAndGet();
-            logger.onDisconnect(channel.localAddress(), channel.remoteAddress());
+
+            /**
+             * If a response arrives late, just ignore it.
+             */
+            router.disregard(correlationId);
+
+            /**
+             * Stop the timeout timer, since the connection is now closed.
+             */
+            timeoutTimer.reactTo(TimeoutMachine.Events.WRITE_COMPLETE);
+
+            connectionLogger.onDisconnect(channel.localAddress(), channel.remoteAddress());
         }
     }
 

@@ -21,9 +21,6 @@ import com.mackenziehigh.cascade.Cascade.Stage.Actor;
 import com.mackenziehigh.socius.web.messages.web_m;
 import com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpRequest;
 import com.mackenziehigh.socius.web.messages.web_m.ServerSideHttpResponse;
-import com.mackenziehigh.socius.web.server.loggers.CountingWebLogger;
-import com.mackenziehigh.socius.web.server.loggers.WebLogger;
-import java.time.Duration;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutionException;
@@ -40,6 +37,8 @@ import org.junit.Test;
  */
 public final class CorrelatorTest
 {
+    private final String correlationId = UUID.randomUUID().toString();
+
     private final web_m.HttpProtocol PROTOCOL = web_m.HttpProtocol.newBuilder()
             .setMajorVersion(1)
             .setMinorVersion(0)
@@ -47,18 +46,9 @@ public final class CorrelatorTest
             .setText("HTTP/1.0")
             .build();
 
-    private final web_m.ServerSideHttpRequest TIMEOUT_REQUEST = web_m.ServerSideHttpRequest
-            .newBuilder()
-            .setCorrelationId(UUID.randomUUID().toString())
-            .setTimestamp(System.currentTimeMillis())
-            .setMethod("GET")
-            .setUri("/page0.html")
-            .setProtocol(PROTOCOL)
-            .build();
-
     private final web_m.ServerSideHttpRequest REQUEST_1 = web_m.ServerSideHttpRequest
             .newBuilder()
-            .setCorrelationId(UUID.randomUUID().toString())
+            .setCorrelationId(correlationId)
             .setTimestamp(System.currentTimeMillis())
             .setMethod("GET")
             .setUri("/page1.html")
@@ -67,7 +57,7 @@ public final class CorrelatorTest
 
     private final web_m.ServerSideHttpRequest REQUEST_2 = web_m.ServerSideHttpRequest
             .newBuilder()
-            .setCorrelationId(UUID.randomUUID().toString())
+            .setCorrelationId(correlationId)
             .setTimestamp(System.currentTimeMillis())
             .setMethod("GET")
             .setUri("/page2.html")
@@ -96,13 +86,11 @@ public final class CorrelatorTest
         // Pass.
     };
 
-    private final WebLogger logger = CountingWebLogger.create();
-
     private final ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
 
     private final Stage stage = Cascade.newExecutorStage(service);
 
-    private final Correlator hub = new Correlator(stage, service, Duration.ofSeconds(1));
+    private final Correlator hub = new Correlator(stage);
 
     private final Actor<ServerSideHttpRequest, ServerSideHttpResponse> webapp = Cascade
             .newExecutorStage(service)
@@ -149,7 +137,7 @@ public final class CorrelatorTest
          * Although the only Correlation-ID is embedded request,
          * the response must still be routed correctly.
          */
-        hub.dispatch(logger, REQUEST_1, callback);
+        hub.dispatch(correlationId, REQUEST_1, callback);
 
         final ServerSideHttpResponse response = queue.take();
 
@@ -180,7 +168,7 @@ public final class CorrelatorTest
          * This request will cause RESPONSE_2 to be generated.
          * The response has a Correlation-ID contained directly therein.
          */
-        hub.dispatch(logger, REQUEST_2, callback);
+        hub.dispatch(correlationId, REQUEST_2, callback);
 
         final ServerSideHttpResponse response = queue.take();
 
@@ -264,36 +252,6 @@ public final class CorrelatorTest
         service.submit(WAITER).get();
 
         assertEquals(1, hub.responseRoutingFailures.get());
-    }
-
-    /**
-     * Test: 20190317194602573620
-     *
-     * <p>
-     * Case: Response Timeout.
-     * </p>
-     *
-     * @throws java.lang.InterruptedException
-     */
-    @Test
-    public void test20190317194602573620 ()
-            throws InterruptedException
-    {
-        final BlockingQueue<ServerSideHttpResponse> queue = new LinkedBlockingQueue<>();
-        final Consumer<ServerSideHttpResponse> callback = resp -> queue.add(resp);
-
-        /**
-         * The actor will not generate a response of the TIMEOUT_REQUEST.
-         * Therefore, the connection will be closed by the response-timeout.
-         * An automatic response will be sent (408 - Request Timeout).
-         */
-        hub.dispatch(logger, TIMEOUT_REQUEST, callback);
-
-        final ServerSideHttpResponse response = queue.take();
-
-        assertEquals(408, response.getStatus());
-        assertEquals("<head> <meta http-equiv=\"refresh\" content=\"5; URL=\"/408.html\" /> </head>\r\n",
-                     response.getBody().toStringUtf8());
     }
 
 }

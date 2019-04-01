@@ -33,7 +33,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
@@ -74,46 +73,44 @@ final class Translator
      * for use in the pre-check handlers, with certain parts
      * of the request are omitted, such as the entity.
      *
+     * @param correlationId identifies the request/response pair.
      * @param clientAddress is the remote-address of the client.
      * @param serverAddress is the local-address of the server.
      * @param request is a Netty-based request.
      * @return the partial GPB-based request.
      */
-    public web_m.ServerSideHttpRequest prefixOf (final InetSocketAddress clientAddress,
+    public web_m.ServerSideHttpRequest prefixOf (final String correlationId,
+                                                 final InetSocketAddress clientAddress,
                                                  final InetSocketAddress serverAddress,
                                                  final HttpRequest request)
     {
         Objects.requireNonNull(request, "request");
-        return commonPrefix(clientAddress, serverAddress, request).build();
+        return commonPrefix(correlationId, clientAddress, serverAddress, request).build();
     }
 
     /**
      * Translate a Netty-based request to a GPB-based request.
      *
+     * @param correlationId identifies the request/response pair.
      * @param clientAddress is the remote-address of the client.
      * @param serverAddress is the local-address of the server.
      * @param request is a Netty-based request.
      * @return the complete GPB-based request.
      */
-    public web_m.ServerSideHttpRequest requestToGPB (final InetSocketAddress clientAddress,
+    public web_m.ServerSideHttpRequest requestToGPB (final String correlationId,
+                                                     final InetSocketAddress clientAddress,
                                                      final InetSocketAddress serverAddress,
                                                      final FullHttpRequest request)
     {
         Objects.requireNonNull(request, "request");
 
-        final web_m.ServerSideHttpRequest.Builder builder = commonPrefix(clientAddress, serverAddress, request);
+        final web_m.ServerSideHttpRequest.Builder builder = commonPrefix(correlationId, clientAddress, serverAddress, request);
 
         /**
          * Sequence Number.
          */
         final long seqnum = sequenceCount.incrementAndGet();
         builder.setSequenceNumber(seqnum);
-
-        /**
-         * Correlation-ID.
-         */
-        final String correlationId = UUID.randomUUID().toString();
-        builder.setCorrelationId(correlationId);
 
         /**
          * Reply-To.
@@ -153,7 +150,8 @@ final class Translator
         return builder.build();
     }
 
-    private web_m.ServerSideHttpRequest.Builder commonPrefix (final InetSocketAddress clientAddress,
+    private web_m.ServerSideHttpRequest.Builder commonPrefix (final String correlationId,
+                                                              final InetSocketAddress clientAddress,
                                                               final InetSocketAddress serverAddress,
                                                               final HttpRequest request)
     {
@@ -173,6 +171,11 @@ final class Translator
          * Timestamp.
          */
         builder.setTimestamp(System.currentTimeMillis());
+
+        /**
+         * Correlation-ID.
+         */
+        builder.setCorrelationId(correlationId);
 
         /**
          * Remote Address.
