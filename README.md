@@ -280,7 +280,7 @@ General Per Connection Settings:
 | Name    | Description | Default |
 | ------- | ----------- | ------- |
 | Uplink Timeout         | The max duration to wait for a request to be read of the socket | TODO |
-| Response Timeout       | The max duration to wait for a response to be formulated. 
+| Response Timeout       | The max duration to wait for a response to be formulated.  | TODO |
 | Downlink Timeout       | The max duration to wait for a response to be written to the socket. | TODO |
 | Request Filter         | The predicate(s) that filter out unwanted requests    | DENY      | 
 
