@@ -1,16 +1,18 @@
 *This project is still under initial development!*
 
-Socius Web provides an embeddable asynchronous non-blocking message-oriented [Netty](https://github.com/netty/netty)-based HTTP proxy server that facilitates the processing of HTTP requests as a stream of generic [Protobuf](https://developers.google.com/protocol-buffers/)-encoded messages flowing through one-or-more [Cascade](https://github.com/Mackenzie-High/Cascade)-based actors. 
+Socius Web provides an embeddable asynchronous non-blocking message-oriented [Netty](https://github.com/netty/netty)-based HTTP proxy server that facilitates the processing of HTTP requests as a multiplexed stream of generic [Protobuf](https://developers.google.com/protocol-buffers/)-encoded messages flowing through one-or-more [Cascade](https://github.com/Mackenzie-High/Cascade)-based actors. 
+
+Let's break that down a little:
+1. Socius Web is an **HTTP server**.
+2. Socius Web is **embeddable**, which means that the server is simply an object within your Java program, rather than a standalone process of its own. 
+3. Socius Web is **asynchronous**, which means the server can handle many requests concurrently. 
+4. Socius Web is **non-blocking**, which means the server uses NIO-based sockets. Consequently, the server can handle thousands of simultaneous connections using a single thread. Other servers, which use blocking sockets, spawn a separate thread for each connection, which does not scale well.
+5. Socius Web is **message-oriented**, which means that requests/responses are converted to/from message objects, where each message has a finite size. Thus, Socius Web is *not* appropriate, if you need streaming capablities. 
 
 Of Note:
 * Socius Web is intended for use as an upstream server hidden behind a load balancer or other edge server. 
 * Socius Web is *not* intended to be used directly as an edge server itself. 
 * Socius Web is *not* a general purpose web server. 
-
-# Installation
-
-TODO
-
 
 # Getting Started
 
