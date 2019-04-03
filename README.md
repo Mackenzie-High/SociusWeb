@@ -266,19 +266,49 @@ Disadvantages:
 
 Socius Web is configurable to meet your security and performance needs. 
 
+General Server Settings:
+
 | Name    | Description | Default |
 | ------- | ----------- | ------- | 
 | Bind Address           | The network-interface that the server will listen on. | 127.0.0.1 |
 | Port                   | The port number that the server will listen on.       | 8080      | 
-| Max Request Size       | The max number of bytes in a single HTTP request  | TODO      |
-| Max Initial Line Size  | The max number of bytes in the first line of the request | TODO |
-| Max Headers Size       | The max number of bytes in the initial request headers. | TODO |
+| Soft Connection Limit  | The limit at which new connections will be sent a default error-response. | TODO |
+| Hard Connection Limit  | The limit at which new connections will simply not be accepted. | TODO |
+
+General Per Connection Settings:
+
+| Name    | Description | Default |
+| ------- | ----------- | ------- |
 | Uplink Timeout         | The max duration to wait for a request to be read of the socket | TODO |
 | Response Timeout       | The max duration to wait for a response to be formulated. 
 | Downlink Timeout       | The max duration to wait for a response to be written to the socket. | TODO |
-| Soft Connection Limit  | The limit at which new connections will be sent a default error-response. | TODO |
-| Hard Connection Limit  | The limit at which new connections will simply not be accepted. | TODO |
 | Request Filter         | The predicate(s) that filter out unwanted requests    | DENY      | 
+
+General HTTP Settings: 
+| Name    | Description | Default |
+| ------- | ----------- | ------- |
+| Max Request Size       | The max number of bytes in a single HTTP request  | TODO      |
+| Max Initial Line Size  | The max number of bytes in the first line of the request | TODO |
+| Max Headers Size       | The max number of bytes in the initial request headers. | TODO |
+
+Settings for Compression of HTTP Responses:
+
+| Name    | Description | Default |
+| ------- | ----------- | ------- | 
+| Compression Level       | A value between zero (no compression) and nine (max compression) | TODO |
+| Compression Window Bits | A value between nine (worse compression, less memory) and fifteen (better compression, more memory). | TODO |
+| Compression Memory Level | A value between one (worse compression, less memory) and nine (better compression, more memory). | TODO |
+| Compression Threshold | The minimum size a response must be in order for compression to be applied. | TODO |
+
+Settings for Advanced Performance Tuning:
+
+| Name    | Description | Default |
+| ------- | ----------- | ------- | 
+| Max Messages Per Read  | The max number of times the socket will be polled per read.   | TODO |  
+| Recv Allocator Min     | The min size of the memory buffers used for receiving data.   | TODO | 
+| Recv Allocator Max     | The max size of the memory buffers used for receiving data.   | TODO |
+| Recv Allocator Initial | The initial size of the memory buffers used for receiving data.   | TODO | 
+
 
 
 ## Defaults
