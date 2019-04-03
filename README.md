@@ -241,7 +241,24 @@ curl -k "https://127.0.0.1:8080"
 
 # Encoding
 
+Socius Web uses Protobuf-encoded messages between itself and the connected web-application. 
+
+Message Definitions: (web_m.proto)[https://github.com/Mackenzie-High/SociusWeb/blob/master/src/main/java/com/mackenziehigh/socius/web/messages/web_m.proto] 
+
+Advantages:
+1. Since the messages are Protobuf-based, they can be trivially serialized/deserialized. Moreover, the encoding is not Java-centric. Rather, the messages can be deserialized easily in any language that Protobuf supports. 
+2. The messages are inherently immutable. 
+
+Disadvantages:
+1. GC Pressure
+
 ## Requests
+
+| Attribute                                   | Type                         | About                  |
+| ------------------------------------------- | --------------------------------------------- |
+| Server Name | String | Human readable name of the server receiving the request. |
+| Server ID   | String | UUID of the server receiving the request. |
+| Reply To    | String | Optional, ignored by server, for application use. | 
 
 ## Responses
 
