@@ -264,6 +264,23 @@ Disadvantages:
 
 # Configuration Options
 
+Socius Web is configurable to meet your security and performance needs. 
+
+| Name    | Description | Default |
+| ------- | ----------- | ------- | 
+| Bind Address           | The network-interface that the server will listen on. | 127.0.0.1 |
+| Port                   | The port number that the server will listen on.       | 8080      | 
+| Max Request Size       | The max number of bytes in a single HTTP request  | TODO      |
+| Max Initial Line Size  | The max number of bytes in the first line of the request | TODO |
+| Max Headers Size       | The max number of bytes in the initial request headers. | TODO |
+| Uplink Timeout         | The max duration to wait for a request to be read of the socket | TODO |
+| Response Timeout       | The max duration to wait for a response to be formulated. 
+| Downlink Timeout       | The max duration to wait for a response to be written to the socket. | TODO |
+| Soft Connection Limit  | The limit at which new connections will be sent a default error-response. | TODO |
+| Hard Connection Limit  | The limit at which new connections will simply not be accepted. | TODO |
+| Request Filter         | The predicate(s) that filter out unwanted requests    | DENY      | 
+
+
 ## Defaults
 
 ## Bind Address
