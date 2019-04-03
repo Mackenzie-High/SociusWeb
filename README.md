@@ -285,6 +285,7 @@ General Per Connection Settings:
 | Request Filter         | The predicate(s) that filter out unwanted requests    | DENY      | 
 
 General HTTP Settings: 
+
 | Name    | Description | Default |
 | ------- | ----------- | ------- |
 | Max Request Size       | The max number of bytes in a single HTTP request  | TODO      |
