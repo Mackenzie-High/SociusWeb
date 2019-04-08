@@ -272,43 +272,43 @@ General Server Settings:
 | ------- | ----------- | ------- | 
 | Bind Address           | The network-interface that the server will listen on. | 127.0.0.1 |
 | Port                   | The port number that the server will listen on.       | 8080      | 
-| Soft Connection Limit  | The limit at which new connections will be sent a default error-response. | TODO |
-| Hard Connection Limit  | The limit at which new connections will simply not be accepted. | TODO |
+| Soft Connection Limit  | The limit at which new connections will be sent a default error-response. | 128 |
+| Hard Connection Limit  | The limit at which new connections will simply not be accepted. | 512 |
 
 General Per Connection Settings:
 
 | Name    | Description | Default |
 | ------- | ----------- | ------- |
-| Uplink Timeout         | The max duration to wait for a request to be read of the socket | TODO |
-| Response Timeout       | The max duration to wait for a response to be formulated.  | TODO |
-| Downlink Timeout       | The max duration to wait for a response to be written to the socket. | TODO |
+| Uplink Timeout         | The max duration to wait for a request to be read of the socket | 8 seconds |
+| Response Timeout       | The max duration to wait for a response to be formulated.  | 32 seconds |
+| Downlink Timeout       | The max duration to wait for a response to be written to the socket. | 8 seconds |
 | Request Filter         | The predicate(s) that filter out unwanted requests    | DENY      | 
 
 General HTTP Settings: 
 
 | Name    | Description | Default |
 | ------- | ----------- | ------- |
-| Max Request Size       | The max number of bytes in a single HTTP request  | TODO      |
-| Max Initial Line Size  | The max number of bytes in the first line of the request | TODO |
-| Max Headers Size       | The max number of bytes in the initial request headers. | TODO |
+| Max Request Size       | The max number of bytes in a single HTTP request  | 65536 |
+| Max Initial Line Size  | The max number of bytes in the first line of the request | 1024 |
+| Max Headers Size       | The max number of bytes in the initial request headers. | 8192 |
 
 Settings for Compression of HTTP Responses:
 
 | Name    | Description | Default |
 | ------- | ----------- | ------- | 
-| Compression Level       | A value between zero (no compression) and nine (max compression) | TODO |
-| Compression Window Bits | A value between nine (worse compression, less memory) and fifteen (better compression, more memory). | TODO |
-| Compression Memory Level | A value between one (worse compression, less memory) and nine (better compression, more memory). | TODO |
-| Compression Threshold | The minimum size a response must be in order for compression to be applied. | TODO |
+| Compression Level       | A value between zero (no compression) and nine (max compression) | 6 |
+| Compression Window Bits | A value between nine (worse compression, less memory) and fifteen (better compression, more memory). | 15 |
+| Compression Memory Level | A value between one (worse compression, less memory) and nine (better compression, more memory). | 8 |
+| Compression Threshold | The min size a response must be in order for compression to be applied. | 0 (Always Compress) |
 
 Settings for Advanced Performance Tuning:
 
 | Name    | Description | Default |
 | ------- | ----------- | ------- | 
-| Max Messages Per Read  | The max number of times the socket will be polled per read.   | TODO |  
-| Recv Allocator Min     | The min size of the memory buffers used for receiving data.   | TODO | 
-| Recv Allocator Max     | The max size of the memory buffers used for receiving data.   | TODO |
-| Recv Allocator Initial | The initial size of the memory buffers used for receiving data.   | TODO | 
+| Max Messages Per Read  | The max number of times the socket will be polled per read.   | 1 |  
+| Recv Allocator Min     | The min size of the memory buffers used for receiving data.   | 64 | 
+| Recv Allocator Max     | The max size of the memory buffers used for receiving data.   | 131072 |
+| Recv Allocator Initial | The initial size of the memory buffers used for receiving data.   | 1024 | 
 
 
 
