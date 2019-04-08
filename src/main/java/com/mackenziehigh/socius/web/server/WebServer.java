@@ -15,6 +15,7 @@
  */
 package com.mackenziehigh.socius.web.server;
 
+import com.google.common.base.Verify;
 import com.mackenziehigh.cascade.Cascade;
 import com.mackenziehigh.cascade.Cascade.Stage;
 import com.mackenziehigh.cascade.Cascade.Stage.Actor.Input;
@@ -51,6 +52,7 @@ import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.ssl.SslHandler;
+import io.netty.util.ReferenceCountUtil;
 import java.io.Closeable;
 import java.time.Duration;
 import java.util.List;
@@ -68,58 +70,119 @@ import javax.net.ssl.SSLEngine;
 public final class WebServer
         implements Closeable
 {
+    /**
+     * Default: Empty String.
+     */
     public static final String DEFAULT_SERVER_NAME = "";
 
+    /**
+     * Default: Empty String.
+     */
     public static final String DEFAULT_REPLY_TO = "";
 
+    /**
+     * Default: (<code>127.0.0.1</code>).
+     */
     public static final String DEFAULT_BIND_ADDRESS = "127.0.0.1";
 
+    /**
+     * Default: (8080).
+     */
     public static final int DEFAULT_PORT = 8080;
 
+    /**
+     * Default: (1).
+     */
     public static final int DEFAULT_MAX_MESSAGES_PER_READ = 1;
 
+    /**
+     * Default: (65536).
+     */
     public static final int DEFAULT_MAX_REQUEST_SIZE = 64 * 1024;
 
+    /**
+     * Default: (1024).
+     */
     public static final int DEFAULT_MAX_INITIAL_LINE_SIZE = 1024;
 
+    /**
+     * Default: (8192).
+     */
     public static final int DEFAULT_MAX_HEADER_SIZE = 8 * 1024;
 
+    /**
+     * Default: (6).
+     */
     public static final int DEFAULT_COMPRESSION_LEVEL = 6;
 
+    /**
+     * Default: (15).
+     */
     public static final int DEFAULT_COMPRESSION_WINDOW_BITS = 15;
 
+    /**
+     * Default: (8).
+     */
     public static final int DEFAULT_COMPRESSION_MEMORY_LEVEL = 8;
 
-    public static final int DEFAULT_COMPRESSION_THRESHOLD = 0; // Always Compress.
+    /**
+     * Default: (0 = Always Compress).
+     */
+    public static final int DEFAULT_COMPRESSION_THRESHOLD = 0;
 
+    /**
+     * Default: (64).
+     */
     public static final int DEFAULT_RECV_ALLOCATOR_MIN = 64;
 
+    /**
+     * Default: (131072 = 2 * 65536 = 2 * Default Max Request Size).
+     */
     public static final int DEFAULT_RECV_ALLOCATOR_MAX = 2 * DEFAULT_MAX_REQUEST_SIZE;
 
+    /**
+     * Default: (1024).
+     */
     public static final int DEFAULT_RECV_ALLOCATOR_INITIAL = 1024;
 
+    /**
+     * Default: (128).
+     */
     public static final int DEFAULT_SOFT_CONNECTION_LIMIT = 128;
 
+    /**
+     * Default: (512 = 4 * Default Soft Connection Limit).
+     */
     public static final int DEFAULT_HARD_CONNECTION_LIMIT = 4 * DEFAULT_SOFT_CONNECTION_LIMIT;
 
-    public static final long DEFAULT_SERVER_UPLINK_BANDWIDTH = DEFAULT_SOFT_CONNECTION_LIMIT * DEFAULT_MAX_REQUEST_SIZE;
-
-    public static final long DEFAULT_SERVER_DOWNLINK_BANDWIDTH = DEFAULT_SERVER_UPLINK_BANDWIDTH;
-
-    public static final long DEFAULT_CONNECTION_UPLINK_BANDWIDTH = DEFAULT_SERVER_UPLINK_BANDWIDTH; // In effect, disable the limit.
-
-    public static final long DEFAULT_CONNECTION_DOWNLINK_BANDWIDTH = DEFAULT_CONNECTION_UPLINK_BANDWIDTH;
-
+    /**
+     * Default: (1) Second.
+     */
     public static final Duration DEFAULT_MAX_PAUSE_TIME = Duration.ofSeconds(1);
 
+    /**
+     * Default: (8) Seconds.
+     */
     public static final Duration DEFAULT_SLOW_UPLINK_TIMEOUT = Duration.ofSeconds(8);
 
+    /**
+     * Default: (8) Seconds.
+     */
     public static final Duration DEFAULT_SLOW_DOWNLINK_TIMEOUT = Duration.ofSeconds(8);
 
+    /**
+     * Default: (32) Seconds.
+     */
     public static final Duration DEFAULT_RESPONSE_TIMEOUT = Duration.ofSeconds(32);
 
+    /**
+     * Default: (1) Thread.
+     */
     public static final int BOSS_THREAD_COUNT = 1;
 
+    /**
+     * Default: (1) Thread.
+     */
     public static final int WORKER_THREAD_COUNT = 1;
 
     private final WebLogger serverLogger;
@@ -796,7 +859,9 @@ public final class WebServer
             public void onResponseTimeout ()
             {
                 connectionLogger.onResponseTimeout();
-                sendErrorAndClose(HttpResponseStatus.REQUEST_TIMEOUT.code());
+                final int statusCode = HttpResponseStatus.REQUEST_TIMEOUT.code();
+                final ServerSideHttpResponse response = Translator.newErrorResponseGPB(statusCode);
+                writeAndFlush(response);
             }
 
             @Override
@@ -810,13 +875,20 @@ public final class WebServer
         /**
          * This object detects when the HTTP request has been fully read-in.
          */
-        private final MessageToMessageDecoder<FullHttpRequest> requestDetector = new MessageToMessageDecoder<FullHttpRequest>()
+        private final MessageToMessageDecoder<ServerSideHttpRequest> requestDetector = new MessageToMessageDecoder<ServerSideHttpRequest>()
         {
             @Override
             protected void decode (final ChannelHandlerContext ctx,
-                                   final FullHttpRequest msg,
+                                   final ServerSideHttpRequest msg,
                                    final List<Object> out)
             {
+                /**
+                 * Case #1: The reference-count is (-1), because the message is not reference-counted.
+                 * Case #2: The reference-count is (+1), because the message is reference-counted.
+                 * Case #3: The reference-count is incorrect.
+                 */
+                Verify.verify(Math.abs(ReferenceCountUtil.refCnt(msg)) == 1);
+
                 /**
                  * Prevent the client from maliciously sending more bytes
                  * after the end of the HTTP request, which could be exploited
@@ -832,7 +904,6 @@ public final class WebServer
                 /**
                  * Send the message through the rest of the pipeline.
                  */
-                msg.retain();
                 out.add(msg);
             }
         };
@@ -855,9 +926,80 @@ public final class WebServer
                                    final FullHttpResponse msg,
                                    final List<Object> out)
             {
+                /**
+                 * Case #1: The reference-count is (-1), because the message is not reference-counted.
+                 * Case #2: The reference-count is (+1), because the message is reference-counted.
+                 * Case #3: The reference-count is incorrect.
+                 */
+                Verify.verify(Math.abs(ReferenceCountUtil.refCnt(msg)) == 1);
+
                 if (replied.compareAndSet(false, true))
                 {
-                    timeoutTimer.reactTo(TimeoutMachine.Events.RESPONSE_COMPLETE);
+                    out.add(msg);
+                    msg.retain();
+                }
+            }
+        };
+
+        /**
+         * This object detects decoding failures and responds to the client as appropriate.
+         *
+         * <p>
+         * Note: The Netty provided decoder issues a request object with a "/bad-request" URI,
+         * if the decoder failed to properly decode the incoming request.
+         * </p>
+         */
+        private final MessageToMessageDecoder<HttpRequest> decoderSafetyNet = new MessageToMessageDecoder<HttpRequest>()
+        {
+            @Override
+            protected void decode (final ChannelHandlerContext ctx,
+                                   final HttpRequest msg,
+                                   final List<Object> out)
+            {
+                /**
+                 * Case #1: The reference-count is (-1), because the message is not reference-counted.
+                 * Case #2: The reference-count is (+1), because the message is reference-counted.
+                 * Case #3: The reference-count is incorrect.
+                 */
+                Verify.verify(Math.abs(ReferenceCountUtil.refCnt(msg)) == 1);
+
+                if ("/bad-request".equals(msg.uri()))
+                {
+                    reportReadErrorAndClose(HttpResponseStatus.BAD_REQUEST.code());
+                }
+                else
+                {
+                    ReferenceCountUtil.retain(msg);
+                    out.add(msg);
+                }
+            }
+        };
+
+        private final MessageToMessageDecoder<HttpRequest> softDisconnector = new MessageToMessageDecoder<HttpRequest>()
+        {
+            @Override
+            protected void decode (final ChannelHandlerContext ctx,
+                                   final HttpRequest msg,
+                                   final List<Object> out)
+            {
+                /**
+                 * Case #1: The reference-count is (-1), because the message is not reference-counted.
+                 * Case #2: The reference-count is (+1), because the message is reference-counted.
+                 * Case #3: The reference-count is incorrect.
+                 */
+                Verify.verify(Math.abs(ReferenceCountUtil.refCnt(msg)) == 1);
+
+                final int count = connectionCount.get();
+
+                if (count >= softConnectionLimit)
+                {
+                    connectionLogger.onTooManyConnections(count);
+                    final int statusCode = HttpResponseStatus.TOO_MANY_REQUESTS.code();
+                    reportReadErrorAndClose(statusCode);
+                }
+                else
+                {
+                    ReferenceCountUtil.retain(msg);
                     out.add(msg);
                 }
             }
@@ -875,6 +1017,13 @@ public final class WebServer
                                    final List<Object> out)
             {
                 /**
+                 * Case #1: The reference-count is (-1), because the message is not reference-counted.
+                 * Case #2: The reference-count is (+1), because the message is reference-counted.
+                 * Case #3: The reference-count is incorrect.
+                 */
+                Verify.verify(Math.abs(ReferenceCountUtil.refCnt(msg)) == 1);
+
+                /**
                  * Convert the Netty-based request to a GPB-based request.
                  * Some parts of the request will be omitted,
                  * as they are not needed at this stage.
@@ -888,6 +1037,7 @@ public final class WebServer
                 catch (Throwable ex)
                 {
                     connectionLogger.onException(ex);
+                    closeWithNoResponse();
                     return;
                 }
 
@@ -900,17 +1050,18 @@ public final class WebServer
                     {
                         connectionLogger.onAccepted(prefix);
                         out.add(msg);
+                        ReferenceCountUtil.retain(msg);
                     }
                     else if (decision.action() == RequestFilter.ActionType.REJECT)
                     {
                         final int statusCode = decision.status().orElse(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
                         connectionLogger.onRejected(prefix, statusCode);
-                        sendErrorAndClose(statusCode);
+                        reportReadErrorAndClose(statusCode);
                     }
                     else // DENY, FORWARD never occurs.
                     {
-                        closeWithNoResponse();
                         connectionLogger.onDenied(prefix);
+                        closeWithNoResponse();
                     }
                 }
                 catch (Throwable ex)
@@ -933,6 +1084,13 @@ public final class WebServer
                                    final FullHttpRequest msg,
                                    final List<Object> out)
             {
+                /**
+                 * Case #1: The reference-count is (-1), because the message is not reference-counted.
+                 * Case #2: The reference-count is (+1), because the message is reference-counted.
+                 * Case #3: The reference-count is incorrect.
+                 */
+                Verify.verify(Math.abs(ReferenceCountUtil.refCnt(msg)) == 1);
+
                 try
                 {
                     final ServerSideHttpRequest request = translator.requestToGPB(correlationId, channel.remoteAddress(), channel.localAddress(), msg);
@@ -941,7 +1099,7 @@ public final class WebServer
                 catch (Throwable ex)
                 {
                     connectionLogger.onException(ex);
-                    sendErrorAndClose(HttpResponseStatus.BAD_REQUEST.code());
+                    reportReadErrorAndClose(HttpResponseStatus.BAD_REQUEST.code());
                 }
             }
         };
@@ -958,14 +1116,18 @@ public final class WebServer
             {
                 try
                 {
+                    /**
+                     * Log that the response has been received from the external actors.
+                     */
+                    connectionLogger.onResponse(msg);
+
                     final FullHttpResponse response = translator.responseFromGPB(msg);
-                    response.retain();
                     out.add(response);
                 }
                 catch (Throwable ex)
                 {
                     connectionLogger.onException(ex);
-                    sendErrorAndClose(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
+                    closeWithNoResponse();
                 }
             }
         };
@@ -981,6 +1143,13 @@ public final class WebServer
                                          final ServerSideHttpRequest msg)
             {
                 /**
+                 * Case #1: The reference-count is (-1), because the message is not reference-counted.
+                 * Case #2: The reference-count is (+1), because the message is reference-counted.
+                 * Case #3: The reference-count is incorrect.
+                 */
+                Verify.verify(Math.abs(ReferenceCountUtil.refCnt(msg)) == 1);
+
+                /**
                  * Log that the request will not be out for processing by the actors.
                  */
                 connectionLogger.onRequest(msg);
@@ -995,16 +1164,11 @@ public final class WebServer
                                   final ServerSideHttpResponse response)
             {
                 /**
-                 * Log that the response has been received from the external actors.
-                 */
-                connectionLogger.onResponse(response);
-
-                /**
                  * Send the response to the client by passing it all the way through the pipeline.
                  * If a response was already sent to the client, then this will have no real effect,
                  * as this response will be deliberately and silently dropped.
                  */
-                channel.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
+                writeAndFlush(response);
             }
         };
 
@@ -1017,8 +1181,8 @@ public final class WebServer
             public void exceptionCaught (final ChannelHandlerContext ctx,
                                          final Throwable cause)
             {
+                cause.getCause().printStackTrace(); // TODO: Remove
                 connectionLogger.onException(cause);
-                sendErrorAndClose(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
             }
         };
 
@@ -1028,19 +1192,9 @@ public final class WebServer
         public void init ()
         {
             /**
-             * The logger, etc, will need to be notified when the connection closes.
-             */
-            channel.closeFuture().addListener(x -> onClose());
-
-            /**
              * Keep track of how many connections are open.
              */
-            final int connectionNumber = connectionCount.incrementAndGet();
-
-            /**
-             * Configure the connection-specific logger.
-             */
-            connectionLogger.onConnect(channel.localAddress(), channel.remoteAddress());
+            final int connectionNumber = connectionCount.get();
 
             /**
              * If there are more connections open than the hard-limit allows,
@@ -1057,6 +1211,20 @@ public final class WebServer
                 closeWithNoResponse();
                 return;
             }
+            else
+            {
+                connectionCount.incrementAndGet();
+            }
+
+            /**
+             * The logger, etc, will need to be notified when the connection closes.
+             */
+            channel.closeFuture().addListener(x -> onClose());
+
+            /**
+             * Configure the connection-specific logger.
+             */
+            connectionLogger.onConnect(channel.localAddress(), channel.remoteAddress());
 
             /**
              * Start the time that will detect slow reads, responses, and writes.
@@ -1131,6 +1299,33 @@ public final class WebServer
             channel.pipeline().addLast(compressor);
 
             /**
+             * The Decoder Safety Net detects decoding failures by the HTTP Decoder
+             * and generates an appropriate response to the client in such cases.
+             *
+             * Uplink Input: (1) HTTP Request, (0 .. M) HTTP Content, (1) Last HTTP Content.
+             * Uplink Output: Pass-through, if no decoding failure occurred; otherwise, none.
+             *
+             * Downlink Input: Pass-through.
+             * Downlink Output: Pass-through.
+             */
+            channel.pipeline().addLast(decoderSafetyNet);
+
+            /**
+             * This object will close the connection, after the HTTP header is read-in,
+             * if the number of open connections exceeds the soft connection limit.
+             *
+             * We cannot simply close the connection now, because a request must be received
+             * before we can send a response, even if we know the request will fail.
+             *
+             * Uplink Input: (1) HTTP Request, (0 .. M) HTTP Content, (1) Last HTTP Content.
+             * Uplink Output: Pass-through, if no decoding failure occurred; otherwise, none.
+             *
+             * Downlink Input: Pass-through.
+             * Downlink Output: Pass-through.
+             */
+            channel.pipeline().addLast(softDisconnector);
+
+            /**
              * The checker applies the user-defined predicate verifications to the incoming HTTP Request object,
              * translated to a partial GPB representation for API consistency,
              * and closes the connection (sometimes without an HTTP response), if any verification fails.
@@ -1163,6 +1358,18 @@ public final class WebServer
             channel.pipeline().addLast(aggregator);
 
             /**
+             * The Translation Decoder converts an incoming Netty-based
+             * Full HTTP Request to an Socius GPB-based HTTP Request.
+             *
+             * Uplink Input: (1) Netty-based Full HTTP Request.
+             * Uplink Output: (1) Socius GPB-based Full HTTP Request.
+             *
+             * Downlink Input: Pass-through.
+             * Downlink Output: Pass-through.
+             */
+            channel.pipeline().addLast(protoDecoder);
+
+            /**
              * The Request Detector will detect when the request has been fully read-in.
              *
              * At that point, the client will be prevented from sending more bytes,
@@ -1171,8 +1378,8 @@ public final class WebServer
              * The uplink-timeout will be stopped, since the read is now complete.
              * The response-timeout will be started, since the response is in-progress.
              *
-             * Uplink Input: (1) Full HTTP Request.
-             * Uplink Output: (1) Full HTTP Request.
+             * Uplink Input: (1) Socius GPB-based Full HTTP Request.
+             * Uplink Output: (1) Socius GPB-based Full HTTP Request.
              *
              * Downlink Input: Pass-through.
              * Downlink Output: Pass-through.
@@ -1189,18 +1396,6 @@ public final class WebServer
              * Downlink Output: (1) Full HTTP Response.
              */
             channel.pipeline().addLast(responseDetector);
-
-            /**
-             * The Translation Decoder converts an incoming Netty-based
-             * Full HTTP Request to an Socius GPB-based HTTP Request.
-             *
-             * Uplink Input: (1) Netty-based Full HTTP Request.
-             * Uplink Output: (1) Socius GPB-based Full HTTP Request.
-             *
-             * Downlink Input: Pass-through.
-             * Downlink Output: Pass-through.
-             */
-            channel.pipeline().addLast(protoDecoder);
 
             /**
              * The Translation Encoder converts a Socius GPB-based HTTP Response object
@@ -1231,27 +1426,6 @@ public final class WebServer
              * This handler will catch any unhandled exceptions from other handlers.
              */
             channel.pipeline().addLast(exceptionHandler);
-
-            /**
-             * If there are more connections open than the soft-limit allows,
-             * then go ahead and close this new connection,
-             * but send a meaningful HTTP response to the client.
-             *
-             * Notice that this check is done after setting up the pipeline.
-             * We need the HttpEncoder, etc, to be present in the pipeline,
-             * because we are sending an HTTP message that will need to be encoded.
-             *
-             * Notice that this check is done after the timeouts were scheduled.
-             * If the client maliciously reads responses slow, we need to make
-             * sure that the timeout is in-place, so that the channel is not held open.
-             */
-            if (connectionNumber >= softConnectionLimit)
-            {
-                // TODO: log it, right code?
-                connectionLogger.onTooManyConnections(connectionNumber);
-                sendErrorAndClose(HttpResponseStatus.TOO_MANY_REQUESTS.code());
-                return;
-            }
         }
 
         /**
@@ -1259,11 +1433,22 @@ public final class WebServer
          *
          * @param status is an HTTP status code.
          */
-        private void sendErrorAndClose (final int status)
+        private void reportReadErrorAndClose (final int status)
         {
+            timeoutTimer.reactTo(TimeoutMachine.Events.READ_COMPLETE);
+
             final ServerSideHttpResponse response = Translator.newErrorResponseGPB(status);
-            channel.writeAndFlush(response);
-            channel.close();
+
+            timeoutTimer.reactTo(TimeoutMachine.Events.RESPONSE_COMPLETE);
+
+            writeAndFlush(response);
+        }
+
+        private void writeAndFlush (final ServerSideHttpResponse response)
+        {
+            channel.writeAndFlush(response)
+                    .addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE)
+                    .addListener(ChannelFutureListener.CLOSE);
         }
 
         /**

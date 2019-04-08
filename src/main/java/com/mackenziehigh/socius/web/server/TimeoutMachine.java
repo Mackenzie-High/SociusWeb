@@ -120,11 +120,12 @@ abstract class TimeoutMachine
         else if (state == RESPONDING && event == RESPONSE_COMPLETE)
         {
             state = WRITING;
-            executor.schedule(() -> reactTo(WRITE_COMPLETE), writeTimeout.toNanos(), TimeUnit.NANOSECONDS);
+            executor.schedule(() -> reactTo(WRITE_TIMEOUT), writeTimeout.toNanos(), TimeUnit.NANOSECONDS);
         }
         else if (state == RESPONDING && event == RESPONSE_TIMEOUT)
         {
-            state = CLOSED;
+            state = WRITING;
+            executor.schedule(() -> reactTo(WRITE_TIMEOUT), writeTimeout.toNanos(), TimeUnit.NANOSECONDS);
             onResponseTimeout();
         }
         else if (state == WRITING && event == WRITE_TIMEOUT)
@@ -134,7 +135,7 @@ abstract class TimeoutMachine
         }
         else
         {
-            throw new IllegalStateException("Illegal Reaction");
+            throw new IllegalStateException(String.format("Illegal Reaction (state = %s, event = %s)", state, event));
         }
     }
 }

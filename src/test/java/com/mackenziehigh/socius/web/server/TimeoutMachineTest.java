@@ -453,7 +453,7 @@ public final class TimeoutMachineTest
         tester.reactTo(TimeoutMachine.Events.RESPONSE_TIMEOUT);
         assertEquals(1, callbacks.size());
         assertTrue(callbacks.contains(RESPONSE_TIMEOUT));
-        assertEquals(tester.state(), TimeoutMachine.States.CLOSED);
+        assertEquals(tester.state(), TimeoutMachine.States.WRITING);
     }
 
     /**

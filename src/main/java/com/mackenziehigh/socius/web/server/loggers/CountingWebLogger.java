@@ -43,8 +43,6 @@ public final class CountingWebLogger
 
     private final AtomicLong countOnResponseTimeout = new AtomicLong();
 
-    private final AtomicLong countOnConnectionTimeout = new AtomicLong();
-
     private final AtomicLong countOnTooManyConnections = new AtomicLong();
 
     private final AtomicLong countOnException = new AtomicLong();
@@ -192,16 +190,6 @@ public final class CountingWebLogger
     public long countOnResponseTimeout ()
     {
         return countOnResponseTimeout.get();
-    }
-
-    /**
-     * Get the number of times that <code>onConnectionTimeout()</code> was invoked.
-     *
-     * @return the number of method calls up until now.
-     */
-    public long countOnConnectionTimeout ()
-    {
-        return countOnConnectionTimeout.get();
     }
 
     /**

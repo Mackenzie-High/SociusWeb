@@ -281,8 +281,6 @@ final class Translator
      */
     public FullHttpResponse responseFromGPB (final web_m.ServerSideHttpResponse response)
     {
-        //Objects.requireNonNull(request, "request");
-
         /**
          * HTTP Entity.
          */

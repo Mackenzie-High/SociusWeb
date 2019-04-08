@@ -26,6 +26,7 @@ import org.junit.Assert;
  */
 public final class SocketTester
 {
+
     private final Socket sock;
 
     /**
@@ -114,6 +115,12 @@ public final class SocketTester
             throws IOException
     {
         recvln("");
+    }
+
+    public long exhaust ()
+            throws IOException
+    {
+        return ByteStreams.exhaust(sock.getInputStream());
     }
 
     /**
