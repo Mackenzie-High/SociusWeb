@@ -1,16 +1,18 @@
 *This project is still under initial development!*
 
-Socius Web provides an embeddable asynchronous non-blocking message-oriented [Netty](https://github.com/netty/netty)-based HTTP proxy server that facilitates the processing of HTTP requests as a stream of generic [Protobuf](https://developers.google.com/protocol-buffers/)-encoded messages flowing through one-or-more [Cascade](https://github.com/Mackenzie-High/Cascade)-based actors. 
+Socius Web provides an embeddable asynchronous non-blocking message-oriented [Netty](https://github.com/netty/netty)-based HTTP proxy server that facilitates the processing of HTTP requests as a multiplexed stream of generic [Protobuf](https://developers.google.com/protocol-buffers/)-encoded messages flowing through one-or-more [Cascade](https://github.com/Mackenzie-High/Cascade)-based actors. 
+
+Let's break that down a little:
+1. Socius Web is an **HTTP server**.
+2. Socius Web is **embeddable**, which means that the server is simply an object within your Java program, rather than a standalone process of its own. 
+3. Socius Web is **asynchronous**, which means the server can handle many requests concurrently. 
+4. Socius Web is **non-blocking**, which means the server uses NIO-based sockets. Consequently, the server can handle thousands of simultaneous connections using a single thread. Other servers, which use blocking sockets, spawn a separate thread for each connection, which does not scale well.
+5. Socius Web is **message-oriented**, which means that requests/responses are converted to/from message objects, where each message has a finite size. Thus, Socius Web is *not* appropriate, if you need streaming capablities. 
 
 Of Note:
 * Socius Web is intended for use as an upstream server hidden behind a load balancer or other edge server. 
 * Socius Web is *not* intended to be used directly as an edge server itself. 
 * Socius Web is *not* a general purpose web server. 
-
-# Installation
-
-TODO
-
 
 # Getting Started
 
@@ -239,11 +241,76 @@ curl -k "https://127.0.0.1:8080"
 
 # Encoding
 
+Socius Web uses Protobuf-encoded messages between itself and the connected web-application. 
+
+Message Definitions: [web_m.proto](https://github.com/Mackenzie-High/SociusWeb/blob/master/src/main/java/com/mackenziehigh/socius/web/messages/web_m.proto)
+
+Advantages:
+1. Since the messages are Protobuf-based, they can be trivially serialized/deserialized. Moreover, the encoding is not Java-centric. Rather, the messages can be deserialized easily in any language that Protobuf supports. 
+2. The messages are inherently immutable. 
+
+Disadvantages:
+1. GC Pressure
+
 ## Requests
+
+| Attribute                                   | Type                         | About                  |
+| ------------------------------------------- | ---------------------------- | ---------------------- |
+| Server Name | String | Human readable name of the server receiving the request. |
+| Server ID   | String | UUID of the server receiving the request. |
+| Reply To    | String | Optional, ignored by server, for application use. | 
 
 ## Responses
 
 # Configuration Options
+
+Socius Web is configurable to meet your security and performance needs. 
+
+General Server Settings:
+
+| Name    | Description | Default |
+| ------- | ----------- | ------- | 
+| Bind Address           | The network-interface that the server will listen on. | 127.0.0.1 |
+| Port                   | The port number that the server will listen on.       | 8080      | 
+| Soft Connection Limit  | The limit at which new connections will be sent a default error-response. | 128 |
+| Hard Connection Limit  | The limit at which new connections will simply not be accepted. | 512 |
+
+General Per Connection Settings:
+
+| Name    | Description | Default |
+| ------- | ----------- | ------- |
+| Uplink Timeout         | The max duration to wait for a request to be read of the socket | 8 seconds |
+| Response Timeout       | The max duration to wait for a response to be formulated.  | 32 seconds |
+| Downlink Timeout       | The max duration to wait for a response to be written to the socket. | 8 seconds |
+| Request Filter         | The predicate(s) that filter out unwanted requests    | DENY      | 
+
+General HTTP Settings: 
+
+| Name    | Description | Default |
+| ------- | ----------- | ------- |
+| Max Request Size       | The max number of bytes in a single HTTP request  | 65536 |
+| Max Initial Line Size  | The max number of bytes in the first line of the request | 1024 |
+| Max Headers Size       | The max number of bytes in the initial request headers. | 8192 |
+
+Settings for Compression of HTTP Responses:
+
+| Name    | Description | Default |
+| ------- | ----------- | ------- | 
+| Compression Level       | A value between zero (no compression) and nine (max compression) | 6 |
+| Compression Window Bits | A value between nine (worse compression, less memory) and fifteen (better compression, more memory). | 15 |
+| Compression Memory Level | A value between one (worse compression, less memory) and nine (better compression, more memory). | 8 |
+| Compression Threshold | The min size a response must be in order for compression to be applied. | 0 (Always Compress) |
+
+Settings for Advanced Performance Tuning:
+
+| Name    | Description | Default |
+| ------- | ----------- | ------- | 
+| Max Messages Per Read  | The max number of times the socket will be polled per read.   | 1 |  
+| Recv Allocator Min     | The min size of the memory buffers used for receiving data.   | 64 | 
+| Recv Allocator Max     | The max size of the memory buffers used for receiving data.   | 131072 |
+| Recv Allocator Initial | The initial size of the memory buffers used for receiving data.   | 1024 | 
+
+
 
 ## Defaults
 
