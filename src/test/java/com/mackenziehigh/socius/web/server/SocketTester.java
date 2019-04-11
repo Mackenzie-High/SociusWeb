@@ -44,6 +44,23 @@ public final class SocketTester
     }
 
     /**
+     * Send a series of bytes to the server.
+     *
+     * @param octets will be sent to the server.
+     * @throws IOException
+     */
+    public void send (final int... octets)
+            throws IOException
+    {
+        for (int octet : octets)
+        {
+            sock.getOutputStream().write((byte) octet);
+        }
+
+        sock.getOutputStream().flush();
+    }
+
+    /**
      * Send a string to the server.
      *
      * @param text will be sent to the server.

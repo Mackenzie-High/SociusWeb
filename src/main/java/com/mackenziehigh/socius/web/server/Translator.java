@@ -27,6 +27,7 @@ import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_0;
+import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
@@ -296,7 +297,7 @@ final class Translator
         /**
          * Create the response object.
          */
-        final FullHttpResponse netty = new DefaultFullHttpResponse(HTTP_1_0, status, body);
+        final FullHttpResponse netty = new DefaultFullHttpResponse(HTTP_1_1, status, body);
 
         /**
          * HTTP Headers.

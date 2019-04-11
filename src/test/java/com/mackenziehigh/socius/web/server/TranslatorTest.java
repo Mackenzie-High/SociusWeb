@@ -678,7 +678,7 @@ public final class TranslatorTest
         final FullHttpResponse full = translator.responseFromGPB(gpb);
 
         assertEquals(1, full.protocolVersion().majorVersion());
-        assertEquals(0, full.protocolVersion().minorVersion());
+        assertEquals(1, full.protocolVersion().minorVersion());
 
         assertEquals("close", full.headers().get("connection"));
     }

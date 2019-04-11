@@ -38,7 +38,7 @@ import java.time.Duration;
  */
 public final class TestServer
 {
-    private final Stage stage = Cascade.newStage(4);
+    private final Stage stage = Cascade.newStage(4).addErrorHandler(ex -> ex.printStackTrace());
 
     private final WebServer server;
 
@@ -50,87 +50,118 @@ public final class TestServer
 
     private ServerSideHttpResponse slashEcho (final ServerSideHttpRequest request)
     {
-        if (request.getPath().equals("/echo") == false)
+        if (request.getPath().equals("/echo"))
+        {
+
+            final byte[] bytes = request.toString().getBytes();
+
+            final ServerSideHttpResponse response = ServerSideHttpResponse
+                    .newBuilder()
+                    .setRequest(request)
+                    .setContentType("text/plain")
+                    .setStatus(200)
+                    .setBody(ByteString.copyFrom(bytes))
+                    .build();
+
+            return response;
+        }
+        else
         {
             return null;
         }
+    }
 
-        final byte[] bytes = request.toString().getBytes();
+    private ServerSideHttpResponse slashPrint (final ServerSideHttpRequest request)
+    {
+        if (request.getPath().equals("/print"))
+        {
+            final byte[] bytes = request.getBody().toByteArray();
 
-        final ServerSideHttpResponse response = ServerSideHttpResponse
-                .newBuilder()
-                .setRequest(request)
-                .setContentType("text/plain")
-                .setStatus(200)
-                .setBody(ByteString.copyFrom(bytes))
-                .build();
+            final ServerSideHttpResponse response = ServerSideHttpResponse
+                    .newBuilder()
+                    .setRequest(request)
+                    .setContentType("text/plain")
+                    .setStatus(200)
+                    .setBody(ByteString.copyFrom(bytes))
+                    .build();
 
-        return response;
+            return response;
+        }
+        else
+        {
+            return null;
+        }
     }
 
     private ServerSideHttpResponse slashZero (final ServerSideHttpRequest request)
     {
-        if (request.getPath().equals("/zero") == false)
+        if (request.getPath().equals("/zero"))
+        {
+            final int count = Integer.parseInt(request.getParametersMap().get("count").getValues(0));
+            final byte[] bytes = Strings.repeat("0", count).getBytes(StandardCharsets.US_ASCII);
+
+            final ServerSideHttpResponse response = ServerSideHttpResponse
+                    .newBuilder()
+                    .setRequest(request)
+                    .setContentType("text/plain")
+                    .setStatus(200)
+                    .setBody(ByteString.copyFrom(bytes))
+                    .build();
+
+            return response;
+        }
+        else
         {
             return null;
         }
-
-        final int count = Integer.parseInt(request.getParametersMap().get("count").getValues(0));
-        final byte[] bytes = Strings.repeat("0", count).getBytes(StandardCharsets.US_ASCII);
-
-        final ServerSideHttpResponse response = ServerSideHttpResponse
-                .newBuilder()
-                .setRequest(request)
-                .setContentType("text/plain")
-                .setStatus(200)
-                .setBody(ByteString.copyFrom(bytes))
-                .build();
-
-        return response;
     }
 
     private ServerSideHttpResponse slashSleep (final ServerSideHttpRequest request)
             throws InterruptedException
     {
-        if (request.getPath().equals("/sleep") == false)
+        if (request.getPath().equals("/sleep"))
+        {
+            final long millis = Integer.parseInt(request.getParametersMap().get("period").getValues(0));
+            Thread.sleep(millis);
+
+            final ServerSideHttpResponse response = ServerSideHttpResponse
+                    .newBuilder()
+                    .setRequest(request)
+                    .setContentType("text/plain")
+                    .setStatus(200)
+                    .setBody(ByteString.copyFromUtf8("SleepComplete\n"))
+                    .build();
+
+            return response;
+        }
+        else
         {
             return null;
         }
-
-        final long millis = Integer.parseInt(request.getParametersMap().get("period").getValues(0));
-        Thread.sleep(millis);
-
-        final ServerSideHttpResponse response = ServerSideHttpResponse
-                .newBuilder()
-                .setRequest(request)
-                .setContentType("text/plain")
-                .setStatus(200)
-                .setBody(ByteString.copyFromUtf8("SleepComplete\n"))
-                .build();
-
-        return response;
     }
 
     private ServerSideHttpResponse slashAdd (final ServerSideHttpRequest request)
     {
-        if (request.getPath().equals("/add") == false)
+        if (request.getPath().equals("/add"))
+        {
+            final long X = Integer.parseInt(request.getParametersMap().get("x").getValues(0));
+            final long Y = Integer.parseInt(request.getParametersMap().get("y").getValues(0));
+            final long Z = X + Y;
+
+            final ServerSideHttpResponse response = ServerSideHttpResponse
+                    .newBuilder()
+                    .setRequest(request)
+                    .setContentType("text/plain")
+                    .setStatus(200)
+                    .setBody(ByteString.copyFromUtf8(Long.toString(Z)))
+                    .build();
+
+            return response;
+        }
+        else
         {
             return null;
         }
-
-        final long X = Integer.parseInt(request.getParametersMap().get("x").getValues(0));
-        final long Y = Integer.parseInt(request.getParametersMap().get("y").getValues(0));
-        final long Z = X + Y;
-
-        final ServerSideHttpResponse response = ServerSideHttpResponse
-                .newBuilder()
-                .setRequest(request)
-                .setContentType("text/plain")
-                .setStatus(200)
-                .setBody(ByteString.copyFromUtf8(Long.toString(Z)))
-                .build();
-
-        return response;
     }
 
     public void start ()
@@ -140,6 +171,7 @@ public final class TestServer
          * Create the actors that are web-service end-points.
          */
         final Actor<ServerSideHttpRequest, ServerSideHttpResponse> echo = stage.newActor().withScript(this::slashEcho).create();
+        final Actor<ServerSideHttpRequest, ServerSideHttpResponse> print = stage.newActor().withScript(this::slashPrint).create();
         final Actor<ServerSideHttpRequest, ServerSideHttpResponse> sleep = stage.newActor().withScript(this::slashSleep).create();
         final Actor<ServerSideHttpRequest, ServerSideHttpResponse> add = stage.newActor().withScript(this::slashAdd).create();
         final Actor<ServerSideHttpRequest, ServerSideHttpResponse> zero = stage.newActor().withScript(this::slashZero).create();
@@ -149,6 +181,9 @@ public final class TestServer
          */
         server.requestsOut().connect(echo.input());
         server.responsesIn().connect(echo.output());
+        //
+        server.requestsOut().connect(print.input());
+        server.responsesIn().connect(print.output());
         //
         server.requestsOut().connect(sleep.input());
         server.responsesIn().connect(sleep.output());

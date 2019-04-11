@@ -1181,7 +1181,6 @@ public final class WebServer
             public void exceptionCaught (final ChannelHandlerContext ctx,
                                          final Throwable cause)
             {
-                cause.getCause().printStackTrace(); // TODO: Remove
                 connectionLogger.onException(cause);
             }
         };
