@@ -36,13 +36,13 @@ import java.time.Duration;
  * An instance of this class is a web-application that is
  * tailored for use in the web-server integration-tests.
  */
-public final class TestServer
+public final class TestApplication
 {
-    private final Stage stage = Cascade.newStage(4).addErrorHandler(ex -> ex.printStackTrace());
+    private final Stage stage = Cascade.newStage(4).addErrorHandler(ex -> ex.printStackTrace(System.out));
 
     private final WebServer server;
 
-    public TestServer (final WebServer server)
+    public TestApplication (final WebServer server)
     {
         this.server = server;
         this.stage.addErrorHandler(ex -> System.out.println(ex));
@@ -222,7 +222,7 @@ public final class TestServer
                 .withUnsecureSockets()
                 .build();
 
-        final TestServer s = new TestServer(server);
+        final TestApplication s = new TestApplication(server);
         s.start();
 
     }

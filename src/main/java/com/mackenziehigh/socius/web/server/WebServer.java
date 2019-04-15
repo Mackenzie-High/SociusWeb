@@ -53,11 +53,12 @@ import io.netty.handler.codec.http.HttpResponseEncoder;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.util.ReferenceCountUtil;
-import java.io.Closeable;
 import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
@@ -68,7 +69,6 @@ import javax.net.ssl.SSLEngine;
  * for creating RESTful APIs using the Cascade framework.
  */
 public final class WebServer
-        implements Closeable
 {
     /**
      * Default: Empty String.
@@ -231,8 +231,6 @@ public final class WebServer
 
     private final Duration responseTimeout;
 
-    private final boolean hasShutdownHook;
-
     private final RequestFilter prechecks;
 
     private final EventLoopGroup bossGroup = new NioEventLoopGroup(BOSS_THREAD_COUNT);
@@ -259,10 +257,15 @@ public final class WebServer
     /**
      * This flag will be set to true, when start() is called.
      */
-    private final AtomicBoolean started = new AtomicBoolean();
+    private final AtomicBoolean startWasCalled = new AtomicBoolean();
 
     /**
      * This flag will be set to true, when stop() is called.
+     */
+    private final AtomicBoolean stopWasCalled = new AtomicBoolean();
+
+    /**
+     * This flag will be set to true, when the server finally stops.
      */
     private final AtomicBoolean stopped = new AtomicBoolean();
 
@@ -270,6 +273,11 @@ public final class WebServer
      * A reference to this object is needed in order to be able to stop the server.
      */
     private volatile ChannelFuture shutdownHook;
+
+    /**
+     * This latch makes waiting for shutdown simpler.
+     */
+    private final CountDownLatch shutdownLatch = new CountDownLatch(1);
 
     private final Initializer initializer;
 
@@ -302,7 +310,6 @@ public final class WebServer
         this.downlinkTimeout = builder.builderDownlinkTimeout;
         this.uplinkTimeout = builder.builderUplinkTimeout;
         this.responseTimeout = builder.builderResponseTimeout;
-        this.hasShutdownHook = builder.builderShutdownHook;
         this.prechecks = RequestFilters.chain(builder.builderPrechecks, RequestFilters.deny());
 
         this.recvBufferAllocator = new AdaptiveRecvByteBufAllocator(recvAllocatorMin, recvAllocatorInitial, recvAllocatorMax);
@@ -611,6 +618,17 @@ public final class WebServer
     }
 
     /**
+     * Determine whether this server is currently running.
+     *
+     * @return true, if the server was started and has not yet stopped.
+     */
+    public boolean isRunning ()
+    {
+        final boolean started = shutdownHook != null;
+        return started && !stopped.get();
+    }
+
+    /**
      * Use this connection to receive HTTP Requests from this HTTP server.
      *
      * @return the connection.
@@ -651,12 +669,26 @@ public final class WebServer
      */
     public WebServer start ()
     {
-        if (started.compareAndSet(false, true))
+        if (startWasCalled.compareAndSet(false, true))
         {
             serverLogger.onStarted(this);
             final Thread thread = new Thread(this::run);
             thread.start();
         }
+        return this;
+    }
+
+    /**
+     * Wait for the server to fully shutdown.
+     *
+     * @param timeout is the maximum amount of time to wait.
+     * @return this.
+     * @throws java.lang.InterruptedException
+     */
+    public WebServer awaitShutdown (final Duration timeout)
+            throws InterruptedException
+    {
+        shutdownLatch.await(timeout.toMillis(), TimeUnit.MILLISECONDS);
         return this;
     }
 
@@ -671,27 +703,23 @@ public final class WebServer
      */
     public WebServer stop ()
     {
-        if (stopped.compareAndSet(false, true))
+        if (shutdownHook == null)
         {
-            if (shutdownHook != null)
+            throw new IllegalStateException("The server cannot stop(), because it has not fully started.");
+        }
+        else if (stopWasCalled.compareAndSet(false, true))
+        {
+            try
             {
-                try
-                {
-                    shutdownHook.channel().close().sync();
-                }
-                catch (Throwable ex)
-                {
-                    serverLogger.onException(ex);
-                }
+                shutdownHook.channel().close().sync();
+            }
+            catch (Throwable ex)
+            {
+                serverLogger.onException(ex);
             }
         }
-        return this;
-    }
 
-    @Override
-    public void close ()
-    {
-        stop();
+        return this;
     }
 
     /**
@@ -701,19 +729,20 @@ public final class WebServer
     {
         try
         {
-            if (hasShutdownHook)
-            {
-                Runtime.getRuntime().addShutdownHook(new Thread(this::onShutdown));
-            }
-
             final ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(bossGroup, workerGroup);
             bootstrap.channel(NioServerSocketChannel.class);
             bootstrap.childHandler(initializer);
             bootstrap.option(ChannelOption.RCVBUF_ALLOCATOR, recvBufferAllocator);
 
-            shutdownHook = bootstrap.bind(bindAddress, port).sync();
-            shutdownHook.channel().closeFuture().sync();
+            /**
+             * Cause the server to begin listening on the given port
+             * and then await shutdown of the server, which will likely
+             * occur at some distant point in the future.
+             */
+            shutdownHook = bootstrap.bind(bindAddress, port);
+            shutdownHook.syncUninterruptibly();
+            shutdownHook.channel().closeFuture().syncUninterruptibly();
         }
         catch (Throwable ex)
         {
@@ -728,12 +757,9 @@ public final class WebServer
             // Therefore, we must use shutdownNow().
             workerGroup.shutdownNow();
             serverLogger.onStopped();
+            stopped.set(true);
+            shutdownLatch.countDown();
         }
-    }
-
-    private void onShutdown ()
-    {
-        stop();
     }
 
     /**
@@ -1283,7 +1309,6 @@ public final class WebServer
              * Downlink Output: Pass-through.
              */
             channel.pipeline().addLast(decompressor);
-
             /**
              * The HTTP Content Compressor compresses outgoing HTTP Content objects,
              * in accordance with the Accept-Encoding header that was received during the HTTP Request,
@@ -1538,8 +1563,6 @@ public final class WebServer
 
         private Duration builderResponseTimeout;
 
-        private boolean builderShutdownHook = false;
-
         private Boolean builderSecureSocketsEnabled;
 
         private Supplier<SSLEngine> builderSecureSocketsEngine;
@@ -1580,18 +1603,6 @@ public final class WebServer
             this.withResponseTimeout(DEFAULT_RESPONSE_TIMEOUT);
             this.withUnsecureSockets();
 
-            return this;
-        }
-
-        /**
-         * Add a shutdown hook that will automatically shutdown the server,
-         * when the enclosing application shuts down normally.
-         *
-         * @return this.
-         */
-        public Builder withShutdownHook ()
-        {
-            builderShutdownHook = true;
             return this;
         }
 

@@ -25,6 +25,7 @@ import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -33,11 +34,43 @@ import org.junit.Test;
  */
 public final class WebServerTest
 {
+    private static final AtomicInteger addressAllocator = new AtomicInteger(1);
+
+    /**
+     * Allocate a unique local-host address for the server to listen on.
+     * This avoid problems due to TIME_WAIT, etc, since these unit-tests
+     * will be starting and stopping many server instances rapidly.
+     */
+    private final String address = String.format("127.0.0.%d", addressAllocator.incrementAndGet());
+
+    /**
+     * All of the test servers will listen on this port, unless stated otherwise.
+     */
+    private final int port = 8080;
+
+    /**
+     * This logger provides counters that allow us to determine
+     * which parts of the server code executed during a unit-test.
+     */
     private final CountingWebLogger counter = CountingWebLogger.create();
 
+    /**
+     * This logger prints log-messages to standard-output.
+     */
     private final DefaultWebLogger slogger = new DefaultWebLogger();
 
+    /**
+     * This logger combines the aforesaid loggers into one.
+     */
     private final ChainWebLogger logger = new ChainWebLogger(counter, slogger);
+
+    private void awaitServerShutdown (final WebServer server)
+            throws InterruptedException
+    {
+        assertTrue(server.isRunning());
+        server.stop().awaitShutdown(Duration.ofDays(1));
+        assertFalse(server.isRunning());
+    }
 
     /**
      * Test: 20190303101911066030
@@ -153,18 +186,28 @@ public final class WebServerTest
     public void test20190308002223203440 ()
             throws Throwable
     {
+        /**
+         * This is the server under test.
+         */
         final WebServer engine = WebServer
                 .newWebServer()
                 .withDefaultSettings()
                 .withLogger(logger)
-                .withBindAddress("127.0.42.1")
+                .withBindAddress(address)
+                .withPort(port)
                 .withRequestFilter(RequestFilters.accept())
                 .build();
 
-        final TestServer server = new TestServer(engine);
-        server.start();
+        /**
+         * Create a web-application based on the server.
+         */
+        final TestApplication app = new TestApplication(engine);
+        app.start();
 
-        final SocketTester tester = new SocketTester("127.0.42.1", 8080);
+        /**
+         * Send a request to the server and receive a response.
+         */
+        final SocketTester tester = new SocketTester(address, port);
         tester.sendln("GET /sleep?period=1 HTTP/1.1");
         tester.sendln();
         tester.recvln("HTTP/1.1 200 OK");
@@ -174,6 +217,12 @@ public final class WebServerTest
         tester.recvln();
         tester.recv("SleepComplete\n");
         tester.closed();
+
+        /**
+         * Avoid a race-condition with the asserts below,
+         * by waiting for the server to fully shutdown.
+         */
+        awaitServerShutdown(engine);
 
         assertEquals(1, counter.countOnAccepted());
         assertEquals(1, counter.countOnConnect());
@@ -207,23 +256,43 @@ public final class WebServerTest
     public void test20190308002223203558 ()
             throws Throwable
     {
+        /**
+         * This is the server under test.
+         *
+         * Notice that the uplink-timeout is only one millisecond.
+         */
         final WebServer engine = WebServer
                 .newWebServer()
                 .withDefaultSettings()
                 .withLogger(logger)
-                .withBindAddress("127.0.42.3")
+                .withBindAddress(address)
+                .withPort(port)
                 .withRequestFilter(RequestFilters.accept())
                 .withUplinkTimeout(Duration.ofMillis(1))
                 .withResponseTimeout(Duration.ofSeconds(60))
                 .build();
 
-        final TestServer server = new TestServer(engine);
-        server.start();
+        /**
+         * Create a web-application based on the server.
+         */
+        final TestApplication app = new TestApplication(engine);
+        app.start();
 
-        final SocketTester tester = new SocketTester("127.0.42.3", 8080);
+        /**
+         * Begin sending a request to the server.
+         * Notice that this is not a full request.
+         * Wait for the uplink timeout to expire.
+         * The connection will be closed by the server.
+         */
+        final SocketTester tester = new SocketTester(address, port);
         tester.send("GET");
         tester.sleep(100);
         tester.closed();
+
+        /**
+         * Shutdown the server.
+         */
+        awaitServerShutdown(engine);
 
         assertEquals(0, counter.countOnAccepted());
         assertEquals(1, counter.countOnConnect());
@@ -262,24 +331,26 @@ public final class WebServerTest
         final WebServer engine = WebServer
                 .newWebServer()
                 .withDefaultSettings()
-                .withBindAddress("127.0.42.4")
+                .withBindAddress(address)
+                .withPort(port)
                 .withRequestFilter(RequestFilters.accept())
                 .withDownlinkTimeout(Duration.ofMillis(1))
                 .withResponseTimeout(Duration.ofSeconds(60))
                 .build();
 
-        final TestServer server = new TestServer(engine);
-        server.start();
+        final TestApplication app = new TestApplication(engine);
+        app.start();
 
-        final SocketTester tester = new SocketTester("127.0.42.4", 8080);
+        final SocketTester tester = new SocketTester(address, port);
         tester.sendln("GET /zero?count=3200100 HTTP/1.1");
         tester.sendln();
         tester.recvln("HTTP/1.1 200 OK");
         tester.sleep(100);
         final long discarded = tester.exhaust();
+        assertTrue(discarded < 3200100);
         tester.closed();
 
-        assertTrue(discarded < 3200100);
+        awaitServerShutdown(engine);
     }
 
     /**
@@ -299,20 +370,36 @@ public final class WebServerTest
     public void test20190308002223203627 ()
             throws Throwable
     {
+        /**
+         * This is the server under test.
+         *
+         * Notice that the response timeout is only one millisecond.
+         */
         final WebServer engine = WebServer
                 .newWebServer()
                 .withDefaultSettings()
                 .withLogger(logger)
-                .withBindAddress("127.0.42.5")
+                .withBindAddress(address)
+                .withPort(port)
                 .withAcceptFilter()
-                .withResponseTimeout(Duration.ofMillis(10))
+                .withResponseTimeout(Duration.ofMillis(1))
                 .build();
 
-        final TestServer server = new TestServer(engine);
-        server.start();
+        /**
+         * Create a web-application based on the server.
+         */
+        final TestApplication app = new TestApplication(engine);
+        app.start();
 
-        final SocketTester tester = new SocketTester("127.0.42.5", 8080);
-        tester.sendln("GET /sleep?period=2000 HTTP/1.1");
+        /**
+         * Send a request to the server.
+         * The web-application will take one second to generate a response.
+         * However, the response timeout is only one millisecond.
+         * Thus, the server will send a default response,
+         * before the web-application generates a response.
+         */
+        final SocketTester tester = new SocketTester(address, port);
+        tester.sendln("GET /sleep?period=1000 HTTP/1.1");
         tester.sendln();
         tester.recvln("HTTP/1.1 408 Request Timeout");
         tester.recvln("Connection: close");
@@ -321,6 +408,11 @@ public final class WebServerTest
         tester.recvln();
         tester.recvln("<head> <meta http-equiv=\"refresh\" content=\"5; URL=\"/408.html\" /> </head>");
         tester.closed();
+
+        /**
+         * Shutdown the server.
+         */
+        awaitServerShutdown(engine);
 
         assertEquals(1, counter.countOnAccepted());
         assertEquals(1, counter.countOnConnect());
@@ -354,20 +446,41 @@ public final class WebServerTest
     public void test20190308002223203722 ()
             throws Throwable
     {
+        /**
+         * This is the server under test.
+         *
+         * Notice that no request-filter was specified.
+         * Therefore, the default DENY ALL filter is in-effect.
+         */
         final WebServer engine = WebServer
                 .newWebServer()
                 .withDefaultSettings()
                 .withLogger(logger)
-                .withBindAddress("127.0.42.6")
+                .withBindAddress(address)
+                .withPort(port)
                 .build();
 
-        final TestServer server = new TestServer(engine);
-        server.start();
+        /**
+         * Create a web-application based on the server.
+         */
+        final TestApplication app = new TestApplication(engine);
+        app.start();
 
-        final SocketTester tester = new SocketTester("127.0.42.6", 8080);
+        /**
+         * Send a request to the server.
+         * The server will deny the request.
+         * Thus, the connection will be closed by the server.
+         * No response will be sent to the client.
+         */
+        final SocketTester tester = new SocketTester(address, port);
         tester.sendln("GET /zero?count=1 HTTP/1.1");
         tester.sendln();
         tester.closed();
+
+        /**
+         * Shutdown the server.
+         */
+        awaitServerShutdown(engine);
 
         assertEquals(0, counter.countOnAccepted());
         assertEquals(1, counter.countOnConnect());
@@ -401,33 +514,68 @@ public final class WebServerTest
     public void test20190308002223203750 ()
             throws Throwable
     {
+        /**
+         * This is the server under test.
+         *
+         * Notice that a custom request filter was added.
+         * Any request that contains the word "zero" in the URI will be denied.
+         * All other requests will be accepted.
+         */
         final WebServer engine = WebServer
                 .newWebServer()
                 .withDefaultSettings()
                 .withLogger(logger)
-                .withBindAddress("127.0.42.7")
+                .withBindAddress(address)
+                .withPort(port)
                 .withRequestFilter(RequestFilters.deny(x -> x.getPath().contains("zero")))
                 .withAcceptFilter()
                 .build();
 
-        final TestServer server = new TestServer(engine);
-        server.start();
+        final TestApplication app = new TestApplication(engine);
+        app.start();
 
-        final SocketTester tester = new SocketTester("127.0.42.7", 8080);
-        tester.sendln("GET /zero?count=17 HTTP/1.1");
-        tester.sendln();
-        tester.closed();
+        /**
+         * Send a request containing the word "zero" to the server.
+         * The server will deny the request and close the connection.
+         */
+        final SocketTester tester1 = new SocketTester(address, port);
+        tester1.sendln("GET /zero?count=17 HTTP/1.1");
+        tester1.sendln();
+        tester1.closed();
 
-        assertEquals(0, counter.countOnAccepted());
         assertEquals(1, counter.countOnConnect());
         assertEquals(1, counter.countOnDenied());
-        assertEquals(1, counter.countOnDisconnect());
+
+        /**
+         * Send a request to the server that does *not* contain the word "zero".
+         * The server will accept the request and generate a response.
+         */
+        final SocketTester tester2 = new SocketTester(address, port);
+        tester2.sendln("GET /sleep?period=1 HTTP/1.1");
+        tester2.sendln();
+        tester2.recvln("HTTP/1.1 200 OK");
+        tester2.recvln("Connection: close");
+        tester2.recvln("Content-Type: text/plain");
+        tester2.recvln("Content-Length: 14");
+        tester2.recvln();
+        tester2.recv("SleepComplete\n");
+        tester2.closed();
+
+        /**
+         * Shutdown the server.
+         */
+        awaitServerShutdown(engine);
+
+        assertEquals(1, counter.countOnAccepted());
+        assertEquals(2, counter.countOnConnect());
+        assertEquals(1, counter.countOnDenied());
+        assertEquals(2, counter.countOnDisconnect());
         assertEquals(0, counter.countOnDownlinkTimeout());
         assertEquals(0, counter.countOnException());
-        assertEquals(1, counter.countExtend());
+        assertEquals(2, counter.countExtend());
         assertEquals(0, counter.countOnRejected());
-        assertEquals(0, counter.countOnRequest());
-        assertEquals(0, counter.countOnResponse());
+        assertEquals(1, counter.countOnRequest());
+        assertEquals(1, counter.countOnResponse());
         assertEquals(0, counter.countOnResponseTimeout());
         assertEquals(0, counter.countOnTooManyConnections());
         assertEquals(0, counter.countOnUplinkTimeout());
@@ -451,22 +599,42 @@ public final class WebServerTest
     public void test20190308003051428365 ()
             throws Throwable
     {
+        /**
+         * This is the server under test.
+         *
+         * Notice that a custom request-filter is specified.
+         * The request-filter always throws an ArithmeticException.
+         */
         final WebServer engine = WebServer
                 .newWebServer()
                 .withDefaultSettings()
                 .withLogger(logger)
-                .withBindAddress("127.0.42.8")
+                .withBindAddress(address)
+                .withPort(port)
                 .withRequestFilter(RequestFilters.accept(x -> (2 / (1 - 1)) == 0)) // div by zero
                 .withAcceptFilter()
                 .build();
 
-        final TestServer server = new TestServer(engine);
-        server.start();
+        /**
+         * Create a web-application based on the server.
+         */
+        final TestApplication app = new TestApplication(engine);
+        app.start();
 
-        final SocketTester tester = new SocketTester("127.0.42.8", 8080);
+        /**
+         * Send a request to the server.
+         * The request filter will throw an exception.
+         * Therefore, the server will deny the request and close the connection.
+         */
+        final SocketTester tester = new SocketTester(address, port);
         tester.sendln("GET /zero?count=17 HTTP/1.1");
         tester.sendln();
         tester.closed();
+
+        /**
+         * Shutdown the server.
+         */
+        awaitServerShutdown(engine);
 
         assertEquals(0, counter.countOnAccepted());
         assertEquals(1, counter.countOnConnect());
@@ -500,28 +668,48 @@ public final class WebServerTest
     public void test20190308002223203777 ()
             throws Throwable
     {
+        /**
+         * This is the server under test.
+         *
+         * Notice that a custom request filter is specified.
+         * If the URI of a request contains the word "zero",
+         * then a default (403) response will be sent back.
+         */
         final WebServer engine = WebServer
                 .newWebServer()
                 .withDefaultSettings()
                 .withLogger(logger)
-                .withBindAddress("127.0.42.9")
+                .withBindAddress(address)
+                .withPort(port)
                 .withRequestFilter(RequestFilters.reject(403, x -> x.getPath().contains("zero")))
                 .withAcceptFilter()
                 .build();
 
-        final TestServer server = new TestServer(engine);
-        server.start();
+        /**
+         * Create a web-application based on the server.
+         */
+        final TestApplication app = new TestApplication(engine);
+        app.start();
 
-        final SocketTester tester = new SocketTester("127.0.42.9", 8080);
-        tester.sendln("GET /zero?count=1 HTTP/1.1");
-        tester.sendln();
-        tester.recvln("HTTP/1.1 403 Forbidden");
-        tester.recvln("Connection: close");
-        tester.recvln("Content-Type: text/html");
-        tester.recvln("Content-Length: 74");
-        tester.recvln();
-        tester.recvln("<head> <meta http-equiv=\"refresh\" content=\"5; URL=\"/403.html\" /> </head>");
-        tester.closed();
+        /**
+         * Send a request to the server, which contains the word "zero".
+         * The server will reject the request and send back a default response.
+         */
+        final SocketTester tester1 = new SocketTester(address, port);
+        tester1.sendln("GET /zero?count=1 HTTP/1.1");
+        tester1.sendln();
+        tester1.recvln("HTTP/1.1 403 Forbidden");
+        tester1.recvln("Connection: close");
+        tester1.recvln("Content-Type: text/html");
+        tester1.recvln("Content-Length: 74");
+        tester1.recvln();
+        tester1.recvln("<head> <meta http-equiv=\"refresh\" content=\"5; URL=\"/403.html\" /> </head>");
+        tester1.closed();
+
+        /**
+         * Shutdown the server.
+         */
+        awaitServerShutdown(engine);
 
         assertEquals(0, counter.countOnAccepted());
         assertEquals(1, counter.countOnConnect());
@@ -555,22 +743,31 @@ public final class WebServerTest
     public void test20190308002223203806 ()
             throws Throwable
     {
+        /**
+         * This is the server under test.
+         */
         final WebServer engine = WebServer
                 .newWebServer()
                 .withDefaultSettings()
                 .withLogger(logger)
-                .withBindAddress("127.0.42.10")
+                .withBindAddress(address)
+                .withPort(port)
                 .withAcceptFilter()
                 .build();
 
-        final TestServer server = new TestServer(engine);
-        server.start();
+        /**
+         * Create a web-application based on the server.
+         */
+        final TestApplication app = new TestApplication(engine);
+        app.start();
 
+        /**
+         * Sequentially, send requests to the server and receive the responses.
+         */
         final int requestCount = 100;
-
         for (int i = 0; i < requestCount; i++)
         {
-            final SocketTester tester = new SocketTester("127.0.42.10", 8080);
+            final SocketTester tester = new SocketTester(address, port);
             tester.sendln("GET /zero?count=3 HTTP/1.1");
             tester.sendln();
             tester.recvln("HTTP/1.1 200 OK");
@@ -578,9 +775,14 @@ public final class WebServerTest
             tester.recvln("Content-Type: text/plain");
             tester.recvln("Content-Length: 3");
             tester.recvln();
-            tester.recv("000");
+            tester.recv("000"); // /zero?count=3
             tester.closed();
         }
+
+        /**
+         * Shutdown the server.
+         */
+        awaitServerShutdown(engine);
 
         assertEquals(requestCount, counter.countOnAccepted());
         assertEquals(requestCount, counter.countOnConnect());
@@ -616,26 +818,38 @@ public final class WebServerTest
     {
         final ExecutorService service = Executors.newFixedThreadPool(16);
 
+        /**
+         * This is the server under test.
+         */
         final WebServer engine = WebServer
                 .newWebServer()
                 .withDefaultSettings()
                 .withLogger(logger)
-                .withBindAddress("127.0.42.11")
+                .withBindAddress(address)
+                .withPort(port)
                 .withAcceptFilter()
                 .build();
 
+        /**
+         * Create a web-application based on the server.
+         */
+        final TestApplication app = new TestApplication(engine);
+        app.start();
+
+        /**
+         * This latch will be used to wait for the requests to complete.
+         */
         final int requestCount = 1280;
-
-        final TestServer server = new TestServer(engine);
-        server.start();
-
         final CountDownLatch latch = new CountDownLatch(requestCount);
 
+        /**
+         * Generic HTTP Request.
+         */
         final Runnable client = () ->
         {
             try
             {
-                final SocketTester tester = new SocketTester("127.0.42.11", 8080);
+                final SocketTester tester = new SocketTester(address, port);
                 tester.sendln("GET /zero?count=3 HTTP/1.1");
                 tester.sendln();
                 tester.recvln("HTTP/1.1 200 OK");
@@ -656,14 +870,26 @@ public final class WebServerTest
             }
         };
 
+        /**
+         * Submit all of the requests to the executor.
+         * Some of the requests will be processed concurrently,
+         * because the executor is multi-threaded .
+         */
         for (int i = 0; i < requestCount; i++)
         {
             service.submit(client);
         }
 
+        /**
+         * Wait for all the request and responses to be processed.
+         */
         latch.await();
 
+        /**
+         * Shutdown the server.
+         */
         service.shutdown();
+        awaitServerShutdown(engine);
 
         assertEquals(requestCount, counter.countOnAccepted());
         assertEquals(requestCount, counter.countOnConnect());
@@ -697,21 +923,32 @@ public final class WebServerTest
     public void test20190308003457842738 ()
             throws Throwable
     {
+
+        /**
+         * This is the server under test.
+         */
+        final int maxInitialLineSize = 1024;
         final WebServer engine = WebServer
                 .newWebServer()
                 .withDefaultSettings()
                 .withLogger(logger)
-                .withBindAddress("127.0.42.12")
+                .withBindAddress(address)
+                .withPort(port)
                 .withAcceptFilter()
-                .withMaxInitialLineSize(1024)
+                .withMaxInitialLineSize(maxInitialLineSize)
                 .build();
 
-        final TestServer server = new TestServer(engine);
-        server.start();
+        /**
+         * Create a web-application based on the server.
+         */
+        final TestApplication app = new TestApplication(engine);
+        app.start();
 
-        final String tooLong = Strings.repeat("1", 2048);
-
-        final SocketTester tester = new SocketTester("127.0.42.12", 8080);
+        /**
+         * Send a request to the server, where the initial line is too long.
+         */
+        final String tooLong = Strings.repeat("1", maxInitialLineSize);
+        final SocketTester tester = new SocketTester(address, port);
         tester.sendln(String.format("GET /zero?count=%s HTTP/1.1", tooLong));
         tester.sendln();
         tester.recvln("HTTP/1.1 400 Bad Request");
@@ -721,6 +958,11 @@ public final class WebServerTest
         tester.recvln();
         tester.recvln("<head> <meta http-equiv=\"refresh\" content=\"5; URL=\"/400.html\" /> </head>");
         tester.closed();
+
+        /**
+         * Shutdown the server.
+         */
+        awaitServerShutdown(engine);
 
         assertEquals(0, counter.countOnAccepted());
         assertEquals(1, counter.countOnConnect());
@@ -754,30 +996,47 @@ public final class WebServerTest
     public void test20190308003457842710 ()
             throws Throwable
     {
+        fail();
+
+        /**
+         * This is the server under test.
+         */
+        final int maxRequestSize = 1024;
         final WebServer engine = WebServer
                 .newWebServer()
                 .withDefaultSettings()
                 .withLogger(logger)
-                .withBindAddress("127.0.42.13")
+                .withBindAddress(address)
+                .withPort(port)
                 .withAcceptFilter()
-                .withMaxInitialLineSize(1024)
+                .withMaxRequestSize(maxRequestSize)
                 .build();
 
-        final TestServer server = new TestServer(engine);
-        server.start();
+        /**
+         * Create a web-application based on the server.
+         */
+        final TestApplication app = new TestApplication(engine);
+        app.start();
 
+        /**
+         * Send a request to the server that is too large.
+         * The server will respond with a default response.
+         */
         final String tooLong = Strings.repeat("1", 2048);
-
-        final SocketTester tester = new SocketTester("127.0.42.13", 8080);
-        tester.sendln(String.format("GET /zero?count=%s HTTP/1.1", tooLong));
+        final SocketTester tester = new SocketTester(address, port);
+        tester.sendln(String.format("PUT /print HTTP/1.1"));
+        tester.sendln("Content-Length: 2048");
         tester.sendln();
-        tester.recvln("HTTP/1.1 400 Bad Request");
-        tester.recvln("Connection: close");
-        tester.recvln("Content-Type: text/html");
-        tester.recvln("Content-Length: 74");
-        tester.recvln();
-        tester.recvln("<head> <meta http-equiv=\"refresh\" content=\"5; URL=\"/400.html\" /> </head>");
+        tester.sendln(tooLong);
+        tester.recvln("HTTP/1.1 413 Request Entity Too Large");
+        tester.recvln("content-length: 0");
+        tester.exhaust();
         tester.closed();
+
+        /**
+         * Shutdown the server.
+         */
+        awaitServerShutdown(engine);
 
         assertEquals(0, counter.countOnAccepted());
         assertEquals(1, counter.countOnConnect());
@@ -816,17 +1075,18 @@ public final class WebServerTest
         final WebServer engine = WebServer
                 .newWebServer()
                 .withDefaultSettings()
-                .withBindAddress("127.0.42.14")
+                .withBindAddress(address)
+                .withPort(port)
                 .withAcceptFilter()
                 .withMaxHeaderSize(1024)
                 .build();
 
-        final TestServer server = new TestServer(engine);
-        server.start();
+        final TestApplication app = new TestApplication(engine);
+        app.start();
 
         final String tooLong = Strings.repeat("1", 2048);
 
-        final SocketTester tester = new SocketTester("127.0.42.14", 8080);
+        final SocketTester tester = new SocketTester(address, port);
         tester.sendln("GET /zero?count=3 HTTP/1.1");
         tester.sendln("X: " + tooLong);
         tester.sendln("Y: " + tooLong);
@@ -858,20 +1118,35 @@ public final class WebServerTest
     public void test20190308004116128009 ()
             throws Throwable
     {
+        /**
+         * This is the server under test.
+         *
+         * Notice that the soft-connection-limit is zero;
+         * therefore, no connections will be accepted.
+         */
         final WebServer engine = WebServer
                 .newWebServer()
                 .withDefaultSettings()
                 .withLogger(logger)
-                .withBindAddress("127.0.42.15")
+                .withBindAddress(address)
+                .withPort(port)
                 .withAcceptFilter()
                 .withSoftConnectionLimit(0)
                 .withHardConnectionLimit(100)
                 .build();
 
-        final TestServer server = new TestServer(engine);
-        server.start();
+        /**
+         * Create a web-application based on the server.
+         */
+        final TestApplication app = new TestApplication(engine);
+        app.start();
 
-        final SocketTester tester = new SocketTester("127.0.42.15", 8080);
+        /**
+         * Send a request to the server.
+         * The server will respond with a default response,
+         * because one connection is greater than the zero allowed.
+         */
+        final SocketTester tester = new SocketTester(address, port);
         tester.sendln("GET /zero?count=3 HTTP/1.1");
         tester.sendln();
         tester.recvln("HTTP/1.1 429 Too Many Requests");
@@ -881,6 +1156,11 @@ public final class WebServerTest
         tester.recvln();
         tester.recvln("<head> <meta http-equiv=\"refresh\" content=\"5; URL=\"/429.html\" /> </head>");
         tester.closed();
+
+        /**
+         * Shutdown the server.
+         */
+        awaitServerShutdown(engine);
 
         assertEquals(0, counter.countOnAccepted());
         assertEquals(1, counter.countOnConnect());
@@ -914,31 +1194,57 @@ public final class WebServerTest
     public void test20190308004116128086 ()
             throws Throwable
     {
+        /**
+         * This is the server under test.
+         *
+         * Notice that that hard-connection-limit is zero;
+         * therefore, no connections will be allowed.
+         */
         final WebServer engine = WebServer
                 .newWebServer()
                 .withDefaultSettings()
                 .withLogger(logger)
-                .withBindAddress("127.0.42.16")
+                .withBindAddress(address)
+                .withPort(port)
                 .withAcceptFilter()
                 .withSoftConnectionLimit(100)
                 .withHardConnectionLimit(0)
                 .build();
 
-        final TestServer server = new TestServer(engine);
-        server.start();
+        /**
+         * Create a web-application based on the server.
+         */
+        final TestApplication app = new TestApplication(engine);
+        app.start();
 
-        final SocketTester tester = new SocketTester("127.0.42.16", 8080);
+        /**
+         * Send a request to the server.
+         * The server will not accept the connection, at all,
+         * because one connection is greater than the zero allowed.
+         */
+        final SocketTester tester = new SocketTester(address, port);
         tester.sendln("GET /zero?count=3 HTTP/1.1");
         tester.sendln();
 
         try
         {
             tester.closed();
+            fail();
         }
         catch (SocketException ex)
         {
+            /**
+             * Since the connection was never accepted,
+             * then attempting to detect a closed socket
+             * will result in a connection-reset exception.
+             */
             assertTrue(ex.getMessage().toLowerCase().contains("connection reset"));
         }
+
+        /**
+         * Shutdown the server.
+         */
+        awaitServerShutdown(engine);
 
         assertEquals(0, counter.countOnAccepted());
         assertEquals(0, counter.countOnConnect());
@@ -972,23 +1278,29 @@ public final class WebServerTest
     public void test20190308003457842596 ()
             throws Throwable
     {
+        /**
+         * This is the server under test.
+         */
         final WebServer engine = WebServer
                 .newWebServer()
                 .withDefaultSettings()
                 .withLogger(logger)
-                .withBindAddress("127.0.42.17")
+                .withBindAddress(address)
+                .withPort(port)
                 .withAcceptFilter()
-                .withCompressionThreshold(1000)
                 .build();
 
-        final TestServer server = new TestServer(engine);
-        server.start();
+        /**
+         * Create a web-application based on the server.
+         */
+        final TestApplication app = new TestApplication(engine);
+        app.start();
 
         /**
          * Send a GZIP compressed request to the server,
          * where the compressed data is the string "HelloWorld!".
          */
-        final SocketTester tester = new SocketTester("127.0.42.17", 8080);
+        final SocketTester tester = new SocketTester(address, port);
         tester.sendln("POST /print HTTP/1.1");
         tester.sendln("Content-Encoding: gzip");
         tester.sendln("Content-Length: 30");
@@ -1010,6 +1322,11 @@ public final class WebServerTest
         tester.recvln();
         tester.recv("HelloWorld!");
         tester.closed();
+
+        /**
+         * Shutdown the server.
+         */
+        awaitServerShutdown(engine);
 
         assertEquals(1, counter.countOnAccepted());
         assertEquals(1, counter.countOnConnect());
@@ -1043,24 +1360,34 @@ public final class WebServerTest
     public void test20190308003457842680 ()
             throws Throwable
     {
+        /**
+         * This is the server under test.
+         *
+         * Notice that the compression-threshold is zero;
+         * therefore, all responses will be compressed.
+         */
         final WebServer engine = WebServer
                 .newWebServer()
                 .withDefaultSettings()
                 .withLogger(logger)
-                .withBindAddress("127.0.42.18")
+                .withBindAddress(address)
+                .withPort(port)
                 .withAcceptFilter()
                 .withCompressionThreshold(0)
                 .withCompressionLevel(9)
                 .build();
 
-        final TestServer server = new TestServer(engine);
-        server.start();
+        /**
+         * Create a web-application based on the server.
+         */
+        final TestApplication app = new TestApplication(engine);
+        app.start();
 
         /**
          * Send a request to the server, which advertises that
          * we are able to accept GZIP-encoded responses.
          */
-        final SocketTester tester = new SocketTester("127.0.42.18", 8080);
+        final SocketTester tester = new SocketTester(address, port);
         tester.sendln("GET /zero?count=1000 HTTP/1.1");
         tester.sendln("Accept-Encoding: gzip");
         tester.sendln();
@@ -1088,6 +1415,11 @@ public final class WebServerTest
          */
         assertEquals(35, length);
 
+        /**
+         * Shutdown the server.
+         */
+        awaitServerShutdown(engine);
+
         assertEquals(1, counter.countOnAccepted());
         assertEquals(1, counter.countOnConnect());
         assertEquals(0, counter.countOnDenied());
@@ -1103,39 +1435,369 @@ public final class WebServerTest
         assertEquals(0, counter.countOnUplinkTimeout());
     }
 
-//    /**
-//     * Test: 20190308003051428434
-//     *
-//     * <p>
-//     * Type: End-To-End Throughput Test.
-//     * </p>
-//     *
-//     * <p>
-//     * Case: Successful Chunked Request.
-//     * </p>
-//     */
-//    @Test
-//    public void test20190308003051428434 ()
-//    {
-//        System.out.println("Test: 20190308003051428434");
-//        fail();
-//    }
-//
-//    /**
-//     * Test: 20190308003311329885
-//     *
-//     * <p>
-//     * Type: End-To-End Throughput Test.
-//     * </p>
-//     *
-//     * <p>
-//     * Case: Chunked Request Too Large (Expectation Failed).
-//     * </p>
-//     */
-//    @Test
-//    public void test20190308003311329885 ()
-//    {
-//        System.out.println("Test: 20190308003311329885");
-//        fail();
-//    }
+    /**
+     * Test: 20190308003051428434
+     *
+     * <p>
+     * Type: End-To-End Throughput Test.
+     * </p>
+     *
+     * <p>
+     * Case: Successful Chunked Request with Content-Length Header.
+     * </p>
+     *
+     * @throws java.lang.Throwable
+     */
+    @Test
+    public void test20190308003051428434 ()
+            throws Throwable
+    {
+        /**
+         * This is the server under test.
+         */
+        final WebServer engine = WebServer
+                .newWebServer()
+                .withDefaultSettings()
+                .withLogger(logger)
+                .withBindAddress(address)
+                .withPort(port)
+                .withAcceptFilter()
+                .build();
+
+        /**
+         * Create a web-application based on the server.
+         */
+        final TestApplication app = new TestApplication(engine);
+        app.start();
+
+        /**
+         * Send a request to the server using a chunked request.
+         */
+        final SocketTester tester = new SocketTester(address, port);
+        tester.sendln("GET /print HTTP/1.1");
+        tester.sendln("Transfer-Encoding: chunked");
+        tester.sendln("Content-Length: 9");
+        tester.sendln();
+        tester.sendln("5"); // hex(len("Hello"))
+        tester.sendln("Hello");
+        tester.sendln("4"); // hex(len("Mars"))
+        tester.sendln("Mars");
+        tester.sendln("0"); // hex(0)
+        tester.sendln();
+
+        /**
+         * The server will send a non-chunked response back to us.
+         */
+        tester.recvln("HTTP/1.1 200 OK");
+        tester.recvln("Connection: close");
+        tester.recvln("Content-Type: text/plain");
+        tester.recvln("Content-Length: 9");
+        tester.recvln();
+        tester.recv("HelloMars");
+        tester.closed();
+
+        /**
+         * Shutdown the server.
+         */
+        awaitServerShutdown(engine);
+
+        assertEquals(1, counter.countOnAccepted());
+        assertEquals(1, counter.countOnConnect());
+        assertEquals(0, counter.countOnDenied());
+        assertEquals(1, counter.countOnDisconnect());
+        assertEquals(0, counter.countOnDownlinkTimeout());
+        assertEquals(0, counter.countOnException());
+        assertEquals(1, counter.countExtend());
+        assertEquals(0, counter.countOnRejected());
+        assertEquals(1, counter.countOnRequest());
+        assertEquals(1, counter.countOnResponse());
+        assertEquals(0, counter.countOnResponseTimeout());
+        assertEquals(0, counter.countOnTooManyConnections());
+        assertEquals(0, counter.countOnUplinkTimeout());
+    }
+
+    /**
+     * Test: 20190414114130386776
+     *
+     * <p>
+     * Type: End-To-End Throughput Test.
+     * </p>
+     *
+     * <p>
+     * Case: Successful Chunked Request with Content-Length Header.
+     * </p>
+     *
+     * @throws java.lang.Throwable
+     */
+    @Test
+    public void test20190414114130386776 ()
+            throws Throwable
+    {
+        /**
+         * This is the server under test.
+         */
+        final WebServer engine = WebServer
+                .newWebServer()
+                .withDefaultSettings()
+                .withLogger(logger)
+                .withBindAddress(address)
+                .withPort(port)
+                .withAcceptFilter()
+                .build();
+
+        /**
+         * Create a web-application based on the server.
+         */
+        final TestApplication app = new TestApplication(engine);
+        app.start();
+
+        /**
+         * Send a request to the server using a chunked request.
+         */
+        final SocketTester tester = new SocketTester(address, port);
+        tester.sendln("GET /print HTTP/1.1");
+        tester.sendln("Transfer-Encoding: chunked");
+        tester.sendln();
+        tester.sendln("5"); // hex(len("Hello"))
+        tester.sendln("Hello");
+        tester.sendln("4"); // hex(len("Mars"))
+        tester.sendln("Mars");
+        tester.sendln("0"); // hex(0)
+        tester.sendln();
+
+        /**
+         * The server will send a non-chunked response back to us.
+         */
+        tester.recvln("HTTP/1.1 200 OK");
+        tester.recvln("Connection: close");
+        tester.recvln("Content-Type: text/plain");
+        tester.recvln("Content-Length: 9");
+        tester.recvln();
+        tester.recv("HelloMars");
+        tester.closed();
+
+        /**
+         * Shutdown the server.
+         */
+        awaitServerShutdown(engine);
+
+        assertEquals(1, counter.countOnAccepted());
+        assertEquals(1, counter.countOnConnect());
+        assertEquals(0, counter.countOnDenied());
+        assertEquals(1, counter.countOnDisconnect());
+        assertEquals(0, counter.countOnDownlinkTimeout());
+        assertEquals(0, counter.countOnException());
+        assertEquals(1, counter.countExtend());
+        assertEquals(0, counter.countOnRejected());
+        assertEquals(1, counter.countOnRequest());
+        assertEquals(1, counter.countOnResponse());
+        assertEquals(0, counter.countOnResponseTimeout());
+        assertEquals(0, counter.countOnTooManyConnections());
+        assertEquals(0, counter.countOnUplinkTimeout());
+    }
+
+    /**
+     * Test: 20190308003311329885
+     *
+     * <p>
+     * Type: End-To-End Throughput Test.
+     * </p>
+     *
+     * <p>
+     * Case: Chunked Request Unrecognized Expectation Code (Expectation Failed).
+     * </p>
+     *
+     * @throws java.lang.Throwable
+     */
+    @Test
+    public void test20190308003311329885 ()
+            throws Throwable
+    {
+        /**
+         * This is the server under test.
+         */
+        final WebServer engine = WebServer
+                .newWebServer()
+                .withDefaultSettings()
+                .withLogger(logger)
+                .withBindAddress(address)
+                .withPort(port)
+                .withAcceptFilter()
+                .build();
+
+        /**
+         * Create a web-application based on the server.
+         */
+        final TestApplication app = new TestApplication(engine);
+        app.start();
+
+        /**
+         * Notice that the expect is "101-continue" is ficticious.
+         * Normally, we would send s "100-continue".
+         * However, Netty will only respond with (HTTP 417),
+         * if the expectation code is unrecognized.
+         */
+        final SocketTester tester = new SocketTester(address, port);
+        tester.sendln("GET /print HTTP/1.1");
+        tester.sendln("Transfer-Encoding: chunked");
+        tester.sendln("Expect: 101-continue");
+        tester.sendln("Content-Length: 3");
+        tester.sendln();
+
+        /**
+         * The server will send a response forbidding the request.
+         */
+        tester.recvln("HTTP/1.1 417 Expectation Failed");
+        tester.recvln("content-length: 0");
+        tester.exhaust();
+        tester.closed();
+
+        /**
+         * Shutdown the server.
+         */
+        awaitServerShutdown(engine);
+
+        assertEquals(1, counter.countOnAccepted());
+        assertEquals(1, counter.countOnConnect());
+        assertEquals(0, counter.countOnDenied());
+        assertEquals(1, counter.countOnDisconnect());
+        assertEquals(0, counter.countOnDownlinkTimeout());
+        assertEquals(0, counter.countOnException());
+        assertEquals(1, counter.countExtend());
+        assertEquals(0, counter.countOnRejected());
+        assertEquals(0, counter.countOnRequest());
+        assertEquals(0, counter.countOnResponse());
+        assertEquals(0, counter.countOnResponseTimeout());
+        assertEquals(0, counter.countOnTooManyConnections());
+        assertEquals(0, counter.countOnUplinkTimeout());
+    }
+
+    /**
+     * Test: 20190414110651419646
+     *
+     * <p>
+     * Type: End-To-End Throughput Test.
+     * </p>
+     *
+     * <p>
+     * Case: Chunked Request Too Large (Expectation Failed).
+     * </p>
+     *
+     * @throws java.lang.Throwable
+     */
+    @Test
+    public void test20190414110651419646 ()
+            throws Throwable
+    {
+        /**
+         * This is the server under test.
+         */
+        final WebServer engine = WebServer
+                .newWebServer()
+                .withDefaultSettings()
+                .withLogger(logger)
+                .withBindAddress(address)
+                .withPort(port)
+                .withAcceptFilter()
+                .withMaxRequestSize(1024)
+                .build();
+
+        /**
+         * Create a web-application based on the server.
+         */
+        final TestApplication app = new TestApplication(engine);
+        app.start();
+
+        /**
+         * Send a request to the server, which indicates that
+         * the body of the message will be larger than allowed.
+         */
+        final SocketTester tester = new SocketTester(address, port);
+        tester.sendln("GET /print HTTP/1.1");
+        tester.sendln("Transfer-Encoding: chunked");
+        tester.sendln("Expect: 100-continue");
+        tester.sendln("Content-Length: 1025"); // Max Request Size + 1
+        tester.sendln();
+
+        /**
+         * The server will send a response forbidding the request.
+         */
+        tester.recvln("HTTP/1.1 413 Request Entity Too Large");
+        tester.recvln("content-length: 0");
+        tester.exhaust();
+        tester.closed();
+
+        /**
+         * Shutdown the server.
+         */
+        awaitServerShutdown(engine);
+
+        assertEquals(1, counter.countOnAccepted());
+        assertEquals(1, counter.countOnConnect());
+        assertEquals(0, counter.countOnDenied());
+        assertEquals(1, counter.countOnDisconnect());
+        assertEquals(0, counter.countOnDownlinkTimeout());
+        assertEquals(0, counter.countOnException());
+        assertEquals(1, counter.countExtend());
+        assertEquals(0, counter.countOnRejected());
+        assertEquals(0, counter.countOnRequest());
+        assertEquals(0, counter.countOnResponse());
+        assertEquals(0, counter.countOnResponseTimeout());
+        assertEquals(0, counter.countOnTooManyConnections());
+        assertEquals(0, counter.countOnUplinkTimeout());
+    }
+
+    /**
+     * Test: 20190414195205239061
+     *
+     * <p>
+     * Type: End-To-End Throughput Test.
+     * </p>
+     *
+     * <p>
+     * Case: Secure Sockets using Self Signed Certificate.
+     * </p>
+     */
+    @Test
+    public void test20190414195205239061 ()
+    {
+        System.out.println("Test: 20190414195205239061");
+        fail();
+    }
+
+    /**
+     * Test: 20190414195205239414
+     *
+     * <p>
+     * Type: End-To-End Throughput Test.
+     * </p>
+     *
+     * <p>
+     * Case: Extraneous bytes sent after the syntactic end of the HTTP request.
+     * </p>
+     */
+    @Test
+    public void test20190414195205239414 ()
+    {
+        System.out.println("Test: 20190414195205239414");
+        fail();
+    }
+
+    /**
+     * Test: 20190414195205239451
+     *
+     * <p>
+     * Type: End-To-End Throughput Test.
+     * </p>
+     *
+     * <p>
+     * Case: Customized Default Responses.
+     * </p>
+     */
+    @Test
+    public void test20190414195205239451 ()
+    {
+        System.out.println("Test: 20190414195205239451");
+        fail();
+    }
 }
